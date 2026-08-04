@@ -1,18 +1,20 @@
-# 问卷管理系统 (Questionnaire System)
+# 单体通用开发基座 (Single Admin Base)
 
-基于 Spring Boot 3 + Vue 3 的问卷管理与患者信息采集系统，采用前后端分离架构，内置 RBAC 权限控制、动态路由、数据统计看板等核心功能。
+基于 Spring Boot 3 + Vue 3 的基础单体通用开发基座，采用前后端分离架构，内置 RBAC 权限控制、动态菜单路由、部门岗位、字典参数、操作日志、代码生成、文件管理等通用系统能力，可作为各类业务系统的起始模板。
 
 ---
 
 ## 功能特性
 
-- **问卷管理**：支持问卷、题目分组、题目及选项的完整 CRUD，提供问卷预览与填写功能
-- **患者管理**：患者信息维护，支持患者关联问卷并在线填写
-- **RBAC 权限系统**：基于"用户-角色-权限"多对多模型的细粒度权限控制，支持接口权限与路由权限
-- **动态路由**：根据用户权限自动生成前端菜单和路由，实现页面级权限控制
-- **数据统计**：基于 ECharts 的可视化仪表盘，展示用户、问卷、患者等多维统计数据
-- **文件管理**：集成 MinIO 对象存储，支持文件上传与管理
-- **机构管理**：支持多机构（医疗机构）的分级管理
+- **RBAC 权限系统**：基于“用户-角色-权限”多对多模型的细粒度权限控制，支持接口权限与菜单/按钮权限
+- **动态菜单与路由**：根据用户权限自动生成前端菜单与路由，实现页面级权限控制
+- **用户与角色管理**：用户增删改查、状态启用/禁用、角色分配、多角色支持
+- **部门与岗位管理**：树形部门结构、岗位配置、用户关联
+- **字典与参数管理**：系统字典、业务参数、运行配置维护
+- **操作日志**：登录日志与操作日志记录，支持审计与查询
+- **文件管理**：集成 MinIO 对象存储，支持文件上传与统一管理
+- **代码生成器**：根据数据库表快速生成前后端基础代码
+- **多环境配置**：支持 dev / test / prod 等多环境配置切换
 - **Docker 部署**：提供完整的 Docker Compose 编排方案，一键部署全部服务
 
 ---
@@ -89,7 +91,7 @@ graph TB
 
     P --> PT{permissionType}
     PT -->|1-接口权限| API[API 接口鉴权]
-    PT -->|2-路由权限| ROUTE[前端动态路由]
+    PT -->|2-菜单/路由权限| ROUTE[前端动态路由]
 ```
 
 ### 权限查询流程
@@ -113,21 +115,19 @@ sequenceDiagram
 ## 项目结构
 
 ```
-questionnaire-system/
+single-admin/
 ├── backend/                          # 后端项目 (Spring Boot)
 │   ├── src/main/java/com/hfh/api/
-│   │   ├── config/                   # 配置类（SaToken、Redis、MyBatis-Plus）
+│   │   ├── config/                   # 配置类（Sa-Token、Redis、MyBatis-Plus）
 │   │   ├── modules/
-│   │   │   └── system/               # system 模块（用户、角色、权限等）
+│   │   │   └── system/               # system 模块（用户、角色、权限、部门、岗位、字典、参数、日志）
 │   │   ├── base/                     # 基础类（Controller、Entity）
 │   │   ├── utils/                    # 工具类
 │   │   ├── exception/                # 异常处理
 │   │   └── generator/                # 代码生成器
 │   └── src/main/resources/
 │       ├── mapper/                   # MyBatis XML 映射
-│       │   ├── system/               # system 模块 Mapper XML
-│       │   ├── form/                 # 问卷相关 Mapper XML
-│       │   └── fill/                 # 填写相关 Mapper XML
+│       │   └── system/               # system 模块 Mapper XML
 │       ├── sql/                      # 数据库脚本
 │       └── application*.yaml         # 配置文件
 │
@@ -137,9 +137,7 @@ questionnaire-system/
 │   │   ├── views/                    # 页面视图
 │   │   │   ├── admin/
 │   │   │   │   ├── dashboard/        # 数据看板
-│   │   │   │   ├── form/             # 问卷管理
-│   │   │   │   ├── fill/             # 填写管理
-│   │   │   │   ├── system/           # 系统管理（用户/角色/权限/机构）
+│   │   │   │   ├── system/           # 系统管理（用户/角色/权限/部门/岗位/字典/参数/日志）
 │   │   │   │   └── layout/           # 布局组件
 │   │   │   └── login/                # 登录页
 │   │   ├── router/                   # 路由配置（静态 + 动态）
@@ -165,19 +163,17 @@ questionnaire-system/
 
 | 表名前缀 | 模块 | 说明 |
 |----------|------|------|
-| `sys_` | 系统模块 | 用户、角色、权限、机构等 |
-| `qus_` | 问卷模块 | 问卷、题目分组、题目、选项、问卷类型 |
-| `ins_` | 业务模块 | 患者、患者问卷关联、患者作答 |
+| `sys_` | 系统模块 | 用户、角色、权限、部门、岗位、字典、参数、日志等 |
 
 ### 核心权限表
 
 - **sys_user** — 用户表
 - **sys_role** — 角色表
-- **sys_permission** — 权限表（支持接口权限 / 路由权限两种类型）
+- **sys_permission** — 权限表（支持接口权限 / 菜单路由权限两种类型）
 - **sys_user_role** — 用户角色关联表（多对多）
 - **sys_role_permission** — 角色权限关联表（多对多）
 
-> 详细建表 SQL 请参见 `backend/src/main/resources/sql/db_questionnaire.sql`
+> 详细建表 SQL 请参见 `backend/src/main/resources/sql/db_single_admin.sql`
 
 ---
 
@@ -196,7 +192,7 @@ questionnaire-system/
 
 ```bash
 # 1. 创建数据库并导入初始化脚本
-mysql -u root -p < backend/src/main/resources/sql/db_questionnaire.sql
+mysql -u root -p < backend/src/main/resources/sql/db_single_admin.sql
 
 # 2. 修改数据库连接配置
 # 编辑 backend/src/main/resources/application-dev.yaml
