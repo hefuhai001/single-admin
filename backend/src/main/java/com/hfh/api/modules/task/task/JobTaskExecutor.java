@@ -1,4 +1,4 @@
-package com.hfh.api.modules.system.task;
+package com.hfh.api.modules.task.task;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;

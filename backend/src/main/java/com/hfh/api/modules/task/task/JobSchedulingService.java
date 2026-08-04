@@ -1,7 +1,8 @@
-package com.hfh.api.modules.system.task;
+package com.hfh.api.modules.task.task;
 
-import com.hfh.api.modules.system.entity.JobEntity;
-import com.hfh.api.modules.system.service.JobLogService;
+import com.hfh.api.modules.task.entity.JobEntity;
+import com.hfh.api.modules.task.service.JobLogService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronExpression;

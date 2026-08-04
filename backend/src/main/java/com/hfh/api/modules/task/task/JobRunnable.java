@@ -1,8 +1,9 @@
-package com.hfh.api.modules.system.task;
+package com.hfh.api.modules.task.task;
 
-import com.hfh.api.modules.system.entity.JobEntity;
-import com.hfh.api.modules.system.entity.JobLogEntity;
-import com.hfh.api.modules.system.service.JobLogService;
+import com.hfh.api.modules.task.entity.JobEntity;
+import com.hfh.api.modules.task.entity.JobLogEntity;
+import com.hfh.api.modules.task.service.JobLogService;
+
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;

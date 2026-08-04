@@ -1,12 +1,13 @@
-package com.hfh.api.modules.system.controller;
+package com.hfh.api.modules.task.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
-import com.hfh.api.modules.system.entity.JobEntity;
-import com.hfh.api.modules.system.service.JobService;
+import com.hfh.api.modules.task.entity.JobEntity;
+import com.hfh.api.modules.task.service.JobService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

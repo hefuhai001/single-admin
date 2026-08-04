@@ -12,16 +12,7 @@ export const staticRoutes = [
             title: '仪表盘',
         },
         redirect: '/admin/dashboard/index',
-        children: [
-            {
-                path: 'fill/patientFill',
-                name: 'patientFill',
-                component: () => import('@/views/admin/fill/patientFill/index.vue'),
-                meta: {
-                    title: '患者问卷填写',
-                },
-            },
-        ],
+        children: [],
     },
 ]
 

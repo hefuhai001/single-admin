@@ -1,7 +1,8 @@
-package com.hfh.api.modules.system.mapper;
+package com.hfh.api.modules.task.mapper;
 
-import com.hfh.api.modules.system.entity.JobLogEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hfh.api.modules.task.entity.JobLogEntity;
+
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

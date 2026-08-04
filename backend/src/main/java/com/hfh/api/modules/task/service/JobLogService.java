@@ -1,7 +1,7 @@
-package com.hfh.api.modules.system.service;
+package com.hfh.api.modules.task.service;
 
-import com.hfh.api.modules.system.entity.JobLogEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hfh.api.modules.task.entity.JobLogEntity;
 
 /**
  * <p>

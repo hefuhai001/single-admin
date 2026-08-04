@@ -1,4 +1,4 @@
-package com.hfh.api.modules.system.entity;
+package com.hfh.api.modules.task.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sys_job")
+@TableName("task_job")
 public class JobEntity implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)

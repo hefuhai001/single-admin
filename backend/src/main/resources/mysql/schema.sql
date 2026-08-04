@@ -170,7 +170,7 @@ create table sys_user_role
     primary key (user_id, role_id)
 ) comment '用户角色关联' row_format = DYNAMIC;
 
-create table sys_job
+create table task_job
 (
     id            bigint auto_increment primary key,
     job_name      varchar(100)                            not null comment '任务名称',
@@ -188,7 +188,7 @@ create table sys_job
     constraint job_name_group unique (job_name, job_group)
 ) comment '定时任务' row_format = DYNAMIC;
 
-create table sys_job_log
+create table task_job_log
 (
     id           bigint auto_increment primary key,
     job_name     varchar(100)                          not null comment '任务名称',

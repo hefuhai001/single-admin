@@ -1,9 +1,9 @@
-package com.hfh.api.modules.system.service.impl;
+package com.hfh.api.modules.task.service.impl;
 
-import com.hfh.api.modules.system.entity.JobEntity;
-import com.hfh.api.modules.system.mapper.JobMapper;
-import com.hfh.api.modules.system.service.JobService;
-import com.hfh.api.modules.system.task.JobSchedulingService;
+import com.hfh.api.modules.task.entity.JobEntity;
+import com.hfh.api.modules.task.mapper.JobMapper;
+import com.hfh.api.modules.task.service.JobService;
+import com.hfh.api.modules.task.task.JobSchedulingService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

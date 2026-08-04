@@ -1,8 +1,8 @@
-package com.hfh.api.modules.system.service.impl;
+package com.hfh.api.modules.task.service.impl;
 
-import com.hfh.api.modules.system.entity.JobLogEntity;
-import com.hfh.api.modules.system.mapper.JobLogMapper;
-import com.hfh.api.modules.system.service.JobLogService;
+import com.hfh.api.modules.task.entity.JobLogEntity;
+import com.hfh.api.modules.task.mapper.JobLogMapper;
+import com.hfh.api.modules.task.service.JobLogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
