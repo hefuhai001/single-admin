@@ -1,0 +1,18 @@
+# Maven
+/target
+*.jar
+
+# IDE
+.idea
+*.iml
+.vscode
+
+# Git
+.git
+.gitignore
+
+# 其他
+*.md
+*.log
+logs
+.DS_Store

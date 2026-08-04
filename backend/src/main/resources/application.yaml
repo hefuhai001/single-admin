@@ -1,0 +1,96 @@
+server:
+  port: 9999
+  undertow:
+    io-threads: 4 # IO 线程数，默认为 CPU 核心数
+    worker-threads: 20  # 工作线程数
+    buffer-size: 1024 # 缓冲区大小（字节）
+    direct-buffers: true  # 是否分配直接内存（NIO 使用）
+    max-http-post-size: 10MB  # 最大 HTTP POST 大小
+spring:
+  profiles:
+    active: test
+  application:
+    name: backend
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-date-keys-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+      file-size-threshold: 2KB
+      location: /tmp
+      resolve-lazily: false
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=10000,expireAfterWrite=600s
+  task:
+    execution:
+      pool:
+        core-size: 8
+        max-size: 16
+        queue-capacity: 100
+        keep-alive: 60s
+      thread-name-prefix: async-task-
+    scheduling:
+      pool:
+        size: 4
+      thread-name-prefix: scheduling-
+
+sa-token:
+  token-name: Authorization     # 前端携带 token 的 header / param 名称
+  timeout: 7200             # accessToken 有效时间(秒) 2小时
+  is-share: true           # 允许同一账号多 token（双 token 模式需要）
+  is-read-header: true      # 支持从 header 读取 token
+  is-read-cookie: false     # 不从 cookie 读取（前后端分离架构）
+  is-log: false
+  token-style: uuid   # uuid simple-uuid random-32 random-64 random-128 tik
+  active-timeout: -1  # min-active
+  is-concurrent: true  # 允许多 token 共存（双 token 模式需要），SSO 由登录逻辑手动踢旧会话实现
+  token-prefix: Bearer     # 前端提交 token 时的前缀
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL
+  global-config:
+    db-config:
+      table-prefix:
+      id-type: auto
+      insert-strategy: not_null
+      update-strategy: not_null
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    enable-footer-custom: true
+    footer-custom-content: "Apache License 2.0 | Copyright xiao he like sleep"
+  basic:
+    enable: false
+    username: 1
+    password: 1
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: order
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  file:
+    name: ./logs/app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 3GB
+  level:
+    com.hfh: INFO
+    org.springframework: INFO
+    org.apache.ibatis: INFO

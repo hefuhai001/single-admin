@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   主题色定义 - 使用 CSS 变量作为桥梁
+   ============================================ */
+
+@layer base {
+    :root {
+        /* 默认主题：科技蓝 (Blue) */
+        --theme-50: #eff6ff;
+        --theme-100: #dbeafe;
+        --theme-200: #bfdbfe;
+        --theme-300: #93c5fd;
+        --theme-400: #60a5fa;
+        --theme-500: #3b82f6;
+        --theme-600: #2563eb;
+        --theme-700: #1d4ed8;
+        --theme-800: #1e40af;
+        --theme-900: #1e3a8a;
+        --theme-950: #172554;
+
+        /* 辅助色：翡翠绿 (Emerald) */
+        --aided-50: #ecfdf5;
+        --aided-100: #d1fae5;
+        --aided-200: #a7f3d0;
+        --aided-300: #6ee7b7;
+        --aided-400: #34d399;
+        --aided-500: #10b981;
+        --aided-600: #059669;
+        --aided-700: #047857;
+        --aided-800: #065f46;
+        --aided-900: #064e3b;
+        --aided-950: #022c22;
+
+        /* 中性色：Slate */
+        --neutral-50: #f5f5f5;
+        --neutral-100: #e5e5e5;
+        --neutral-200: #d4d4d4;
+        --neutral-300: #a3a3a3;
+        --neutral-400: #737373;
+        --neutral-500: #525252;
+        --neutral-600: #424242;
+        --neutral-700: #323232;
+        --neutral-800: #252525;
+        --neutral-900: #1a1a1a;
+        --neutral-950: #141414;
+
+        /* 语义化颜色引用 */
+        --color-success: var(--aided-500);
+        --color-warning: #f59e0b;
+        --color-error: #ef4444;
+        --color-info: var(--theme-500);
+
+        /* 背景和文字 */
+        --bg-base: var(--neutral-50);
+        --bg-elevated: #ffffff;
+        --bg-overlay: rgb(0 0 0 / 0.5);
+        --text-base: var(--neutral-900);
+        --text-muted: var(--neutral-500);
+        --text-inverted: #ffffff;
+    }
+
+    /* ===== 紫色主题 (Violet) ===== */
+    [data-theme='violet'] {
+        --theme-50: #f5f3ff;
+        --theme-100: #ede9fe;
+        --theme-200: #ddd6fe;
+        --theme-300: #c4b5fd;
+        --theme-400: #a78bfa;
+        --theme-500: #8b5cf6;
+        --theme-600: #7c3aed;
+        --theme-700: #6d28d9;
+        --theme-800: #5b21b6;
+        --theme-900: #4c1d95;
+        --theme-950: #2e1065;
+
+        --aided-50: #fdf4ff;
+        --aided-100: #fae8ff;
+        --aided-200: #f5d0fe;
+        --aided-300: #f0abfc;
+        --aided-400: #e879f9;
+        --aided-500: #d946ef;
+        --aided-600: #c026d3;
+        --aided-700: #a21caf;
+        --aided-800: #86198f;
+        --aided-900: #701a75;
+        --aided-950: #4a044e;
+    }
+
+    /* ===== 橙色主题 (Orange) ===== */
+    [data-theme='orange'] {
+        --theme-50: #fff7ed;
+        --theme-100: #ffedd5;
+        --theme-200: #fed7aa;
+        --theme-300: #fdba74;
+        --theme-400: #fb923c;
+        --theme-500: #f97316;
+        --theme-600: #ea580c;
+        --theme-700: #c2410c;
+        --theme-800: #9a3412;
+        --theme-900: #7c2d12;
+        --theme-950: #431407;
+
+        --aided-50: #fefce8;
+        --aided-100: #fef9c3;
+        --aided-200: #fef08a;
+        --aided-300: #fde047;
+        --aided-400: #facc15;
+        --aided-500: #eab308;
+        --aided-600: #ca8a04;
+        --aided-700: #a16207;
+        --aided-800: #854d0e;
+        --aided-900: #713f12;
+        --aided-950: #422006;
+    }
+
+    /* ===== 玫瑰红主题 (Rose) ===== */
+    [data-theme='rose'] {
+        --theme-50: #fff1f2;
+        --theme-100: #ffe4e6;
+        --theme-200: #fecdd3;
+        --theme-300: #fda4af;
+        --theme-400: #fb7185;
+        --theme-500: #f43f5e;
+        --theme-600: #e11d48;
+        --theme-700: #be123c;
+        --theme-800: #9f1239;
+        --theme-900: #881337;
+        --theme-950: #4c0519;
+
+        --aided-50: #fff1f2;
+        --aided-100: #ffe4e6;
+        --aided-200: #fecdd3;
+        --aided-300: #fda4af;
+        --aided-400: #fb7185;
+        --aided-500: #f43f5e;
+        --aided-600: #e11d48;
+        --aided-700: #be123c;
+        --aided-800: #9f1239;
+        --aided-900: #881337;
+        --aided-950: #4c0519;
+    }
+
+    /* ===== 青色主题 (Cyan) ===== */
+    [data-theme='cyan'] {
+        --theme-50: #ecfeff;
+        --theme-100: #cffafe;
+        --theme-200: #a5f3fc;
+        --theme-300: #67e8f9;
+        --theme-400: #22d3ee;
+        --theme-500: #06b6d4;
+        --theme-600: #0891b2;
+        --theme-700: #0e7490;
+        --theme-800: #155e75;
+        --theme-900: #164e63;
+        --theme-950: #083344;
+
+        --aided-50: #f0f9ff;
+        --aided-100: #e0f2fe;
+        --aided-200: #bae6fd;
+        --aided-300: #7dd3fc;
+        --aided-400: #38bdf8;
+        --aided-500: #0ea5e9;
+        --aided-600: #0284c7;
+        --aided-700: #0369a1;
+        --aided-800: #075985;
+        --aided-900: #0c4a6e;
+        --aided-950: #082f49;
+    }
+
+    /* ===== 深色模式覆盖 ===== */
+    .dark,
+    [data-theme='dark'] {
+        --neutral-50: #1d1e1f;
+        --neutral-100: #232425;
+        --neutral-200: #2a2b2c;
+        --neutral-300: #3c3d3e;
+        --neutral-400: #4c4d4e;
+        --neutral-500: #5c5d5e;
+        --neutral-600: #7d7e7f;
+        --neutral-700: #adadad;
+        --neutral-800: #d6d6d6;
+        --neutral-900: #e8e8e8;
+        --neutral-950: #f5f5f5;
+
+        --bg-base: var(--neutral-50);
+        --bg-elevated: var(--neutral-100);
+        --text-base: var(--neutral-900);
+        --text-muted: var(--neutral-500);
+    }
+}

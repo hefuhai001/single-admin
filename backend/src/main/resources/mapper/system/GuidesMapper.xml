@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfh.api.modules.system.mapper.GuidesMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hfh.api.modules.system.entity.GuidesEntity">
+        <id column="id" property="id" />
+        <result column="institution_id" property="institutionId" />
+        <result column="guide_title" property="guideTitle" />
+        <result column="guide_content" property="guideContent" />
+        <result column="guide_file_url" property="guideFileUrl" />
+        <result column="guide_type" property="guideType" />
+        <result column="status" property="status" />
+        <result column="published_at" property="publishedAt" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        
+    </sql>
+
+</mapper>

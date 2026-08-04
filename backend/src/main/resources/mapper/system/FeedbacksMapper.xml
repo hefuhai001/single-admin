@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfh.api.modules.system.mapper.FeedbacksMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hfh.api.modules.system.entity.FeedbacksEntity">
+        <id column="id" property="id" />
+        <result column="institution_id" property="institutionId" />
+        <result column="feedback_type" property="feedbackType" />
+        <result column="feedback_title" property="feedbackTitle" />
+        <result column="feedback_content" property="feedbackContent" />
+        <result column="attachment_url" property="attachmentUrl" />
+        <result column="priority" property="priority" />
+        <result column="status" property="status" />
+        <result column="reply_content" property="replyContent" />
+        <result column="replied_by" property="repliedBy" />
+        <result column="replied_at" property="repliedAt" />
+        <result column="feedback_by" property="feedbackBy" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        
+    </sql>
+
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfh.api.modules.system.mapper.PermissionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hfh.api.modules.system.entity.PermissionEntity">
+        <id column="id" property="id" />
+        <id column="permission_code" property="permissionCode" />
+        <result column="permission_name" property="permissionName" />
+        <result column="permission_type" property="permissionType" />
+        <result column="parent_id" property="parentId" />
+        <result column="route_path" property="routePath" />
+        <result column="component_path" property="componentPath" />
+        <result column="redirect" property="redirect" />
+        <result column="icon" property="icon" />
+        <result column="sort" property="sort" />
+        <result column="visible" property="visible" />
+        <result column="status" property="status" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, permission_code, permission_name, permission_type, parent_id, route_path, component_path, redirect, icon, sort, visible, status, created_at, updated_at
+    </sql>
+
+</mapper>
