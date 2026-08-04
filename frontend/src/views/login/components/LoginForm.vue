@@ -49,7 +49,7 @@
             </el-form>
 
             <div class="form-footer">
-                <p>&copy; 2024 大数据问卷系统. All rights reserved.</p>
+                <p>&copy; 2024 Single Admin Base. All rights reserved.</p>
             </div>
         </div>
     </div>

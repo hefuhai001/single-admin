@@ -7,7 +7,7 @@
                 v-show="!themeStore.getSidebarCollapsed"
                 class="font-bold text-xl ml-2 text-theme-500 whitespace-nowrap"
             >
-                大数据问卷系统
+                Single Admin
             </span>
         </div>
 

@@ -13,7 +13,7 @@
                     <circle cx="68" cy="22" r="6" fill="white" opacity="0.85" />
                 </svg>
             </div>
-            <h1 class="brand-title">大数据问卷系统</h1>
+            <h1 class="brand-title">Single Admin Base</h1>
             <p class="brand-subtitle">企业级一站式解决方案</p>
             <div class="brand-features">
                 <div v-for="feature in features" :key="feature" class="feature-item">
