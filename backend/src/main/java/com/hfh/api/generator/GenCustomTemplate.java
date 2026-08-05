@@ -39,7 +39,7 @@ public class GenCustomTemplate {
 
     public static void main(String[] args) throws Exception {
 
-        String moduleName = "config";
+        String moduleName = "system";
         String tablePrefix = "sys_";
 
         String[] tables = {"sys_config"};

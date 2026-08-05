@@ -7,6 +7,7 @@ import * as user from '@/api/modules/user.js'
 import * as auth from '@/api/modules/auth.js'
 import * as dictType from '@/api/modules/dictType'
 import * as dictData from '@/api/modules/dictData'
+import * as config from '@/api/modules/config.js'
 
 import * as minio from '@/api/modules/minio.js'
 
@@ -23,6 +24,7 @@ const api = {
     institutions,
     dictType,
     dictData,
+    config,
 
     minio,
 
