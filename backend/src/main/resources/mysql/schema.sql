@@ -14,7 +14,7 @@ create table sys_institutions
             on delete set null
 ) comment '机构(支持父子层级)' row_format = DYNAMIC;
 
-create table sys_feedbacks
+create table doc_feedbacks
 (
     id               bigint auto_increment comment '反馈ID'
         primary key,
@@ -38,21 +38,21 @@ create table sys_feedbacks
 ) comment '机构反馈表' row_format = DYNAMIC;
 
 create index idx_feedback_type
-    on sys_feedbacks (feedback_type);
+    on doc_feedbacks (feedback_type);
 
 create index idx_institution_id
-    on sys_feedbacks (institution_id);
+    on doc_feedbacks (institution_id);
 
 create index idx_is_deleted
-    on sys_feedbacks (is_deleted);
+    on doc_feedbacks (is_deleted);
 
 create index idx_priority
-    on sys_feedbacks (priority);
+    on doc_feedbacks (priority);
 
 create index idx_status
-    on sys_feedbacks (status);
+    on doc_feedbacks (status);
 
-create table sys_guides
+create table doc_guides
 (
     id             bigint auto_increment comment '指南ID'
         primary key,
@@ -73,19 +73,19 @@ create table sys_guides
 ) comment '机构指南' row_format = DYNAMIC;
 
 create index idx_guide_type
-    on sys_guides (guide_type);
+    on doc_guides (guide_type);
 
 create index idx_institution_id
-    on sys_guides (institution_id);
+    on doc_guides (institution_id);
 
 create index idx_is_deleted
-    on sys_guides (is_deleted);
+    on doc_guides (is_deleted);
 
 create index idx_published_at
-    on sys_guides (published_at);
+    on doc_guides (published_at);
 
 create index idx_status
-    on sys_guides (status);
+    on doc_guides (status);
 
 create index idx_institution_code
     on sys_institutions (institution_code);

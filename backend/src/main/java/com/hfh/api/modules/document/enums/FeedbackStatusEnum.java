@@ -1,19 +1,20 @@
-package com.hfh.api.modules.system.enums;
+package com.hfh.api.modules.document.enums;
 
 /**
- * 指南类型枚举
+ * 反馈状态枚举
  */
-public enum GuideTypeEnum {
+public enum FeedbackStatusEnum {
 
-    GENERAL("general", "通用指南"),
-    OPERATION("operation", "操作指南"),
-    QUALITY("quality", "质控指南"),
-    OTHER("other", "其他");
+    PENDING("pending", "待处理"),
+    PROCESSING("processing", "处理中"),
+    RESOLVED("resolved", "已解决"),
+    CLOSED("closed", "已关闭"),
+    REJECTED("rejected", "已驳回");
 
     private final String code;
     private final String description;
 
-    GuideTypeEnum(String code, String description) {
+    FeedbackStatusEnum(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -32,10 +33,10 @@ public enum GuideTypeEnum {
      * @param code 代码值
      * @return 对应的枚举，找不到返回null
      */
-    public static GuideTypeEnum fromCode(String code) {
-        for (GuideTypeEnum type : GuideTypeEnum.values()) {
-            if (type.code.equals(code)) {
-                return type;
+    public static FeedbackStatusEnum fromCode(String code) {
+        for (FeedbackStatusEnum status : FeedbackStatusEnum.values()) {
+            if (status.code.equals(code)) {
+                return status;
             }
         }
         return null;

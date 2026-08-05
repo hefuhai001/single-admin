@@ -1,9 +1,10 @@
-package com.hfh.api.modules.system.service.impl;
+package com.hfh.api.modules.document.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hfh.api.modules.system.entity.FeedbacksEntity;
-import com.hfh.api.modules.system.mapper.FeedbacksMapper;
-import com.hfh.api.modules.system.service.FeedbacksService;
+import com.hfh.api.modules.document.entity.FeedbacksEntity;
+import com.hfh.api.modules.document.mapper.FeedbacksMapper;
+import com.hfh.api.modules.document.service.FeedbacksService;
+
 import org.springframework.stereotype.Service;
 
 /**

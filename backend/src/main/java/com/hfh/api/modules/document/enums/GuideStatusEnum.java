@@ -1,20 +1,18 @@
-package com.hfh.api.modules.system.enums;
+package com.hfh.api.modules.document.enums;
 
 /**
- * 反馈类型枚举
+ * 状态枚举
  */
-public enum FeedbackTypeEnum {
+public enum GuideStatusEnum {
 
-    QUESTION("question", "疑问"),
-    SUGGESTION("suggestion", "建议"),
-    COMPLAINT("complaint", "投诉"),
-    ISSUE("issue", "问题报告"),
-    OTHER("other", "其他");
+    ACTIVE("active", "有效"),
+    EXPIRED("expired", "已过期"),
+    ARCHIVED("archived", "已归档");
 
     private final String code;
     private final String description;
 
-    FeedbackTypeEnum(String code, String description) {
+    GuideStatusEnum(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -33,10 +31,10 @@ public enum FeedbackTypeEnum {
      * @param code 代码值
      * @return 对应的枚举，找不到返回null
      */
-    public static FeedbackTypeEnum fromCode(String code) {
-        for (FeedbackTypeEnum type : FeedbackTypeEnum.values()) {
-            if (type.code.equals(code)) {
-                return type;
+    public static GuideStatusEnum fromCode(String code) {
+        for (GuideStatusEnum status : GuideStatusEnum.values()) {
+            if (status.code.equals(code)) {
+                return status;
             }
         }
         return null;

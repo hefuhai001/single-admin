@@ -1,12 +1,13 @@
-package com.hfh.api.modules.system.controller;
+package com.hfh.api.modules.document.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
-import com.hfh.api.modules.system.entity.FeedbacksEntity;
-import com.hfh.api.modules.system.service.FeedbacksService;
+import com.hfh.api.modules.document.entity.FeedbacksEntity;
+import com.hfh.api.modules.document.service.FeedbacksService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

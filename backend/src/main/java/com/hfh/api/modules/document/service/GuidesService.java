@@ -1,7 +1,7 @@
-package com.hfh.api.modules.system.service;
+package com.hfh.api.modules.document.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hfh.api.modules.system.entity.GuidesEntity;
+import com.hfh.api.modules.document.entity.GuidesEntity;
 
 /**
  * <p>

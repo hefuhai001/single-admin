@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for sys_feedbacks
+-- Table structure for doc_feedbacks
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_feedbacks`;
-CREATE TABLE `sys_feedbacks`  (
+DROP TABLE IF EXISTS `doc_feedbacks`;
+CREATE TABLE `doc_feedbacks`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '反馈ID',
   `institution_id` bigint NOT NULL COMMENT '机构ID',
   `feedback_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '反馈类型: question-疑问, suggestion-建议, complaint-投诉, issue-问题报告, other-其他',
@@ -47,14 +47,14 @@ CREATE TABLE `sys_feedbacks`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '机构反馈表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of sys_feedbacks
+-- Records of doc_feedbacks
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for sys_guides
+-- Table structure for doc_guides
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_guides`;
-CREATE TABLE `sys_guides`  (
+DROP TABLE IF EXISTS `doc_guides`;
+CREATE TABLE `doc_guides`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '指南ID',
   `institution_id` bigint NOT NULL COMMENT '机构ID',
   `guide_title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '指南标题',
@@ -77,7 +77,7 @@ CREATE TABLE `sys_guides`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '机构指南' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of sys_guides
+-- Records of doc_guides
 -- ----------------------------
 
 -- ----------------------------

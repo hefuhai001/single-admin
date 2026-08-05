@@ -1,9 +1,10 @@
-package com.hfh.api.modules.system.service.impl;
+package com.hfh.api.modules.document.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hfh.api.modules.system.entity.GuidesEntity;
-import com.hfh.api.modules.system.mapper.GuidesMapper;
-import com.hfh.api.modules.system.service.GuidesService;
+import com.hfh.api.modules.document.entity.GuidesEntity;
+import com.hfh.api.modules.document.mapper.GuidesMapper;
+import com.hfh.api.modules.document.service.GuidesService;
+
 import org.springframework.stereotype.Service;
 
 /**

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hfh.api.modules.system.mapper.FeedbacksMapper">
+<mapper namespace="com.hfh.api.modules.document.mapper.FeedbacksMapper">
 
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.hfh.api.modules.system.entity.FeedbacksEntity">
+    <resultMap id="BaseResultMap" type="com.hfh.api.modules.document.entity.FeedbacksEntity">
         <id column="id" property="id" />
         <result column="institution_id" property="institutionId" />
         <result column="feedback_type" property="feedbackType" />

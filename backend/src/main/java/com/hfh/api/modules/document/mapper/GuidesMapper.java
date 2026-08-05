@@ -1,7 +1,8 @@
-package com.hfh.api.modules.system.mapper;
+package com.hfh.api.modules.document.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hfh.api.modules.system.entity.GuidesEntity;
+import com.hfh.api.modules.document.entity.GuidesEntity;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**

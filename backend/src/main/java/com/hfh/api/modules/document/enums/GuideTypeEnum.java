@@ -1,19 +1,19 @@
-package com.hfh.api.modules.system.enums;
+package com.hfh.api.modules.document.enums;
 
 /**
- * 优先级枚举
+ * 指南类型枚举
  */
-public enum FeedbackPriorityEnum {
+public enum GuideTypeEnum {
 
-    LOW("low", "低"),
-    MEDIUM("medium", "中"),
-    HIGH("high", "高"),
-    URGENT("urgent", "紧急");
+    GENERAL("general", "通用指南"),
+    OPERATION("operation", "操作指南"),
+    QUALITY("quality", "质控指南"),
+    OTHER("other", "其他");
 
     private final String code;
     private final String description;
 
-    FeedbackPriorityEnum(String code, String description) {
+    GuideTypeEnum(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -32,10 +32,10 @@ public enum FeedbackPriorityEnum {
      * @param code 代码值
      * @return 对应的枚举，找不到返回null
      */
-    public static FeedbackPriorityEnum fromCode(String code) {
-        for (FeedbackPriorityEnum priority : FeedbackPriorityEnum.values()) {
-            if (priority.code.equals(code)) {
-                return priority;
+    public static GuideTypeEnum fromCode(String code) {
+        for (GuideTypeEnum type : GuideTypeEnum.values()) {
+            if (type.code.equals(code)) {
+                return type;
             }
         }
         return null;

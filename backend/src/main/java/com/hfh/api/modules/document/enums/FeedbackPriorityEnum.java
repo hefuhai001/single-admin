@@ -1,18 +1,19 @@
-package com.hfh.api.modules.system.enums;
+package com.hfh.api.modules.document.enums;
 
 /**
- * 状态枚举
+ * 优先级枚举
  */
-public enum GuideStatusEnum {
+public enum FeedbackPriorityEnum {
 
-    ACTIVE("active", "有效"),
-    EXPIRED("expired", "已过期"),
-    ARCHIVED("archived", "已归档");
+    LOW("low", "低"),
+    MEDIUM("medium", "中"),
+    HIGH("high", "高"),
+    URGENT("urgent", "紧急");
 
     private final String code;
     private final String description;
 
-    GuideStatusEnum(String code, String description) {
+    FeedbackPriorityEnum(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -31,10 +32,10 @@ public enum GuideStatusEnum {
      * @param code 代码值
      * @return 对应的枚举，找不到返回null
      */
-    public static GuideStatusEnum fromCode(String code) {
-        for (GuideStatusEnum status : GuideStatusEnum.values()) {
-            if (status.code.equals(code)) {
-                return status;
+    public static FeedbackPriorityEnum fromCode(String code) {
+        for (FeedbackPriorityEnum priority : FeedbackPriorityEnum.values()) {
+            if (priority.code.equals(code)) {
+                return priority;
             }
         }
         return null;

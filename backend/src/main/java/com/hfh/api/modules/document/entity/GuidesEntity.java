@@ -1,4 +1,4 @@
-package com.hfh.api.modules.system.entity;
+package com.hfh.api.modules.document.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -22,7 +22,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sys_guides")
+@TableName("doc_guides")
 public class GuidesEntity implements Serializable {
 
 
