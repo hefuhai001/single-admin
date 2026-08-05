@@ -5,6 +5,8 @@ import * as permission from '@/api/modules/permission.js'
 import * as role from '@/api/modules/role.js'
 import * as user from '@/api/modules/user.js'
 import * as auth from '@/api/modules/auth.js'
+import * as dictType from '@/api/modules/dictType'
+import * as dictData from '@/api/modules/dictData'
 
 import * as minio from '@/api/modules/minio.js'
 
@@ -19,6 +21,8 @@ const api = {
     feedbacks,
     guides,
     institutions,
+    dictType,
+    dictData,
 
     minio,
 

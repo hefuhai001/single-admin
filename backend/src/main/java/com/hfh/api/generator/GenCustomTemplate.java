@@ -15,10 +15,10 @@ public class GenCustomTemplate {
 
     public static void main(String[] args) throws Exception {
 
-        String moduleName = "form";
-        String tablePrefix = "qus_";
+        String moduleName = "dict";
+        String tablePrefix = "sys_";
 
-        String[] tables = {"qus_question"};
+        String[] tables = {"sys_dict_type", "sys_dict_data"};
 
         String projectPath = System.getProperty("user.dir") + "/backend";
         String apiOutputPath = projectPath + "/src/main/resources/api";
@@ -27,7 +27,7 @@ public class GenCustomTemplate {
 
         // 从 yml 配置文件读取数据库连接信息
         Yaml yaml = new Yaml();
-        ClassPathResource resource = new ClassPathResource("application-dev.yaml");
+        ClassPathResource resource = new ClassPathResource("application-test.yaml");
         Map<String, Object> configMap = yaml.load(resource.getInputStream());
 
         Map<String, Object> datasourceConfig = (Map<String, Object>) configMap.get("spring");
