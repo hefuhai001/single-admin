@@ -2,19 +2,14 @@
     <div class="h-full flex flex-col gap-4">
         <el-card shadow="never" class="shrink-0">
             <el-form :model="queryParams" inline v-if="routerStore.hasPermission('dictType:query')">
-                        <el-form-item label="">
-                            <el-input v-model="queryParams.id"
-                                      placeholder="请输入" clearable
-                                      @keyup.enter="handleQuery"/>
-                        </el-form-item>
-                        <el-form-item label="字典名称（如：性别）">
+                        <el-form-item label="字典名称">
                             <el-input v-model="queryParams.dictName"
-                                      placeholder="请输入字典名称（如：性别）" clearable
+                                      placeholder="请输入字典名称" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="字典类型（唯一标识，如：sex）">
+                        <el-form-item label="字典类型">
                             <el-input v-model="queryParams.dictType"
-                                      placeholder="请输入字典类型（唯一标识，如：sex）" clearable
+                                      placeholder="请输入字典类型" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
                 <el-form-item>
@@ -50,12 +45,17 @@
             <el-table border style="margin-top: 20px" v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column label="序号" type="index" width="60" align="center"/>
-                        <el-table-column label="字典名称（如：性别）" prop="dictName"
+                        <el-table-column label="字典名称" prop="dictName"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="字典类型（唯一标识，如：sex）" prop="dictType"
+                        <el-table-column label="字典类型" prop="dictType"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="状态（0停用 1启用）" prop="status"
-                                         min-width="120" align="center" show-overflow-tooltip/>
+                        <el-table-column label="状态" prop="status" min-width="120" align="center">
+                            <template #default="{ row }">
+                                <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+                                    {{ row.status === 1 ? '启用' : '停用' }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
                 <el-table-column label="操作" width="180" align="center" fixed="right">
                     <template #default="{ row }">
                         <el-button type="primary" link @click="handleEdit(row)" v-if="routerStore.hasPermission('dictType:update')">
@@ -90,17 +90,19 @@
 
         <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" @close="resetForm">
             <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" style="padding-right: 60px">
-                        <el-form-item label="字典名称（如：性别）" prop="dictName">
+                        <el-form-item label="字典名称" prop="dictName">
                                 <el-input v-model="formData.dictName"
-                                          placeholder="请输入字典名称（如：性别）"/>
+                                          placeholder="请输入字典名称"/>
                         </el-form-item>
-                        <el-form-item label="字典类型（唯一标识，如：sex）" prop="dictType">
+                        <el-form-item label="字典类型" prop="dictType">
                                 <el-input v-model="formData.dictType"
-                                          placeholder="请输入字典类型（唯一标识，如：sex）"/>
+                                          placeholder="请输入字典类型（如：sex）"/>
                         </el-form-item>
-                        <el-form-item label="状态（0停用 1启用）" prop="status">
-                                <el-input v-model="formData.status"
-                                          placeholder="请输入状态（0停用 1启用）"/>
+                        <el-form-item label="状态" prop="status">
+                                <el-radio-group v-model="formData.status">
+                                    <el-radio :value="1">启用</el-radio>
+                                    <el-radio :value="0">停用</el-radio>
+                                </el-radio-group>
                         </el-form-item>
             </el-form>
             <template #footer>
@@ -145,12 +147,12 @@
     const formRules = {
         dictName: [{
             required: true,
-            message: '请输入字典名称（如：性别）',
+            message: '请输入字典名称',
             trigger: 'blur'
         }], 
         dictType: [{
             required: true,
-            message: '请输入字典类型（唯一标识，如：sex）',
+            message: '请输入字典类型',
             trigger: 'blur'
         }], 
         status: [{

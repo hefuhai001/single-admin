@@ -2,22 +2,17 @@
     <div class="h-full flex flex-col gap-4">
         <el-card shadow="never" class="shrink-0">
             <el-form :model="queryParams" inline v-if="routerStore.hasPermission('dictData:query')">
-                        <el-form-item label="">
-                            <el-input v-model="queryParams.id"
-                                      placeholder="请输入" clearable
-                                      @keyup.enter="handleQuery"/>
-                        </el-form-item>
-                        <el-form-item label="所属字典类型（关联dict_type）">
+                        <el-form-item label="所属字典类型">
                             <el-input v-model="queryParams.dictType"
                                       placeholder="请输入所属字典类型（关联dict_type）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="显示标签（如：男、女）">
+                        <el-form-item label="显示标签">
                             <el-input v-model="queryParams.dictLabel"
                                       placeholder="请输入显示标签（如：男、女）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="存储值（如：1、0）">
+                        <el-form-item label="存储值">
                             <el-input v-model="queryParams.dictValue"
                                       placeholder="请输入存储值（如：1、0）" clearable
                                       @keyup.enter="handleQuery"/>
@@ -27,7 +22,7 @@
                                       placeholder="请输入排序" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="样式属性（前端用）">
+                        <el-form-item label="样式属性">
                             <el-input v-model="queryParams.cssClass"
                                       placeholder="请输入样式属性（前端用）" clearable
                                       @keyup.enter="handleQuery"/>
@@ -78,10 +73,20 @@
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="排序" prop="dictSort"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="状态" prop="status"
-                                         min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="是否默认值" prop="isDefault"
-                                         min-width="120" align="center" show-overflow-tooltip/>
+                        <el-table-column label="状态" prop="status" min-width="120" align="center">
+                            <template #default="{ row }">
+                                <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+                                    {{ row.status === 1 ? '启用' : '停用' }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="是否默认值" prop="isDefault" min-width="120" align="center">
+                            <template #default="{ row }">
+                                <el-tag :type="row.isDefault === 1 ? 'success' : 'info'">
+                                    {{ row.isDefault === 1 ? '是' : '否' }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="样式属性（前端用）" prop="cssClass"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="表格列表样式" prop="listClass"
@@ -120,15 +125,15 @@
 
         <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" @close="resetForm">
             <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" style="padding-right: 60px">
-                        <el-form-item label="所属字典类型（关联dict_type）" prop="dictType">
+                        <el-form-item label="所属字典" prop="dictType">
                                 <el-input v-model="formData.dictType"
                                           placeholder="请输入所属字典类型（关联dict_type）"/>
                         </el-form-item>
-                        <el-form-item label="显示标签（如：男、女）" prop="dictLabel">
+                        <el-form-item label="显示标签" prop="dictLabel">
                                 <el-input v-model="formData.dictLabel"
                                           placeholder="请输入显示标签（如：男、女）"/>
                         </el-form-item>
-                        <el-form-item label="存储值（如：1、0）" prop="dictValue">
+                        <el-form-item label="存储值" prop="dictValue">
                                 <el-input v-model="formData.dictValue"
                                           placeholder="请输入存储值（如：1、0）"/>
                         </el-form-item>
@@ -138,18 +143,22 @@
                                                  style="width: 100%"/>
                         </el-form-item>
                         <el-form-item label="状态" prop="status">
-                                <el-input v-model="formData.status"
-                                          placeholder="请输入状态"/>
+                                <el-radio-group v-model="formData.status">
+                                    <el-radio :value="1">启用</el-radio>
+                                    <el-radio :value="0">停用</el-radio>
+                                </el-radio-group>
                         </el-form-item>
                         <el-form-item label="是否默认值" prop="isDefault">
-                                <el-input v-model="formData.isDefault"
-                                          placeholder="请输入是否默认值"/>
+                                <el-radio-group v-model="formData.isDefault">
+                                    <el-radio :value="1">是</el-radio>
+                                    <el-radio :value="0">否</el-radio>
+                                </el-radio-group>
                         </el-form-item>
-                        <el-form-item label="样式属性（前端用）" prop="cssClass">
+                        <el-form-item label="样式属性" prop="cssClass">
                                 <el-input v-model="formData.cssClass"
                                           placeholder="请输入样式属性（前端用）"/>
                         </el-form-item>
-                        <el-form-item label="表格列表样式" prop="listClass">
+                        <el-form-item label="列表样式" prop="listClass">
                                 <el-input v-model="formData.listClass"
                                           placeholder="请输入表格列表样式"/>
                         </el-form-item>
@@ -225,23 +234,13 @@
         }], 
         status: [{
             required: true,
-            message: '请输入状态',
-            trigger: 'blur'
+            message: '请选择状态',
+            trigger: 'change'
         }], 
         isDefault: [{
             required: true,
-            message: '请输入是否默认值',
-            trigger: 'blur'
-        }], 
-        cssClass: [{
-            required: true,
-            message: '请输入样式属性（前端用）',
-            trigger: 'blur'
-        }], 
-        listClass: [{
-            required: true,
-            message: '请输入表格列表样式',
-            trigger: 'blur'
+            message: '请选择是否默认值',
+            trigger: 'change'
         }]
     }
 
