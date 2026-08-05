@@ -74,7 +74,23 @@ const routerStore = useRouterStore()
 const themeStore = useThemeStore()
 
 const dynamicRoutes = computed(() => {
-    return routerStore.dynamicRoutes
+    const filterHidden = (routes) => {
+        if (!routes || routes.length === 0) {
+            return []
+        }
+        return routes
+            .filter((route) => !route.meta?.hidden)
+            .map((route) => {
+                if (route.children && route.children.length > 0) {
+                    return {
+                        ...route,
+                        children: filterHidden(route.children),
+                    }
+                }
+                return route
+            })
+    }
+    return filterHidden(routerStore.dynamicRoutes)
 })
 
 const activeMenu = computed(() => {
