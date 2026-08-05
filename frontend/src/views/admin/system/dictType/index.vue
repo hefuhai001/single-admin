@@ -51,8 +51,8 @@
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="状态" prop="status" min-width="120" align="center">
                             <template #default="{ row }">
-                                <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-                                    {{ row.status === 1 ? '启用' : '停用' }}
+                                <el-tag :type="row.status === true ? 'success' : 'danger'">
+                                    {{ row.status === true ? '启用' : '停用' }}
                                 </el-tag>
                             </template>
                         </el-table-column>
@@ -96,12 +96,12 @@
                         </el-form-item>
                         <el-form-item label="字典类型" prop="dictType">
                                 <el-input v-model="formData.dictType"
-                                          placeholder="请输入字典类型（如：sex）"/>
+                                          placeholder="请输入字典类型"/>
                         </el-form-item>
                         <el-form-item label="状态" prop="status">
                                 <el-radio-group v-model="formData.status">
-                                    <el-radio :value="1">启用</el-radio>
-                                    <el-radio :value="0">停用</el-radio>
+                                    <el-radio :value="true">启用</el-radio>
+                                    <el-radio :value="false">停用</el-radio>
                                 </el-radio-group>
                         </el-form-item>
             </el-form>
@@ -138,9 +138,9 @@
     })
 
     const formData = reactive({
-        id: undefined, 
-        dictName: undefined, 
-        dictType: undefined, 
+        id: undefined,
+        dictName: undefined,
+        dictType: undefined,
         status: undefined
     })
 
@@ -149,12 +149,12 @@
             required: true,
             message: '请输入字典名称',
             trigger: 'blur'
-        }], 
+        }],
         dictType: [{
             required: true,
             message: '请输入字典类型',
             trigger: 'blur'
-        }], 
+        }],
         status: [{
             required: true,
             message: '请输入状态（0停用 1启用）',
@@ -199,6 +199,8 @@
         try {
             const {data} = await api.dictType.getDictTypeById(row.id)
             Object.assign(formData, data.data)
+            // 确保 status 是布尔类型，以便 radio-group 正确匹配
+            formData.status = formData.status !== undefined ? Boolean(formData.status) : undefined
             dialogVisible.value = true
         } catch (error) {
             ElMessage.error('获取详情失败')

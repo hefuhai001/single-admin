@@ -65,29 +65,29 @@
             <el-table border style="margin-top: 20px" v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column label="序号" type="index" width="60" align="center"/>
-                        <el-table-column label="所属字典类型（关联dict_type）" prop="dictType"
+                        <el-table-column label="所属字典类型" prop="dictType"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="显示标签（如：男、女）" prop="dictLabel"
+                        <el-table-column label="显示标签" prop="dictLabel"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="存储值（如：1、0）" prop="dictValue"
+                        <el-table-column label="存储值" prop="dictValue"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="排序" prop="dictSort"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="状态" prop="status" min-width="120" align="center">
                             <template #default="{ row }">
-                                <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-                                    {{ row.status === 1 ? '启用' : '停用' }}
+                                <el-tag :type="row.status === true ? 'success' : 'danger'">
+                                    {{ row.status === true ? '启用' : '停用' }}
                                 </el-tag>
                             </template>
                         </el-table-column>
                         <el-table-column label="是否默认值" prop="isDefault" min-width="120" align="center">
                             <template #default="{ row }">
-                                <el-tag :type="row.isDefault === 1 ? 'success' : 'info'">
-                                    {{ row.isDefault === 1 ? '是' : '否' }}
+                                <el-tag :type="row.isDefault === true ? 'success' : 'info'">
+                                    {{ row.isDefault === true ? '是' : '否' }}
                                 </el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column label="样式属性（前端用）" prop="cssClass"
+                        <el-table-column label="样式属性" prop="cssClass"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="表格列表样式" prop="listClass"
                                          min-width="120" align="center" show-overflow-tooltip/>
@@ -144,14 +144,14 @@
                         </el-form-item>
                         <el-form-item label="状态" prop="status">
                                 <el-radio-group v-model="formData.status">
-                                    <el-radio :value="1">启用</el-radio>
-                                    <el-radio :value="0">停用</el-radio>
+                                    <el-radio :value="true">启用</el-radio>
+                                    <el-radio :value="false">停用</el-radio>
                                 </el-radio-group>
                         </el-form-item>
                         <el-form-item label="是否默认值" prop="isDefault">
                                 <el-radio-group v-model="formData.isDefault">
-                                    <el-radio :value="1">是</el-radio>
-                                    <el-radio :value="0">否</el-radio>
+                                    <el-radio :value="true">是</el-radio>
+                                    <el-radio :value="false">否</el-radio>
                                 </el-radio-group>
                         </el-form-item>
                         <el-form-item label="样式属性" prop="cssClass">
@@ -200,14 +200,14 @@
     })
 
     const formData = reactive({
-        id: undefined, 
-        dictType: undefined, 
-        dictLabel: undefined, 
-        dictValue: undefined, 
-        dictSort: undefined, 
-        status: undefined, 
-        isDefault: undefined, 
-        cssClass: undefined, 
+        id: undefined,
+        dictType: undefined,
+        dictLabel: undefined,
+        dictValue: undefined,
+        dictSort: undefined,
+        status: undefined,
+        isDefault: undefined,
+        cssClass: undefined,
         listClass: undefined
     })
 
@@ -216,27 +216,27 @@
             required: true,
             message: '请输入所属字典类型（关联dict_type）',
             trigger: 'blur'
-        }], 
+        }],
         dictLabel: [{
             required: true,
             message: '请输入显示标签（如：男、女）',
             trigger: 'blur'
-        }], 
+        }],
         dictValue: [{
             required: true,
             message: '请输入存储值（如：1、0）',
             trigger: 'blur'
-        }], 
+        }],
         dictSort: [{
             required: true,
             message: '请输入排序',
             trigger: 'blur'
-        }], 
+        }],
         status: [{
             required: true,
             message: '请选择状态',
             trigger: 'change'
-        }], 
+        }],
         isDefault: [{
             required: true,
             message: '请选择是否默认值',
@@ -285,6 +285,9 @@
         try {
             const {data} = await api.dictData.getDictDataById(row.id)
             Object.assign(formData, data.data)
+            // 确保 status 和 isDefault 是布尔类型，以便 radio-group 正确匹配
+            formData.status = formData.status !== undefined ? Boolean(formData.status) : undefined
+            formData.isDefault = formData.isDefault !== undefined ? Boolean(formData.isDefault) : undefined
             dialogVisible.value = true
         } catch (error) {
             ElMessage.error('获取详情失败')
