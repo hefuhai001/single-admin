@@ -2,32 +2,27 @@
     <div class="h-full flex flex-col gap-4">
         <el-card shadow="never" class="shrink-0">
             <el-form :model="queryParams" inline v-if="routerStore.hasPermission('config:query')">
-                        <el-form-item label="主键ID">
-                            <el-input v-model="queryParams.id"
-                                      placeholder="请输入主键ID" clearable
-                                      @keyup.enter="handleQuery"/>
-                        </el-form-item>
-                        <el-form-item label="配置键（唯一标识，如：register.enable）">
+                        <el-form-item label="配置键">
                             <el-input v-model="queryParams.configKey"
                                       placeholder="请输入配置键（唯一标识，如：register.enable）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="配置值（存储具体配置内容）">
+                        <el-form-item label="配置值">
                             <el-input v-model="queryParams.configValue"
                                       placeholder="请输入配置值（存储具体配置内容）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="配置名称（如：是否开启注册）">
+                        <el-form-item label="配置名称">
                             <el-input v-model="queryParams.configName"
                                       placeholder="请输入配置名称（如：是否开启注册）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="配置分组（system/email/sms/oss等）">
+                        <el-form-item label="配置分组">
                             <el-input v-model="queryParams.configGroup"
                                       placeholder="请输入配置分组（system/email/sms/oss等）" clearable
                                       @keyup.enter="handleQuery"/>
                         </el-form-item>
-                        <el-form-item label="配置类型（string/integer/boolean/array/json）">
+                        <el-form-item label="配置类型">
                             <el-input v-model="queryParams.configType"
                                       placeholder="请输入配置类型（string/integer/boolean/array/json）" clearable
                                       @keyup.enter="handleQuery"/>
@@ -70,20 +65,28 @@
             <el-table border style="margin-top: 20px" v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"/>
                 <el-table-column label="序号" type="index" width="60" align="center"/>
-                        <el-table-column label="配置键（唯一标识，如：register.enable）" prop="configKey"
+                        <el-table-column label="配置键" prop="configKey"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="配置值（存储具体配置内容）" prop="configValue"
+                        <el-table-column label="配置值" prop="configValue"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="配置名称（如：是否开启注册）" prop="configName"
+                        <el-table-column label="配置名称" prop="configName"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="配置分组（system/email/sms/oss等）" prop="configGroup"
+                        <el-table-column label="配置分组" prop="configGroup"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="配置类型（string/integer/boolean/array/json）" prop="configType"
+                        <el-table-column label="配置类型" prop="configType"
                                          min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="是否系统内置（1-是，不可删除；0-否）" prop="isSystem"
-                                         min-width="120" align="center" show-overflow-tooltip/>
-                        <el-table-column label="状态（0停用 1启用）" prop="status"
-                                         min-width="120" align="center" show-overflow-tooltip/>
+                        <el-table-column label="是否内置" prop="isSystem"
+                                         min-width="120" align="center" show-overflow-tooltip>
+                            <template #default="{ row }">
+                                <el-tag :type="row.isSystem ? 'danger' : 'success'">{{ row.isSystem ? '是' : '否' }}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="状态" prop="status"
+                                         min-width="120" align="center" show-overflow-tooltip>
+                            <template #default="{ row }">
+                                <el-tag :type="row.status ? 'success' : 'danger'">{{ row.status ? '启用' : '停用' }}</el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="备注说明" prop="remark"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="创建时间" prop="createTime"
@@ -124,33 +127,37 @@
 
         <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" @close="resetForm">
             <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" style="padding-right: 60px">
-                        <el-form-item label="配置键（唯一标识，如：register.enable）" prop="configKey">
+                        <el-form-item label="配置键" prop="configKey">
                                 <el-input v-model="formData.configKey"
                                           placeholder="请输入配置键（唯一标识，如：register.enable）"/>
                         </el-form-item>
-                        <el-form-item label="配置值（存储具体配置内容）" prop="configValue">
+                        <el-form-item label="配置值" prop="configValue">
                                 <el-input v-model="formData.configValue"
                                           placeholder="请输入配置值（存储具体配置内容）"/>
                         </el-form-item>
-                        <el-form-item label="配置名称（如：是否开启注册）" prop="configName">
+                        <el-form-item label="配置名称" prop="configName">
                                 <el-input v-model="formData.configName"
                                           placeholder="请输入配置名称（如：是否开启注册）"/>
                         </el-form-item>
-                        <el-form-item label="配置分组（system/email/sms/oss等）" prop="configGroup">
+                        <el-form-item label="配置分组" prop="configGroup">
                                 <el-input v-model="formData.configGroup"
                                           placeholder="请输入配置分组（system/email/sms/oss等）"/>
                         </el-form-item>
-                        <el-form-item label="配置类型（string/integer/boolean/array/json）" prop="configType">
+                        <el-form-item label="配置类型" prop="configType">
                                 <el-input v-model="formData.configType"
                                           placeholder="请输入配置类型（string/integer/boolean/array/json）"/>
                         </el-form-item>
-                        <el-form-item label="是否系统内置（1-是，不可删除；0-否）" prop="isSystem">
-                                <el-input v-model="formData.isSystem"
-                                          placeholder="请输入是否系统内置（1-是，不可删除；0-否）"/>
+                        <el-form-item label="是否内置" prop="isSystem">
+                                <el-radio-group v-model="formData.isSystem">
+                                    <el-radio :label="true">是</el-radio>
+                                    <el-radio :label="false">否</el-radio>
+                                </el-radio-group>
                         </el-form-item>
-                        <el-form-item label="状态（0停用 1启用）" prop="status">
-                                <el-input v-model="formData.status"
-                                          placeholder="请输入状态（0停用 1启用）"/>
+                        <el-form-item label="状态" prop="status">
+                                <el-radio-group v-model="formData.status">
+                                    <el-radio :label="true">停用</el-radio>
+                                    <el-radio :label="false">启用</el-radio>
+                                </el-radio-group>
                         </el-form-item>
                         <el-form-item label="备注说明" prop="remark">
                                 <el-input v-model="formData.remark"
