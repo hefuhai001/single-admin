@@ -48,7 +48,13 @@
                         <el-table-column label="字典名称" prop="dictName"
                                          min-width="120" align="center" show-overflow-tooltip/>
                         <el-table-column label="字典类型" prop="dictType"
-                                         min-width="120" align="center" show-overflow-tooltip/>
+                                         min-width="120" align="center" show-overflow-tooltip>
+                            <template #default="{ row }">
+                                <el-button type="primary" link @click="handleGoDictData(row.dictType)">
+                                    {{ row.dictType }}
+                                </el-button>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="状态" prop="status" min-width="120" align="center">
                             <template #default="{ row }">
                                 <el-tag :type="row.status === true ? 'success' : 'danger'">
@@ -117,9 +123,11 @@
     import {ref, reactive, computed} from 'vue'
     import {ElMessage, ElMessageBox} from 'element-plus'
     import {Search, Refresh, Plus, Edit, Delete} from '@element-plus/icons-vue'
+    import {useRouter} from 'vue-router'
     import api from '@/api/index.js'
     import { useRouterStore } from '@/stores/modules/router.js'
 
+    const router = useRouter()
     const routerStore = useRouterStore()
     const loading = ref(false)
     const submitLoading = ref(false)
@@ -187,6 +195,13 @@
 
     const handleSelectionChange = (selection) => {
         selectedIds.value = selection.map(item => item.id)
+    }
+
+    const handleGoDictData = (dictType) => {
+        router.push({
+            path: '/admin/system/dictData',
+            query: {dictType}
+        })
     }
 
     const handleAdd = () => {

@@ -59,6 +59,9 @@
                 </el-icon>
                 批量删除
             </el-button>
+            <el-button @click="goBack">
+                <el-icon><Back /></el-icon> 返回
+            </el-button>
         </el-card>
 
         <el-card shadow="never" class="flex-1 min-h-0">
@@ -175,9 +178,13 @@
     import {ref, reactive, computed} from 'vue'
     import {ElMessage, ElMessageBox} from 'element-plus'
     import {Search, Refresh, Plus, Edit, Delete} from '@element-plus/icons-vue'
+    import {useRoute} from 'vue-router'
+    import { useRouter } from 'vue-router'
     import api from '@/api/index.js'
     import { useRouterStore } from '@/stores/modules/router.js'
 
+    const route = useRoute()
+    const router = useRouter()
     const routerStore = useRouterStore()
     const loading = ref(false)
     const submitLoading = ref(false)
@@ -351,6 +358,14 @@
         formData.cssClass = undefined
         formData.listClass = undefined
         formRef.value?.resetFields()
+    }
+
+    if (route.query.dictType) {
+        queryParams.dictType = route.query.dictType
+    }
+
+    const goBack = () => {
+        router.back()
     }
 
     handleQuery()
