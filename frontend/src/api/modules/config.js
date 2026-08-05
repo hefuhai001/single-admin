@@ -6,7 +6,7 @@ import request from '@/utils/requestUtil.js'
  * @returns {Promise}
  */
 export function getConfigById(id) {
-  return request.get(`/system/config/` + id);
+    return request.get(`/system/config/` + id)
 }
 
 /**
@@ -14,7 +14,7 @@ export function getConfigById(id) {
  * @returns {Promise}
  */
 export function listConfig() {
-  return request.get(`/system/config/list`);
+    return request.get(`/system/config/list`)
 }
 
 /**
@@ -36,7 +36,7 @@ export function listConfig() {
  * @returns {Promise}
  */
 export function pageConfig(params) {
-  return request.get(`/system/config/page`, { params });
+    return request.get(`/system/config/page`, { params })
 }
 
 /**
@@ -56,7 +56,7 @@ export function pageConfig(params) {
  * @returns {Promise}
  */
 export function saveConfig(params) {
-  return request.post(`/system/config`, params);
+    return request.post(`/system/config`, params)
 }
 
 /**
@@ -76,7 +76,7 @@ export function saveConfig(params) {
  * @returns {Promise}
  */
 export function updateConfig(params) {
-  return request.put(`/system/config`, params);
+    return request.put(`/system/config`, params)
 }
 
 /**
@@ -85,7 +85,7 @@ export function updateConfig(params) {
  * @returns {Promise}
  */
 export function deleteConfig(id) {
-  return request.delete(`/system/config/` + id);
+    return request.delete(`/system/config/` + id)
 }
 
 /**
@@ -94,5 +94,5 @@ export function deleteConfig(id) {
  * @returns {Promise}
  */
 export function batchDeleteConfig(ids) {
-  return request.delete(`/system/config/batch`, { data: ids });
+    return request.delete(`/system/config/batch`, { data: ids })
 }

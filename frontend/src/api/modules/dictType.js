@@ -6,7 +6,7 @@ import request from '@/utils/requestUtil.js'
  * @returns {Promise}
  */
 export function getDictTypeById(id) {
-  return request.get(`/dict/dict-type/` + id);
+    return request.get(`/dict/dict-type/` + id)
 }
 
 /**
@@ -14,7 +14,7 @@ export function getDictTypeById(id) {
  * @returns {Promise}
  */
 export function listDictType() {
-  return request.get(`/dict/dict-type/list`);
+    return request.get(`/dict/dict-type/list`)
 }
 
 /**
@@ -22,40 +22,40 @@ export function listDictType() {
  * @param {object} params
  * @param {number} params.current 当前页
  * @param {number} params.size 每页大小
- * @param {Long} params.id 
+ * @param {Long} params.id
  * @param {String} params.dictName 字典名称（如：性别）
  * @param {String} params.dictType 字典类型（唯一标识，如：sex）
  * @param {Boolean} params.status 状态（0停用 1启用）
  * @returns {Promise}
  */
 export function pageDictType(params) {
-  return request.get(`/dict/dict-type/page`, { params });
+    return request.get(`/dict/dict-type/page`, { params })
 }
 
 /**
  * 新增
- * @param {object} params 
- * @param {Long} params.id 
+ * @param {object} params
+ * @param {Long} params.id
  * @param {String} params.dictName 字典名称（如：性别）
  * @param {String} params.dictType 字典类型（唯一标识，如：sex）
  * @param {Boolean} params.status 状态（0停用 1启用）
  * @returns {Promise}
  */
 export function saveDictType(params) {
-  return request.post(`/dict/dict-type`, params);
+    return request.post(`/dict/dict-type`, params)
 }
 
 /**
  * 更新
- * @param {object} params 
- * @param {Long} params.id 
+ * @param {object} params
+ * @param {Long} params.id
  * @param {String} params.dictName 字典名称（如：性别）
  * @param {String} params.dictType 字典类型（唯一标识，如：sex）
  * @param {Boolean} params.status 状态（0停用 1启用）
  * @returns {Promise}
  */
 export function updateDictType(params) {
-  return request.put(`/dict/dict-type`, params);
+    return request.put(`/dict/dict-type`, params)
 }
 
 /**
@@ -64,7 +64,7 @@ export function updateDictType(params) {
  * @returns {Promise}
  */
 export function deleteDictType(id) {
-  return request.delete(`/dict/dict-type/` + id);
+    return request.delete(`/dict/dict-type/` + id)
 }
 
 /**
@@ -73,5 +73,5 @@ export function deleteDictType(id) {
  * @returns {Promise}
  */
 export function batchDeleteDictType(ids) {
-  return request.delete(`/dict/dict-type/batch`, { data: ids });
+    return request.delete(`/dict/dict-type/batch`, { data: ids })
 }

@@ -26,13 +26,7 @@ import { h, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTabsStore } from '@/stores/modules/tabs'
 import ContextMenu from '@imengyu/vue3-context-menu'
-import {
-    Refresh,
-    Close,
-    Back,
-    Right,
-    CircleClose,
-} from '@element-plus/icons-vue'
+import { Refresh, Close, Back, Right, CircleClose } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

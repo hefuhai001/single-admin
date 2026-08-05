@@ -6,7 +6,7 @@ import request from '@/utils/requestUtil.js'
  * @returns {Promise}
  */
 export function getDictDataById(id) {
-  return request.get(`/dict/dict-data/` + id);
+    return request.get(`/dict/dict-data/` + id)
 }
 
 /**
@@ -14,7 +14,7 @@ export function getDictDataById(id) {
  * @returns {Promise}
  */
 export function listDictData() {
-  return request.get(`/dict/dict-data/list`);
+    return request.get(`/dict/dict-data/list`)
 }
 
 /**
@@ -22,7 +22,7 @@ export function listDictData() {
  * @param {object} params
  * @param {number} params.current 当前页
  * @param {number} params.size 每页大小
- * @param {Long} params.id 
+ * @param {Long} params.id
  * @param {String} params.dictType 所属字典类型（关联dict_type）
  * @param {String} params.dictLabel 显示标签（如：男、女）
  * @param {String} params.dictValue 存储值（如：1、0）
@@ -34,13 +34,13 @@ export function listDictData() {
  * @returns {Promise}
  */
 export function pageDictData(params) {
-  return request.get(`/dict/dict-data/page`, { params });
+    return request.get(`/dict/dict-data/page`, { params })
 }
 
 /**
  * 新增
- * @param {object} params 
- * @param {Long} params.id 
+ * @param {object} params
+ * @param {Long} params.id
  * @param {String} params.dictType 所属字典类型（关联dict_type）
  * @param {String} params.dictLabel 显示标签（如：男、女）
  * @param {String} params.dictValue 存储值（如：1、0）
@@ -52,13 +52,13 @@ export function pageDictData(params) {
  * @returns {Promise}
  */
 export function saveDictData(params) {
-  return request.post(`/dict/dict-data`, params);
+    return request.post(`/dict/dict-data`, params)
 }
 
 /**
  * 更新
- * @param {object} params 
- * @param {Long} params.id 
+ * @param {object} params
+ * @param {Long} params.id
  * @param {String} params.dictType 所属字典类型（关联dict_type）
  * @param {String} params.dictLabel 显示标签（如：男、女）
  * @param {String} params.dictValue 存储值（如：1、0）
@@ -70,7 +70,7 @@ export function saveDictData(params) {
  * @returns {Promise}
  */
 export function updateDictData(params) {
-  return request.put(`/dict/dict-data`, params);
+    return request.put(`/dict/dict-data`, params)
 }
 
 /**
@@ -79,7 +79,7 @@ export function updateDictData(params) {
  * @returns {Promise}
  */
 export function deleteDictData(id) {
-  return request.delete(`/dict/dict-data/` + id);
+    return request.delete(`/dict/dict-data/` + id)
 }
 
 /**
@@ -88,5 +88,5 @@ export function deleteDictData(id) {
  * @returns {Promise}
  */
 export function batchDeleteDictData(ids) {
-  return request.delete(`/dict/dict-data/batch`, { data: ids });
+    return request.delete(`/dict/dict-data/batch`, { data: ids })
 }

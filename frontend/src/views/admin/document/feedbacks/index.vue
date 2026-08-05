@@ -253,7 +253,9 @@
                             type="primary"
                             link
                             @click="handleReply(row)"
-                            v-if="routerStore.hasPermission('feedbacks:update') && !row.replyContent"
+                            v-if="
+                                routerStore.hasPermission('feedbacks:update') && !row.replyContent
+                            "
                         >
                             <el-icon>
                                 <Edit />
@@ -360,7 +362,12 @@
             </template>
         </el-dialog>
 
-        <el-dialog v-model="replyDialogVisible" title="回复反馈" width="600px" @close="resetReplyForm">
+        <el-dialog
+            v-model="replyDialogVisible"
+            title="回复反馈"
+            width="600px"
+            @close="resetReplyForm"
+        >
             <el-form
                 ref="replyFormRef"
                 :model="replyFormData"
@@ -410,11 +417,7 @@
                         </el-button>
                     </el-upload>
                     <div v-if="replyFormData.attachmentUrl" class="mt-2">
-                        <el-link
-                            :href="replyFormData.attachmentUrl"
-                            target="_blank"
-                            type="primary"
-                        >
+                        <el-link :href="replyFormData.attachmentUrl" target="_blank" type="primary">
                             {{ replyFormData.attachmentUrl }}
                         </el-link>
                         <el-button

@@ -315,7 +315,12 @@
                             target="_blank"
                             type="primary"
                             :title="formData.guideFileUrl"
-                            style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
+                            style="
+                                max-width: 300px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            "
                         >
                             {{ formData.guideFileUrl.split('/').pop() || formData.guideFileUrl }}
                         </el-link>

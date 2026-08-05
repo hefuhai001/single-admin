@@ -30,7 +30,11 @@
             <el-button @click="resetQuery">
                 <el-icon><Refresh /></el-icon> 刷新
             </el-button>
-            <el-button type="danger" @click="handleClean" v-if="routerStore.hasPermission('job:delete')">
+            <el-button
+                type="danger"
+                @click="handleClean"
+                v-if="routerStore.hasPermission('job:delete')"
+            >
                 <el-icon><Delete /></el-icon> 清空
             </el-button>
             <el-button @click="goBack">
@@ -39,16 +43,36 @@
         </el-card>
 
         <el-card shadow="never" class="flex-1 min-h-0">
-            <el-table
-                border
-                v-loading="loading"
-                :data="tableData"
-            >
+            <el-table border v-loading="loading" :data="tableData">
                 <el-table-column label="ID" prop="id" width="90" align="center" />
-                <el-table-column label="任务名称" prop="jobName" min-width="120" align="center" show-overflow-tooltip />
-                <el-table-column label="任务分组" prop="jobGroup" min-width="100" align="center" show-overflow-tooltip />
-                <el-table-column label="调用目标" prop="invokeTarget" min-width="180" align="center" show-overflow-tooltip />
-                <el-table-column label="执行信息" prop="jobMessage" min-width="180" align="center" show-overflow-tooltip />
+                <el-table-column
+                    label="任务名称"
+                    prop="jobName"
+                    min-width="120"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="任务分组"
+                    prop="jobGroup"
+                    min-width="100"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="调用目标"
+                    prop="invokeTarget"
+                    min-width="180"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="执行信息"
+                    prop="jobMessage"
+                    min-width="180"
+                    align="center"
+                    show-overflow-tooltip
+                />
                 <el-table-column label="状态" prop="status" width="80" align="center">
                     <template #default="{ row }">
                         <el-tag :type="row.status === 1 ? 'success' : 'danger'">
@@ -56,8 +80,20 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="异常信息" prop="exceptionInfo" min-width="180" align="center" show-overflow-tooltip />
-                <el-table-column label="执行时间" prop="createTime" min-width="160" align="center" show-overflow-tooltip />
+                <el-table-column
+                    label="异常信息"
+                    prop="exceptionInfo"
+                    min-width="180"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="执行时间"
+                    prop="createTime"
+                    min-width="160"
+                    align="center"
+                    show-overflow-tooltip
+                />
             </el-table>
 
             <el-pagination

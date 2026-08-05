@@ -38,10 +38,19 @@
             <el-button @click="resetQuery">
                 <el-icon><Refresh /></el-icon> 刷新
             </el-button>
-            <el-button type="primary" @click="handleAdd" v-if="routerStore.hasPermission('job:add')">
+            <el-button
+                type="primary"
+                @click="handleAdd"
+                v-if="routerStore.hasPermission('job:add')"
+            >
                 <el-icon><Plus /></el-icon> 新增
             </el-button>
-            <el-button type="danger" :disabled="selectedIds.length === 0" @click="handleBatchDelete" v-if="routerStore.hasPermission('job:delete')">
+            <el-button
+                type="danger"
+                :disabled="selectedIds.length === 0"
+                @click="handleBatchDelete"
+                v-if="routerStore.hasPermission('job:delete')"
+            >
                 <el-icon><Delete /></el-icon> 批量删除
             </el-button>
             <el-button @click="goToLog" v-if="routerStore.hasPermission('job:query')">
@@ -58,10 +67,34 @@
             >
                 <el-table-column type="selection" width="55" align="center" />
                 <el-table-column label="ID" prop="id" width="90" align="center" />
-                <el-table-column label="任务名称" prop="jobName" min-width="120" align="center" show-overflow-tooltip />
-                <el-table-column label="任务分组" prop="jobGroup" min-width="100" align="center" show-overflow-tooltip />
-                <el-table-column label="调用目标" prop="invokeTarget" min-width="180" align="center" show-overflow-tooltip />
-                <el-table-column label="Cron" prop="cronExpression" min-width="120" align="center" show-overflow-tooltip />
+                <el-table-column
+                    label="任务名称"
+                    prop="jobName"
+                    min-width="120"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="任务分组"
+                    prop="jobGroup"
+                    min-width="100"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="调用目标"
+                    prop="invokeTarget"
+                    min-width="180"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="Cron"
+                    prop="cronExpression"
+                    min-width="120"
+                    align="center"
+                    show-overflow-tooltip
+                />
                 <el-table-column label="并发" prop="concurrent" width="80" align="center">
                     <template #default="{ row }">
                         <el-tag :type="row.concurrent === 0 ? 'success' : 'info'">
@@ -82,16 +115,37 @@
                         />
                     </template>
                 </el-table-column>
-                <el-table-column label="创建时间" prop="createTime" min-width="160" align="center" show-overflow-tooltip />
+                <el-table-column
+                    label="创建时间"
+                    prop="createTime"
+                    min-width="160"
+                    align="center"
+                    show-overflow-tooltip
+                />
                 <el-table-column label="操作" width="240" align="center" fixed="right">
                     <template #default="{ row }">
-                        <el-button type="primary" link @click="handleEdit(row)" v-if="routerStore.hasPermission('job:update')">
+                        <el-button
+                            type="primary"
+                            link
+                            @click="handleEdit(row)"
+                            v-if="routerStore.hasPermission('job:update')"
+                        >
                             <el-icon><Edit /></el-icon> 编辑
                         </el-button>
-                        <el-button type="success" link @click="handleRun(row)" v-if="routerStore.hasPermission('job:update')">
+                        <el-button
+                            type="success"
+                            link
+                            @click="handleRun(row)"
+                            v-if="routerStore.hasPermission('job:update')"
+                        >
                             <el-icon><VideoPlay /></el-icon> 执行
                         </el-button>
-                        <el-button type="danger" link @click="handleDelete(row)" v-if="routerStore.hasPermission('job:delete')">
+                        <el-button
+                            type="danger"
+                            link
+                            @click="handleDelete(row)"
+                            v-if="routerStore.hasPermission('job:delete')"
+                        >
                             <el-icon><Delete /></el-icon> 删除
                         </el-button>
                     </template>
@@ -112,7 +166,13 @@
         </el-card>
 
         <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" @close="resetForm">
-            <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" style="padding-right: 60px">
+            <el-form
+                ref="formRef"
+                :model="formData"
+                :rules="formRules"
+                label-width="100px"
+                style="padding-right: 60px"
+            >
                 <el-form-item label="任务名称" prop="jobName">
                     <el-input v-model="formData.jobName" placeholder="请输入任务名称" />
                 </el-form-item>
@@ -120,13 +180,20 @@
                     <el-input v-model="formData.jobGroup" placeholder="默认 DEFAULT" />
                 </el-form-item>
                 <el-form-item label="调用目标" prop="invokeTarget">
-                    <el-input v-model="formData.invokeTarget" placeholder="类名#方法名，如 com.xxx.DemoJob#execute" />
+                    <el-input
+                        v-model="formData.invokeTarget"
+                        placeholder="类名#方法名，如 com.xxx.DemoJob#execute"
+                    />
                 </el-form-item>
                 <el-form-item label="Cron" prop="cronExpression">
                     <el-input v-model="formData.cronExpression" placeholder="如 0 0 * * * ?" />
                 </el-form-item>
                 <el-form-item label="错过策略" prop="misfirePolicy">
-                    <el-select v-model="formData.misfirePolicy" placeholder="请选择错过策略" style="width: 100%">
+                    <el-select
+                        v-model="formData.misfirePolicy"
+                        placeholder="请选择错过策略"
+                        style="width: 100%"
+                    >
                         <el-option label="立即执行" :value="1" />
                         <el-option label="执行一次" :value="2" />
                         <el-option label="放弃执行" :value="3" />
@@ -150,7 +217,9 @@
             </el-form>
             <template #footer>
                 <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="handleSubmit"
+                    >确定</el-button
+                >
             </template>
         </el-dialog>
     </div>

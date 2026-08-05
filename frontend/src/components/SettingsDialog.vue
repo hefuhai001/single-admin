@@ -66,5 +66,4 @@ function toggleTheme(value) {
     }
     ElMessage.success(`已切换到${themeStore.isDark ? '暗色' : '亮色'}模式`)
 }
-
 </script>
