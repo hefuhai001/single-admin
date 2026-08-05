@@ -1,5 +1,6 @@
 package com.hfh.api.modules.system.controller;
 
+import com.hfh.api.modules.system.annotation.RefreshDictCache;
 import com.hfh.api.modules.system.entity.DictTypeEntity;
 import com.hfh.api.modules.system.service.DictTypeService;
 import com.hfh.api.base.BaseController;
@@ -75,6 +76,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("dictType:add")
     @PostMapping
     @Operation(summary = "新增")
+    @RefreshDictCache
     public SaResult saveDictType(@RequestBody DictTypeEntity entity) {
         boolean success = dictTypeService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
@@ -86,6 +88,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("dictType:update")
     @PutMapping
     @Operation(summary = "更新")
+    @RefreshDictCache
     public SaResult updateDictType(@RequestBody DictTypeEntity entity) {
         boolean success = dictTypeService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
@@ -97,6 +100,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("dictType:delete")
     @DeleteMapping("/{id}")
     @Operation(summary = "删除")
+    @RefreshDictCache
     public SaResult deleteDictType(@PathVariable("id") Long id) {
         boolean success = dictTypeService.removeById(id);
         return success ? SaResult.ok("删除成功") : SaResult.error("删除失败");
@@ -108,6 +112,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("dictType:delete")
     @DeleteMapping("/batch")
     @Operation(summary = "批量删除")
+    @RefreshDictCache
     public SaResult deleteDictTypeBatch(@RequestBody java.util.List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return SaResult.error("请选择要删除的数据");

@@ -1,5 +1,6 @@
 package com.hfh.api.modules.system.controller;
 
+import com.hfh.api.modules.system.annotation.RefreshDictCache;
 import com.hfh.api.modules.system.entity.DictDataEntity;
 import com.hfh.api.modules.system.service.DictDataService;
 import com.hfh.api.base.BaseController;
@@ -13,6 +14,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+/**
+ * 字典数据 Controller
+ * <p>
+ * 查询接口返回值中的对象字段只要标注了 {@link com.hfh.api.modules.system.annotation.DictMapping}，
+ * 会由 {@link com.hfh.api.modules.system.aspect.DictMappingAspect} 自动进行字典映射翻译。
+ * 增删改接口标注了 {@link RefreshDictCache}，执行成功后会自动刷新 Redis 字典缓存。
+ * </p>
+ */
 @RestController(value = "dictDataEntityController")
 @RequestMapping("/dict/dict-data")
 @RequiredArgsConstructor
@@ -45,6 +56,17 @@ public class DictDataController extends BaseController {
         QueryWrapper<DictDataEntity> wrapper = new QueryWrapper<>();
         wrapper.orderByAsc("id");
         return SaResult.data(dictDataService.list(wrapper));
+    }
+
+    /**
+     * 根据字典类型从 Redis 缓存查询
+     */
+    @SaCheckPermission("dictData:query")
+    @GetMapping("/cache/{dictType}")
+    @Operation(summary = "根据字典类型从缓存查询")
+    public SaResult listDictDataByType(@PathVariable("dictType") String dictType) {
+        List<DictDataEntity> list = dictDataService.listByDictType(dictType);
+        return SaResult.data(list);
     }
 
     /**
@@ -83,6 +105,7 @@ public class DictDataController extends BaseController {
     @SaCheckPermission("dictData:add")
     @PostMapping
     @Operation(summary = "新增")
+    @RefreshDictCache
     public SaResult saveDictData(@RequestBody DictDataEntity entity) {
         boolean success = dictDataService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
@@ -94,6 +117,7 @@ public class DictDataController extends BaseController {
     @SaCheckPermission("dictData:update")
     @PutMapping
     @Operation(summary = "更新")
+    @RefreshDictCache
     public SaResult updateDictData(@RequestBody DictDataEntity entity) {
         boolean success = dictDataService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
@@ -105,6 +129,7 @@ public class DictDataController extends BaseController {
     @SaCheckPermission("dictData:delete")
     @DeleteMapping("/{id}")
     @Operation(summary = "删除")
+    @RefreshDictCache
     public SaResult deleteDictData(@PathVariable("id") Long id) {
         boolean success = dictDataService.removeById(id);
         return success ? SaResult.ok("删除成功") : SaResult.error("删除失败");
@@ -116,6 +141,7 @@ public class DictDataController extends BaseController {
     @SaCheckPermission("dictData:delete")
     @DeleteMapping("/batch")
     @Operation(summary = "批量删除")
+    @RefreshDictCache
     public SaResult deleteDictDataBatch(@RequestBody java.util.List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return SaResult.error("请选择要删除的数据");

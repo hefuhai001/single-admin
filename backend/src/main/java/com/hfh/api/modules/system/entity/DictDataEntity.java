@@ -1,5 +1,6 @@
 package com.hfh.api.modules.system.entity;
 
+import com.hfh.api.modules.system.annotation.DictMapping;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -54,8 +55,15 @@ public class DictDataEntity implements Serializable {
     /**
      * 状态
      */
+    @DictMapping(dictType = "status", labelField = "statusLabel")
     @TableField("status")
     private Boolean status;
+
+    /**
+     * 状态标签（字典翻译，不持久化）
+     */
+    @TableField(exist = false)
+    private String statusLabel;
 
     /**
      * 是否默认值
