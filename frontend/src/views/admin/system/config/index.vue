@@ -35,12 +35,19 @@
                     />
                 </el-form-item>
                 <el-form-item label="配置类型">
-                    <el-input
+                    <el-select
                         v-model="queryParams.configType"
-                        placeholder="请输入配置类型（string/integer/boolean/array/json）"
+                        placeholder="请选择配置类型"
                         clearable
                         @keyup.enter="handleQuery"
-                    />
+                    >
+                        <el-option
+                            v-for="item in configTypeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="备注说明">
                     <el-input
@@ -255,10 +262,14 @@
                     />
                 </el-form-item>
                 <el-form-item label="配置类型" prop="configType">
-                    <el-input
-                        v-model="formData.configType"
-                        placeholder="请输入配置类型（string/integer/boolean/array/json）"
-                    />
+                    <el-select v-model="formData.configType" placeholder="请选择配置类型">
+                        <el-option
+                            v-for="item in configTypeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="是否内置" prop="isSystem">
                     <el-radio-group v-model="formData.isSystem">
@@ -343,6 +354,14 @@ const formData = reactive({
     createTime: undefined,
     updateTime: undefined,
 })
+
+const configTypeOptions = [
+    { label: '字符串', value: 'string' },
+    { label: '整数', value: 'integer' },
+    { label: '布尔', value: 'boolean' },
+    { label: '数组', value: 'array' },
+    { label: 'JSON', value: 'json' },
+]
 
 const formRules = {
     configKey: [
