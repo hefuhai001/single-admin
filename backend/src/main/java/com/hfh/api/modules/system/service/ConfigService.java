@@ -3,6 +3,9 @@ package com.hfh.api.modules.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hfh.api.modules.system.entity.ConfigEntity;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 /**
  * 系统配置服务接口
  * <p>
@@ -49,4 +52,12 @@ public interface ConfigService extends IService<ConfigEntity> {
      * @return 配置对象
      */
     ConfigEntity getConfigByKey(String configKey);
+
+    /**
+     * 根据 ID 批量删除配置，删除成功后刷新缓存
+     *
+     * @param idList ID 集合
+     * @return 是否成功
+     */
+    boolean deleteByIds(Collection<? extends Serializable> idList);
 }

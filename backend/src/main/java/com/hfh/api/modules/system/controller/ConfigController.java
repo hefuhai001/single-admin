@@ -120,7 +120,7 @@ public class ConfigController extends BaseController {
         if (ids == null || ids.isEmpty()) {
             return SaResult.error("请选择要删除的数据");
         }
-        boolean success = configService.removeByIds(ids);
+        boolean success = configService.deleteByIds(ids);
         return success ? SaResult.ok("批量删除成功") : SaResult.error("批量删除失败");
     }
 }
