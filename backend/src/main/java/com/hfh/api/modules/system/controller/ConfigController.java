@@ -38,7 +38,6 @@ public class ConfigController extends BaseController {
     /**
      * 查询所有系统配置表
      */
-    @SaCheckPermission("config:query")
     @GetMapping("/list")
     @Operation(summary = "查询所有系统配置表")
     public SaResult listConfig() {
