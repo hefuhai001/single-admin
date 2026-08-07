@@ -5,6 +5,11 @@ export const staticRoutes = [
         component: () => import('@/views/login/index.vue'),
     },
     {
+        path: '/register',
+        name: 'register',
+        component: () => import('@/views/register/index.vue'),
+    },
+    {
         path: '/admin',
         name: 'admin',
         component: () => import('@/views/admin/layout/index.vue'),

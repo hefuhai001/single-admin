@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     NProgress.start()
 
     // 1. 白名单直接放行
-    const whiteList = ['/', '/auth', '/404']
+    const whiteList = ['/', '/register', '/auth', '/404']
     if (whiteList.includes(to.path) || to.name === 'auth') {
         return next()
     }

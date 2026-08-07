@@ -61,3 +61,12 @@ export function emailCode(email) {
 export function profile() {
     return request.get(`/auth/profile`)
 }
+
+/**
+ * register
+ * @param {object} data
+ * @returns
+ */
+export function register(data) {
+    return request.post(`/auth/register`, data)
+}

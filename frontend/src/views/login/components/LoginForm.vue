@@ -50,23 +50,34 @@
 
             <div class="form-footer">
                 <p>&copy; 2024 Single Admin Base. All rights reserved.</p>
+                <p v-if="registerEnabled" class="register-link">
+                    还没有账户？
+                    <el-button type="primary" link @click="handleGoRegister">
+                        立即注册
+                    </el-button>
+                </p>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useConfigStore } from '@/stores/modules/config.js'
 
-defineProps({
+const props = defineProps({
     loading: {
         type: Boolean,
         default: false,
     },
 })
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'go-register'])
+
+const configStore = useConfigStore()
+
+const registerEnabled = computed(() => configStore.isEnabled('register.enable'))
 
 const loginFormRef = ref()
 
@@ -93,6 +104,10 @@ const handleLogin = async () => {
         return false
     }
     emit('submit', { ...loginForm })
+}
+
+const handleGoRegister = () => {
+    emit('go-register')
 }
 </script>
 
@@ -209,6 +224,11 @@ const handleLogin = async () => {
     text-align: center;
     font-size: 0.8rem;
     color: #cbd5e1;
+}
+
+.register-link {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
 }
 
 .dark .form-footer {

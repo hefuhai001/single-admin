@@ -4,7 +4,7 @@
 
         <div class="login-card">
             <BrandSide />
-            <LoginForm :loading="loading" @submit="handleLogin" />
+            <LoginForm :loading="loading" @submit="handleLogin" @go-register="goToRegister" />
         </div>
     </div>
 </template>
@@ -32,6 +32,10 @@ const handleLogin = async (formData) => {
     } finally {
         loading.value = false
     }
+}
+
+const goToRegister = () => {
+    router.push('/register')
 }
 </script>
 
