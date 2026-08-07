@@ -30,7 +30,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                             "/swagger-resources/configuration/security",
                             "/favicon.ico"
                     )
-                    .notMatch("/auth/login", "/auth/refresh", "/system/config/list")
+                    .notMatch("/auth/login", "/auth/refresh", "/auth/register", "/system/config/list", "/captcha/**")
                     // 3. 其余接口必须登录
                     .check(r -> StpUtil.checkLogin());
         })).addPathPatterns("/**");

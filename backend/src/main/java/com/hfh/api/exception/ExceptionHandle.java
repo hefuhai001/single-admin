@@ -108,6 +108,13 @@ public class ExceptionHandle {
         );
     }
 
+    // 业务异常（用户可感知的校验失败，如滑块验证失败）
+    @ExceptionHandler(BusinessException.class)
+    public SaResult handleBusinessException(BusinessException e) {
+        log.warn("业务异常: {}", e.getMessage());
+        return SaResult.code(e.getCode()).setMsg(e.getMessage());
+    }
+
     // 系统异常
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {

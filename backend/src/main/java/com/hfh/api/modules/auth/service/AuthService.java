@@ -5,11 +5,14 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hfh.api.exception.BusinessException;
 import com.hfh.api.modules.auth.dto.RegisterDTO;
 import com.hfh.api.modules.system.entity.ConfigEntity;
+import com.hfh.api.modules.system.entity.InstitutionsEntity;
 import com.hfh.api.modules.system.entity.RoleEntity;
 import com.hfh.api.modules.system.entity.UserEntity;
 import com.hfh.api.modules.system.entity.UserRoleEntity;
+import com.hfh.api.modules.system.mapper.InstitutionsMapper;
 import com.hfh.api.modules.system.mapper.RoleMapper;
 import com.hfh.api.modules.system.mapper.UserMapper;
 import com.hfh.api.modules.system.mapper.UserRoleMapper;
@@ -42,7 +45,9 @@ public class AuthService {
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
+    private final InstitutionsMapper institutionsMapper;
     private final ConfigService configService;
+    private final CaptchaService captchaService;
 
     /**
      * 用户登录（双 token 模式）
@@ -56,7 +61,7 @@ public class AuthService {
                 new QueryWrapper<UserEntity>().eq("username", username)
         );
         if (user == null || !PASSWORD_ENCODER.matches(password, user.getPassword())) {
-            throw new RuntimeException("用户名或密码错误");
+            throw new BusinessException("用户名或密码错误");
         }
         // 登录生成 accessToken
         StpUtil.login(user.getId());
@@ -89,17 +94,17 @@ public class AuthService {
         // 校验 refreshToken 是否有效
         Object loginId = StpUtil.getLoginIdByToken(refreshToken);
         if (loginId == null) {
-            throw new RuntimeException("refreshToken 已失效，请重新登录");
+            throw new BusinessException("refreshToken 已失效，请重新登录");
         }
 
         // 校验该 token 是否为 session 中登记的 refreshToken，防止 accessToken 被冒用
         SaSession session = StpUtil.getSessionByLoginId(loginId, false);
         if (session == null) {
-            throw new RuntimeException("refreshToken 已失效，请重新登录");
+            throw new BusinessException("refreshToken 已失效，请重新登录");
         }
         String storedRefreshToken = session.getString(REFRESH_TOKEN_SESSION_KEY);
         if (!refreshToken.equals(storedRefreshToken)) {
-            throw new RuntimeException("无效的 refreshToken");
+            throw new BusinessException("无效的 refreshToken");
         }
 
         // 作废旧 refreshToken
@@ -128,19 +133,19 @@ public class AuthService {
      * 用户注册
      *
      * @param dto 注册信息
-     * @return 注册成功后的用户信息
+     * @return 注册成功后的用户信息 + 双 token
      */
     @Transactional(rollbackFor = Exception.class)
-    public UserEntity register(RegisterDTO dto) {
+    public Map<String, Object> register(RegisterDTO dto) {
         // 1. 校验注册功能是否开启
         ConfigEntity registerEnableConfig = configService.getConfigByKey("register.enable");
         if (registerEnableConfig == null || !"true".equalsIgnoreCase(registerEnableConfig.getConfigValue())) {
-            throw new RuntimeException("注册功能已关闭");
+            throw new BusinessException("注册功能已关闭");
         }
 
         // 2. 校验两次密码是否一致
         if (!Objects.equals(dto.getPassword(), dto.getConfirmPassword())) {
-            throw new RuntimeException("两次输入的密码不一致");
+            throw new BusinessException("两次输入的密码不一致");
         }
 
         // 3. 校验用户名是否已存在
@@ -148,7 +153,7 @@ public class AuthService {
                 new QueryWrapper<UserEntity>().eq("username", dto.getUsername())
         );
         if (existUser != null) {
-            throw new RuntimeException("用户名已存在");
+            throw new BusinessException("用户名已存在");
         }
 
         // 4. 校验邮箱是否已存在
@@ -157,11 +162,23 @@ public class AuthService {
                     new QueryWrapper<UserEntity>().eq("email", dto.getEmail())
             );
             if (existEmailUser != null) {
-                throw new RuntimeException("邮箱已被注册");
+                throw new BusinessException("邮箱已被注册");
             }
         }
 
-        // 5. 保存用户信息
+        // 5. 校验邮箱验证码
+        ConfigEntity verifyCodeConfig = configService.getConfigByKey("register.verify_code.enable");
+        if (verifyCodeConfig != null && "true".equalsIgnoreCase(verifyCodeConfig.getConfigValue())) {
+            if (dto.getVerifyCode() == null || dto.getVerifyCode().isEmpty()) {
+                throw new BusinessException("邮箱验证码不能为空");
+            }
+            boolean codeValid = captchaService.verifyEmailCode(dto.getEmail(), dto.getVerifyCode());
+            if (!codeValid) {
+                throw new BusinessException("邮箱验证码错误或已过期");
+            }
+        }
+
+        // 6. 保存用户信息
         UserEntity user = new UserEntity();
         user.setUsername(dto.getUsername());
         user.setPassword(PASSWORD_ENCODER.encode(dto.getPassword()));
@@ -171,10 +188,22 @@ public class AuthService {
         user.setStatus(1);
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
+
+        // 7. 分配默认机构
+        String defaultInstitutionCode = configService.getConfigValue("register.default_institution", "main");
+        if (defaultInstitutionCode != null && !defaultInstitutionCode.isEmpty()) {
+            InstitutionsEntity defaultInstitution = institutionsMapper.selectOne(
+                    new QueryWrapper<InstitutionsEntity>().eq("institution_code", defaultInstitutionCode)
+            );
+            if (defaultInstitution != null) {
+                user.setInstitutionId(defaultInstitution.getId());
+            }
+        }
+
         userMapper.insert(user);
 
-        // 6. 分配默认角色
-        String defaultRoleCode = configService.getConfigValue("register.default_role", "user");
+        // 8. 分配默认角色
+        String defaultRoleCode = configService.getConfigValue("register.default_role", "common_user");
         RoleEntity defaultRole = roleMapper.selectOne(
                 new QueryWrapper<RoleEntity>().eq("role_code", defaultRoleCode)
         );
@@ -187,9 +216,25 @@ public class AuthService {
             userRoleMapper.insert(userRole);
         }
 
-        // 7. 注册成功后直接登录
+        // 9. 注册成功后直接登录并生成双 token
         StpUtil.login(user.getId());
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 
-        return user;
+        // 10. 生成 refreshToken
+        StpUtil.login(user.getId(), new SaLoginModel()
+                .setDevice("refresh")
+                .setTimeout(REFRESH_TOKEN_TIMEOUT));
+        String refreshTokenValue = StpUtil.getTokenValue();
+
+        // 11. 将 refreshToken 存入用户 session
+        SaSession session = StpUtil.getSessionByLoginId(user.getId(), true);
+        session.set(REFRESH_TOKEN_SESSION_KEY, refreshTokenValue);
+
+        // 12. 返回用户信息 + token
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", user);
+        data.put("accessToken", tokenInfo.getTokenValue());
+        data.put("refreshToken", refreshTokenValue);
+        return data;
     }
 }

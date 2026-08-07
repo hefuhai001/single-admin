@@ -33,6 +33,25 @@ export const useAuthStore = defineStore(
             }
         }
 
+        async function register(registerData) {
+            try {
+                const res = await api.auth.register(registerData)
+                if (res.data && res.data.data) {
+                    const data = res.data.data
+                    // 注册成功后后端直接登录，返回双 token
+                    token.value = data.accessToken
+                    refreshToken.value = data.refreshToken
+                    ElMessage.success('注册成功')
+                    await getProfile()
+                    return true
+                }
+                return false
+            } catch (error) {
+                console.error('注册失败:', error)
+                throw error
+            }
+        }
+
         async function logout() {
             try {
                 await api.auth.logout()
@@ -77,6 +96,7 @@ export const useAuthStore = defineStore(
             refreshToken,
             userInfo,
             login,
+            register,
             logout,
             getUserInfo,
             clearAuth,

@@ -1,17 +1,22 @@
 import { reactive, ref, computed } from 'vue'
-import { ElMessage } from 'element-plus'
 import api from '@/api/index.js'
+import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/modules/config.js'
+import { useAuthStore } from '@/stores/modules/auth.js'
 
 /**
  * 注册表单逻辑
  */
 export function useRegisterForm() {
     const configStore = useConfigStore()
+    const authStore = useAuthStore()
     const loading = ref(false)
 
     // 是否开启注册
     const registerEnabled = computed(() => configStore.isEnabled('register.enable'))
+
+    // 是否开启验证码
+    const verifyCodeEnabled = computed(() => configStore.isEnabled('register.verify_code.enable'))
 
     const registerFormRef = ref()
     const registerForm = reactive({
@@ -68,14 +73,32 @@ export function useRegisterForm() {
         codeCountdown.value > 0 ? `${codeCountdown.value}秒后重试` : '获取验证码',
     )
 
-    const sendEmailCode = async () => {
+    const captchaVisible = ref(false)
+    const pendingCaptchaToken = ref('')
+
+    // 打开滑块验证弹窗
+    const openCaptcha = () => {
         if (!registerForm.email) {
             ElMessage.warning('请先填写邮箱')
-            return
+            return false
         }
+        captchaVisible.value = true
+        return true
+    }
+
+    // 滑块验证成功后发送邮箱验证码
+    const handleCaptchaSuccess = async (captchaToken) => {
+        pendingCaptchaToken.value = captchaToken
+        await sendEmailCode(captchaToken)
+    }
+
+    const sendEmailCode = async (captchaToken) => {
         codeLoading.value = true
         try {
-            await api.auth.emailCode(registerForm.email)
+            await api.captcha.sendEmailCode({
+                email: registerForm.email,
+                captchaToken: captchaToken,
+            })
             ElMessage.success('验证码已发送')
             codeCountdown.value = 60
             const timer = setInterval(() => {
@@ -85,7 +108,7 @@ export function useRegisterForm() {
                 }
             }, 1000)
         } catch (error) {
-            ElMessage.error('验证码发送失败',error)
+            ElMessage.error(error?.response?.data?.msg || '验证码发送失败')
         } finally {
             codeLoading.value = false
         }
@@ -105,13 +128,8 @@ export function useRegisterForm() {
 
         loading.value = true
         try {
-            const { data } = await api.auth.register(registerForm)
-            if (data && data.code === 200) {
-                ElMessage.success('注册成功')
-                return true
-            }
-            ElMessage.error(data?.msg || '注册失败')
-            return false
+            const success = await authStore.register(registerForm)
+            return success
         } catch (error) {
             ElMessage.error(error?.response?.data?.msg || '注册失败')
             return false
@@ -126,9 +144,13 @@ export function useRegisterForm() {
         registerRules,
         loading,
         registerEnabled,
+        verifyCodeEnabled,
         codeLoading,
         codeCountdown,
         codeButtonText,
+        captchaVisible,
+        openCaptcha,
+        handleCaptchaSuccess,
         sendEmailCode,
         submitRegister,
     }

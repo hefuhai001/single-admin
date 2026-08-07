@@ -11,7 +11,7 @@
  Target Server Version : 80045 (8.0.45)
  File Encoding         : 65001
 
- Date: 08/08/2026 00:05:22
+ Date: 08/08/2026 02:16:28
 */
 
 SET NAMES utf8mb4;
@@ -100,7 +100,7 @@ CREATE TABLE `sys_config`  (
   UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE,
   INDEX `idx_config_group`(`config_group` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_config
@@ -108,24 +108,25 @@ CREATE TABLE `sys_config`  (
 INSERT INTO `sys_config` VALUES (1, 'register.enable', 'true', '是否开启注册', 'system', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (2, 'register.verify_code.enable', 'true', '注册是否需要验证码', 'system', 'boolean', 1, 1, 'true-需要，false-不需要', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (3, 'register.default_role', 'user', '注册默认角色', 'system', 'string', 1, 1, 'user-普通用户，vip-会员用户', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (4, 'register.whitelist.enable', 'false', '是否开启客户端', 'system', 'boolean', 0, 1, '开启后登录跳转到客户端', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (5, 'email.verify.enable', 'true', '是否开启邮箱验证', 'email', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (6, 'email.smtp.host', 'smtp.qq.com', 'SMTP服务器地址', 'email', 'string', 1, 1, 'QQ邮箱SMTP服务器', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (7, 'email.smtp.port', '465', 'SMTP端口', 'email', 'integer', 1, 1, 'SSL端口465，TLS端口587', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (8, 'email.sender', 'your_email@qq.com', '发件人邮箱', 'email', 'string', 1, 1, '发送邮件的邮箱地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (9, 'email.sender.password', 'your_auth_code', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (10, 'email.verify.expire', '300', '验证码有效期（秒）', 'email', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (11, 'login.max_attempts', '5', '登录最大尝试次数', 'login', 'integer', 1, 1, '超过锁定账号', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (12, 'login.lock_duration', '1800', '账号锁定时长（秒）', 'login', 'integer', 1, 1, '默认30分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (13, 'login.single_device', 'true', '是否单设备登录', 'login', 'boolean', 0, 1, 'true-挤掉旧设备，false-允许多设备', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (14, 'sms.enable', 'false', '是否开启短信功能', 'sms', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (15, 'sms.provider', 'aliyun', '短信服务商', 'sms', 'string', 0, 1, 'aliyun-阿里云，tencent-腾讯云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (16, 'sms.sign_name', '通用后台', '短信签名', 'sms', 'string', 0, 1, '短信签名内容', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (17, 'oss.enable', 'false', '是否开启OSS存储', 'oss', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (18, 'oss.provider', 'aliyun', 'OSS服务商', 'oss', 'string', 0, 1, 'aliyun-阿里云，qiniu-七牛云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (19, 'oss.bucket_name', 'my-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (20, 'oss.upload_path', '/uploads', '上传路径前缀', 'oss', 'string', 0, 1, '文件存储路径', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (21, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (4, 'register.default_institution', 'main', '注册默认机构', 'system', 'string', 1, 1, '', '2026-08-05 23:31:49', '2026-08-08 02:06:37');
+INSERT INTO `sys_config` VALUES (5, 'register.whitelist.enable', 'false', '是否开启客户端', 'system', 'boolean', 0, 1, '开启后登录跳转到客户端', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (6, 'email.verify.enable', 'true', '是否开启邮箱验证', 'email', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (7, 'email.smtp.host', 'smtp.qq.com', 'SMTP服务器地址', 'email', 'string', 1, 1, 'QQ邮箱SMTP服务器', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (8, 'email.smtp.port', '465', 'SMTP端口', 'email', 'integer', 1, 1, 'SSL端口465，TLS端口587', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (9, 'email.sender', 'your_email@qq.com', '发件人邮箱', 'email', 'string', 1, 1, '发送邮件的邮箱地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (10, 'email.sender.password', 'your_auth_code', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (11, 'email.verify.expire', '300', '验证码有效期（秒）', 'email', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (12, 'login.max_attempts', '5', '登录最大尝试次数', 'login', 'integer', 1, 1, '超过锁定账号', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (13, 'login.lock_duration', '1800', '账号锁定时长（秒）', 'login', 'integer', 1, 1, '默认30分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (14, 'login.single_device', 'true', '是否单设备登录', 'login', 'boolean', 0, 1, 'true-挤掉旧设备，false-允许多设备', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (15, 'sms.enable', 'false', '是否开启短信功能', 'sms', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (16, 'sms.provider', 'aliyun', '短信服务商', 'sms', 'string', 0, 1, 'aliyun-阿里云，tencent-腾讯云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (17, 'sms.sign_name', '通用后台', '短信签名', 'sms', 'string', 0, 1, '短信签名内容', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (18, 'oss.enable', 'false', '是否开启OSS存储', 'oss', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (19, 'oss.provider', 'aliyun', 'OSS服务商', 'oss', 'string', 0, 1, 'aliyun-阿里云，qiniu-七牛云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (20, 'oss.bucket_name', 'my-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (21, 'oss.upload_path', '/uploads', '上传路径前缀', 'oss', 'string', 0, 1, '文件存储路径', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (22, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -207,9 +208,9 @@ CREATE TABLE `sys_institutions`  (
 -- ----------------------------
 -- Records of sys_institutions
 -- ----------------------------
-INSERT INTO `sys_institutions` VALUES (1, NULL, 'main', '南昌二附医院', 1, 1, '2026-04-18 18:58:26', '2026-04-18 19:02:52');
-INSERT INTO `sys_institutions` VALUES (2, 1, 'ncrm', '南昌人民医院', 1, 1, '2026-04-18 18:58:52', '2026-04-18 18:58:56');
-INSERT INTO `sys_institutions` VALUES (3, 1, 'ncfs', '南昌附属医院', 1, 1, '2026-04-18 18:58:52', '2026-04-18 18:58:56');
+INSERT INTO `sys_institutions` VALUES (1, NULL, 'main', '深圳总公司', 1, 1, '2026-04-18 18:58:26', '2026-08-08 02:14:18');
+INSERT INTO `sys_institutions` VALUES (2, 1, 'nc', '南昌分公司', 1, 1, '2026-04-18 18:58:52', '2026-08-08 02:14:23');
+INSERT INTO `sys_institutions` VALUES (3, 1, 'cs', '长沙分公司', 1, 1, '2026-04-18 18:58:52', '2026-08-08 02:14:28');
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -324,8 +325,8 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'super_admin', '拥有所有权限', 1, '2026-04-14 01:02:28', '2026-04-14 01:02:28');
-INSERT INTO `sys_role` VALUES (2, '填报人员', 'common_user', '普通用户权限', 1, '2026-04-14 01:02:28', '2026-05-14 01:57:24');
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', '拥有所有权限', 1, '2026-04-14 01:02:28', '2026-08-08 01:57:06');
+INSERT INTO `sys_role` VALUES (2, '填报人员', 'user', '普通用户权限', 1, '2026-04-14 01:02:28', '2026-08-08 01:56:57');
 INSERT INTO `sys_role` VALUES (3, '访客', 'guest', '访客权限', 1, '2026-04-14 01:02:28', '2026-04-14 01:02:28');
 
 -- ----------------------------
@@ -459,14 +460,15 @@ CREATE TABLE `sys_user`  (
   UNIQUE INDEX `username`(`username` ASC) USING BTREE,
   INDEX `sys_user_sys_institutions_id_fk`(`institution_id` ASC) USING BTREE,
   CONSTRAINT `sys_user_sys_institutions_id_fk` FOREIGN KEY (`institution_id`) REFERENCES `sys_institutions` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 1, 'admin', '123456', '管理员', 'admin@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-04-18 19:00:25');
-INSERT INTO `sys_user` VALUES (2, 2, 'usr', '123456', '张三', 'zhang@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-04-19 04:17:46');
-INSERT INTO `sys_user` VALUES (3, 2, 'tut', '123456', '李四', 'li@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-04-19 04:17:53');
+INSERT INTO `sys_user` VALUES (1, 1, 'admin', '$2a$10$rhfpPO4hfp01DkWG1IKq7OErtdBUvG8v/FBcgzfCTPhFLj7RtPgX.', '管理员', 'admin@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
+INSERT INTO `sys_user` VALUES (2, 2, 'usr', '$2a$10$DXoObZRO97Iyx8d/VXi3L.tLsMrwzGVlIsPEWPHZbn4KRSqZFs4Nu', '张三', 'zhang@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
+INSERT INTO `sys_user` VALUES (3, 2, 'tut', '$2a$10$rxqD4vasYuljMe4H.eSEoeb/zBtZbslMdgznGc0WVtlq9F7qSPjRO', '李四', 'li@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
+INSERT INTO `sys_user` VALUES (6, 1, 'hfh', '$2a$10$ownnOJpdIp11xCoSxxURsuF9nFJ1oL.Ccu11QdSY3BxoqP26m8P86', 'hfh', '2109664977@qq.com', '', 1, '2026-08-08 02:15:48', '2026-08-08 02:15:48');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -486,6 +488,7 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES (1, 1, '2026-04-14 01:02:28', '2026-04-14 01:02:28');
 INSERT INTO `sys_user_role` VALUES (2, 2, '2026-04-19 04:17:46', '2026-04-19 04:17:46');
 INSERT INTO `sys_user_role` VALUES (3, 3, '2026-04-19 04:17:53', '2026-04-19 04:17:53');
+INSERT INTO `sys_user_role` VALUES (6, 2, '2026-08-08 02:15:48', '2026-08-08 02:15:48');
 
 -- ----------------------------
 -- Table structure for task_job

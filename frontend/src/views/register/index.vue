@@ -63,7 +63,7 @@
                             size="large"
                             :disabled="codeCountdown > 0 || !registerForm.email"
                             :loading="codeLoading"
-                            @click="sendEmailCode"
+                            @click="handleSendCode"
                         >
                             {{ codeButtonText }}
                         </el-button>
@@ -121,6 +121,8 @@
                     <el-button type="primary" link @click="goToLogin">去登录</el-button>
                 </p>
             </div>
+
+            <SliderCaptcha v-model="captchaVisible" @success="handleCaptchaSuccess" />
         </div>
     </div>
 </template>
@@ -133,6 +135,7 @@ import { useConfigStore } from '@/stores/modules/config.js'
 import { useAuthStore } from '@/stores/modules/auth.js'
 import { useRegisterForm } from '@/composables/useRegister.js'
 import GeoBackground from '@/views/login/components/GeoBackground.vue'
+import SliderCaptcha from '@/views/register/components/SliderCaptcha.vue'
 
 const router = useRouter()
 const configStore = useConfigStore()
@@ -147,12 +150,22 @@ const {
     codeLoading,
     codeCountdown,
     codeButtonText,
-    sendEmailCode,
+    captchaVisible,
+    openCaptcha,
+    handleCaptchaSuccess,
     submitRegister,
 } = useRegisterForm()
 
 // 是否开启验证码
 const verifyCodeEnabled = computed(() => configStore.isEnabled('register.verify_code.enable'))
+
+const handleSendCode = () => {
+    if (!registerForm.email) {
+        ElMessage.warning('请先填写邮箱')
+        return
+    }
+    openCaptcha()
+}
 
 const handleRegister = async () => {
     if (!registerEnabled.value) {

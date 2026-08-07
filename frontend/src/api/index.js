@@ -8,6 +8,7 @@ import * as auth from '@/api/modules/auth.js'
 import * as dictType from '@/api/modules/dictType'
 import * as dictData from '@/api/modules/dictData'
 import * as config from '@/api/modules/config.js'
+import * as captcha from '@/api/modules/captcha.js'
 
 import * as minio from '@/api/modules/minio.js'
 
@@ -25,6 +26,7 @@ const api = {
     dictType,
     dictData,
     config,
+    captcha,
 
     minio,
 
