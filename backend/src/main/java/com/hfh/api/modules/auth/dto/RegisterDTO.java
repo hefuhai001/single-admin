@@ -1,4 +1,4 @@
-package com.hfh.api.modules;
+package com.hfh.api.modules.auth.dto;
 
 import lombok.Data;
 
