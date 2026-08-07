@@ -15,6 +15,7 @@ import com.hfh.api.modules.system.mapper.UserMapper;
 import com.hfh.api.modules.system.mapper.UserRoleMapper;
 import com.hfh.api.modules.system.service.ConfigService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,8 @@ public class AuthService {
     /** session 中存储 refreshToken 的 key */
     private static final String REFRESH_TOKEN_SESSION_KEY = "refreshToken";
 
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
@@ -52,7 +55,7 @@ public class AuthService {
         UserEntity user = userMapper.selectOne(
                 new QueryWrapper<UserEntity>().eq("username", username)
         );
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !PASSWORD_ENCODER.matches(password, user.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
         }
         // 登录生成 accessToken
@@ -161,7 +164,7 @@ public class AuthService {
         // 5. 保存用户信息
         UserEntity user = new UserEntity();
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
+        user.setPassword(PASSWORD_ENCODER.encode(dto.getPassword()));
         user.setNickname(dto.getNickname());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());

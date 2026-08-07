@@ -200,6 +200,11 @@
             <version>1.26.2</version>
         </dependency>
 
+        <!-- Spring Security Crypto（用于密码加密） -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
