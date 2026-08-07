@@ -113,13 +113,6 @@
                     show-overflow-tooltip
                 />
                 <el-table-column
-                    label="配置值"
-                    prop="configValue"
-                    min-width="120"
-                    align="center"
-                    show-overflow-tooltip
-                />
-                <el-table-column
                     label="配置名称"
                     prop="configName"
                     min-width="120"
@@ -127,23 +120,30 @@
                     show-overflow-tooltip
                 />
                 <el-table-column
+                    label="配置值"
+                    prop="configValue"
+                    min-width="120"
+                    align="center"
+                    show-overflow-tooltip
+                />
+                <el-table-column
                     label="配置分组"
                     prop="configGroup"
-                    min-width="120"
+                    min-width="100"
                     align="center"
                     show-overflow-tooltip
                 />
                 <el-table-column
                     label="配置类型"
                     prop="configType"
-                    min-width="120"
+                    min-width="100"
                     align="center"
                     show-overflow-tooltip
                 />
                 <el-table-column
                     label="是否内置"
                     prop="isSystem"
-                    min-width="120"
+                    min-width="100"
                     align="center"
                     show-overflow-tooltip
                 >
@@ -156,7 +156,7 @@
                 <el-table-column
                     label="状态"
                     prop="status"
-                    min-width="120"
+                    min-width="100"
                     align="center"
                     show-overflow-tooltip
                 >
@@ -169,20 +169,6 @@
                 <el-table-column
                     label="备注说明"
                     prop="remark"
-                    min-width="120"
-                    align="center"
-                    show-overflow-tooltip
-                />
-                <el-table-column
-                    label="创建时间"
-                    prop="createTime"
-                    min-width="120"
-                    align="center"
-                    show-overflow-tooltip
-                />
-                <el-table-column
-                    label="更新时间"
-                    prop="updateTime"
                     min-width="120"
                     align="center"
                     show-overflow-tooltip
