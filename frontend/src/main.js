@@ -39,12 +39,17 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 import directives from './directives'
 // 主题管理
 import { useThemeStore } from '@/stores/modules/theme'
+// 全局配置管理
+import { useConfigStore } from '@/stores/modules/config'
 // 全局状态管理
 app.use(pinia)
 // 初始化主题状态管理
 const themeStore = useThemeStore()
 // 初始化主题
 themeStore.initTheme()
+// 初始化全局配置
+const configStore = useConfigStore()
+configStore.loadConfig()
 
 app.use(router)
 app.use(directives)
