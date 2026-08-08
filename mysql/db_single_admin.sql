@@ -107,7 +107,7 @@ CREATE TABLE `sys_config`  (
 -- ----------------------------
 INSERT INTO `sys_config` VALUES (1, 'register.enable', 'true', '是否开启注册', 'system', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (2, 'register.verify_code.enable', 'true', '注册是否需要验证码', 'system', 'boolean', 1, 1, 'true-需要，false-不需要', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (3, 'register.default_role', 'user', '注册默认角色', 'system', 'string', 1, 1, 'user-普通用户，vip-会员用户', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (3, 'register.default_role', 'user', '注册默认角色', 'system', 'string', 1, 1, 'user-普通用户，admin-管理员，guest-访客', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (4, 'register.default_institution', 'main', '注册默认机构', 'system', 'string', 1, 1, '', '2026-08-05 23:31:49', '2026-08-08 02:06:37');
 INSERT INTO `sys_config` VALUES (5, 'register.whitelist.enable', 'false', '是否开启客户端', 'system', 'boolean', 0, 1, '开启后登录跳转到客户端', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (6, 'email.verify.enable', 'true', '是否开启邮箱验证', 'email', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
@@ -116,6 +116,8 @@ INSERT INTO `sys_config` VALUES (8, 'email.smtp.port', '465', 'SMTP端口', 'ema
 INSERT INTO `sys_config` VALUES (9, 'email.sender', 'your_email@qq.com', '发件人邮箱', 'email', 'string', 1, 1, '发送邮件的邮箱地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (10, 'email.sender.password', 'your_auth_code', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (11, 'email.verify.expire', '300', '验证码有效期（秒）', 'email', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (23, 'captcha.slider.expire', '300', '滑块验证码有效期（秒）', 'captcha', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (24, 'email.send.limit', '60', '邮箱验证码发送间隔（秒）', 'email', 'integer', 1, 1, '默认60秒', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (12, 'login.max_attempts', '5', '登录最大尝试次数', 'login', 'integer', 1, 1, '超过锁定账号', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (13, 'login.lock_duration', '1800', '账号锁定时长（秒）', 'login', 'integer', 1, 1, '默认30分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (14, 'login.single_device', 'true', '是否单设备登录', 'login', 'boolean', 0, 1, 'true-挤掉旧设备，false-允许多设备', '2026-08-05 23:31:49', '2026-08-05 23:31:49');

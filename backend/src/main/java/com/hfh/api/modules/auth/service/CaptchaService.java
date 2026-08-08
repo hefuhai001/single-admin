@@ -4,6 +4,7 @@ import com.hfh.api.exception.BusinessException;
 import com.hfh.api.modules.auth.dto.EmailCodeDTO;
 import com.hfh.api.modules.auth.dto.SliderCaptchaVO;
 import com.hfh.api.modules.auth.dto.SliderVerifyDTO;
+import com.hfh.api.modules.system.service.ConfigService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -35,16 +36,36 @@ public class CaptchaService {
 
     private final StringRedisTemplate redisTemplate;
     private final JavaMailSender mailSender;
+    private final ConfigService configService;
 
     private static final int WIDTH = 280;
     private static final int HEIGHT = 155;
     private static final int PIECE_SIZE = 50;
     private static final int TOLERANCE = 5;
-    private static final Duration CAPTCHA_TTL = Duration.ofMinutes(5);
-    private static final Duration EMAIL_CODE_TTL = Duration.ofMinutes(5);
-    private static final Duration EMAIL_LIMIT_TTL = Duration.ofSeconds(60);
+
+    // 默认配置值（秒）
+    private static final int DEFAULT_CAPTCHA_EXPIRE_SECONDS = 300;
+    private static final int DEFAULT_EMAIL_CODE_EXPIRE_SECONDS = 300;
+    private static final int DEFAULT_EMAIL_LIMIT_SECONDS = 60;
 
     private final Random random = new Random();
+
+    /**
+     * 从系统配置读取秒数，并转换为 Duration
+     */
+    private Duration getSecondsDuration(String configKey, int defaultSeconds) {
+        String value = configService.getConfigValue(configKey, String.valueOf(defaultSeconds));
+        int seconds;
+        try {
+            seconds = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            seconds = defaultSeconds;
+        }
+        if (seconds <= 0) {
+            seconds = defaultSeconds;
+        }
+        return Duration.ofSeconds(seconds);
+    }
 
     /**
      * 生成滑块验证码
@@ -64,7 +85,8 @@ public class CaptchaService {
 
         // 4. 生成token并存入Redis
         String token = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set("captcha:slider:" + token, String.valueOf(targetX), CAPTCHA_TTL);
+        Duration captchaTtl = getSecondsDuration("captcha.slider.expire", DEFAULT_CAPTCHA_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set("captcha:slider:" + token, String.valueOf(targetX), captchaTtl);
 
         SliderCaptchaVO vo = new SliderCaptchaVO();
         vo.setToken(token);
@@ -96,7 +118,8 @@ public class CaptchaService {
 
         // 生成滑块验证通过的token
         String verifiedToken = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set("captcha:verified:" + verifiedToken, "1", CAPTCHA_TTL);
+        Duration captchaTtl = getSecondsDuration("captcha.slider.expire", DEFAULT_CAPTCHA_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set("captcha:verified:" + verifiedToken, "1", captchaTtl);
         return verifiedToken;
     }
 
@@ -113,7 +136,8 @@ public class CaptchaService {
         // 使用后删除，防止重复使用
         redisTemplate.delete(verifiedKey);
 
-        // 2. 频率限制：60秒内只能发送一次
+        // 2. 频率限制
+        Duration limitTtl = getSecondsDuration("email.send.limit", DEFAULT_EMAIL_LIMIT_SECONDS);
         String limitKey = "captcha:email:limit:" + dto.getEmail();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(limitKey))) {
             throw new BusinessException("发送过于频繁，请稍后再试");
@@ -122,11 +146,12 @@ public class CaptchaService {
         // 3. 生成6位验证码
         String code = String.format("%06d", random.nextInt(1000000));
 
-        // 4. 存入Redis，5分钟过期
-        redisTemplate.opsForValue().set("captcha:email:" + dto.getEmail(), code, EMAIL_CODE_TTL);
+        // 4. 存入Redis
+        Duration emailCodeTtl = getSecondsDuration("email.verify.expire", DEFAULT_EMAIL_CODE_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set("captcha:email:" + dto.getEmail(), code, emailCodeTtl);
 
         // 5. 设置发送频率限制
-        redisTemplate.opsForValue().set(limitKey, "1", EMAIL_LIMIT_TTL);
+        redisTemplate.opsForValue().set(limitKey, "1", limitTtl);
 
         // 6. 发送邮件
         try {
