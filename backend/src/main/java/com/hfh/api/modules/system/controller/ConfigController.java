@@ -72,7 +72,7 @@ public class ConfigController extends BaseController {
         wrapper.like(configGroup != null && !configGroup.isEmpty(), "config_group", configGroup);
         wrapper.like(configType != null && !configType.isEmpty(), "config_type", configType);
         wrapper.like(remark != null && !remark.isEmpty(), "remark", remark);
-        wrapper.orderByDesc("id");
+        wrapper.orderByAsc("id");
         return SaResult.data(configService.page(page, wrapper));
     }
 

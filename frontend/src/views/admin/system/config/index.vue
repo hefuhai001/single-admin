@@ -229,11 +229,50 @@
                         placeholder="请输入配置键（唯一标识，如：register.enable）"
                     />
                 </el-form-item>
+                <el-form-item label="配置类型" prop="configType">
+                    <el-select v-model="formData.configType" placeholder="请选择配置类型">
+                        <el-option
+                            v-for="item in configTypeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="配置值" prop="configValue">
-                    <el-input
-                        v-model="formData.configValue"
-                        placeholder="请输入配置值（存储具体配置内容）"
-                    />
+                    <template v-if="formData.configType === 'boolean'">
+                        <el-switch
+                            v-model="formData.configValue"
+                            active-value="true"
+                            inactive-value="false"
+                            active-text="是"
+                            inactive-text="否"
+                        />
+                    </template>
+                    <template v-else-if="formData.configType === 'json' || formData.configType === 'array'">
+                        <el-input
+                            v-model="formData.configValue"
+                            type="textarea"
+                            :rows="5"
+                            placeholder="请输入配置值（JSON/数组内容）"
+                        />
+                    </template>
+                    <template v-else-if="formData.configType === 'integer'">
+                        <el-input-number
+                            v-model="formData.configValue"
+                            :min="0"
+                            :precision="0"
+                            controls-position="right"
+                            style="width: 100%"
+                            placeholder="请输入整数配置值"
+                        />
+                    </template>
+                    <template v-else>
+                        <el-input
+                            v-model="formData.configValue"
+                            placeholder="请输入配置值（存储具体配置内容）"
+                        />
+                    </template>
                 </el-form-item>
                 <el-form-item label="配置名称" prop="configName">
                     <el-input
@@ -246,16 +285,6 @@
                         v-model="formData.configGroup"
                         placeholder="请输入配置分组（system/email/sms/oss等）"
                     />
-                </el-form-item>
-                <el-form-item label="配置类型" prop="configType">
-                    <el-select v-model="formData.configType" placeholder="请选择配置类型">
-                        <el-option
-                            v-for="item in configTypeOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                        />
-                    </el-select>
                 </el-form-item>
                 <el-form-item label="是否内置" prop="isSystem">
                     <el-radio-group v-model="formData.isSystem">
