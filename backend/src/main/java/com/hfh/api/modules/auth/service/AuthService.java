@@ -51,15 +51,23 @@ public class AuthService {
 
     /**
      * 用户登录（双 token 模式）
+     * 支持使用用户名或邮箱登录
      *
-     * @param username 用户名
+     * @param account  用户名或邮箱
      * @param password 密码
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
-    public Map<String, Object> login(String username, String password) {
-        UserEntity user = userMapper.selectOne(
-                new QueryWrapper<UserEntity>().eq("username", username)
-        );
+    public Map<String, Object> login(String account, String password) {
+        UserEntity user;
+        if (account != null && account.contains("@")) {
+            user = userMapper.selectOne(
+                    new QueryWrapper<UserEntity>().eq("email", account)
+            );
+        } else {
+            user = userMapper.selectOne(
+                    new QueryWrapper<UserEntity>().eq("username", account)
+            );
+        }
         if (user == null || !PASSWORD_ENCODER.matches(password, user.getPassword())) {
             throw new BusinessException("用户名或密码错误");
         }
