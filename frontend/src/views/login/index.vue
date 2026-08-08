@@ -28,7 +28,8 @@ const handleLogin = async (formData) => {
             await router.push('/admin')
         }
     } catch (error) {
-        ElMessage.error('登录失败，请稍后重试')
+        // 错误提示统一由响应拦截器处理，此处不再重复弹窗
+        console.error('登录失败:', error)
     } finally {
         loading.value = false
     }

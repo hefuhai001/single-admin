@@ -18,6 +18,7 @@ import com.hfh.api.modules.system.mapper.UserMapper;
 import com.hfh.api.modules.system.mapper.UserRoleMapper;
 import com.hfh.api.modules.system.service.ConfigService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.time.Duration;
 
 /**
  * 认证服务
@@ -42,12 +44,19 @@ public class AuthService {
 
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
+    /** 登录失败次数 Redis key 前缀 */
+    private static final String LOGIN_FAIL_COUNT_KEY = "login:fail:";
+
+    /** 账号锁定 Redis key 前缀 */
+    private static final String LOGIN_LOCK_KEY = "login:lock:";
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
     private final InstitutionsMapper institutionsMapper;
     private final ConfigService configService;
     private final CaptchaService captchaService;
+    private final StringRedisTemplate redisTemplate;
 
     /**
      * 用户登录（双 token 模式）
@@ -58,8 +67,19 @@ public class AuthService {
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
     public Map<String, Object> login(String account, String password) {
+        if (account == null || account.isEmpty()) {
+            throw new BusinessException("用户名或密码错误");
+        }
+
+        // 检查账号是否因失败次数过多被锁定
+        String lockKey = LOGIN_LOCK_KEY + account;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(lockKey))) {
+            long remainSeconds = redisTemplate.getExpire(lockKey);
+            throw new BusinessException("登录失败次数过多，账号已锁定，请 " + remainSeconds + " 秒后重试");
+        }
+
         UserEntity user;
-        if (account != null && account.contains("@")) {
+        if (account.contains("@")) {
             user = userMapper.selectOne(
                     new QueryWrapper<UserEntity>().eq("email", account)
             );
@@ -69,8 +89,16 @@ public class AuthService {
             );
         }
         if (user == null || !PASSWORD_ENCODER.matches(password, user.getPassword())) {
-            throw new BusinessException("用户名或密码错误");
+            int remainingAttempts = handleLoginFail(account);
+            if (remainingAttempts > 0) {
+                throw new BusinessException("用户名或密码错误，还可重试 " + remainingAttempts + " 次");
+            }
+            throw new BusinessException("登录失败次数过多，账号已锁定，请稍后再试");
         }
+
+        // 登录成功，清除失败次数
+        clearLoginFail(account);
+
         // 登录生成 accessToken
         StpUtil.login(user.getId());
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
@@ -89,6 +117,53 @@ public class AuthService {
         data.put("accessToken", tokenInfo.getTokenValue());
         data.put("refreshToken", refreshTokenValue);
         return data;
+    }
+
+    /**
+     * 处理登录失败：增加失败次数，达到阈值后锁定账号
+     *
+     * @return 剩余可尝试次数；返回 0 表示账号已被锁定
+     */
+    private int handleLoginFail(String account) {
+        int maxAttempts = getIntConfig("login.max_attempts", 5);
+        int lockDuration = getIntConfig("login.lock_duration", 1800);
+
+        String failKey = LOGIN_FAIL_COUNT_KEY + account;
+        Long failCount = redisTemplate.opsForValue().increment(failKey);
+        if (failCount != null && failCount == 1L) {
+            // 第一次失败时设置过期时间，避免 key 永久存在
+            redisTemplate.expire(failKey, Duration.ofSeconds(lockDuration));
+        }
+
+        if (failCount != null && failCount >= maxAttempts) {
+            redisTemplate.opsForValue().set(LOGIN_LOCK_KEY + account, "1", Duration.ofSeconds(lockDuration));
+            redisTemplate.delete(failKey);
+            return 0;
+        }
+
+        return maxAttempts - failCount.intValue();
+    }
+
+    /**
+     * 登录成功后清除失败次数
+     */
+    private void clearLoginFail(String account) {
+        redisTemplate.delete(LOGIN_FAIL_COUNT_KEY + account);
+    }
+
+    /**
+     * 从系统配置读取整数类型的配置值
+     */
+    private int getIntConfig(String key, int defaultValue) {
+        String value = configService.getConfigValue(key, String.valueOf(defaultValue));
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
