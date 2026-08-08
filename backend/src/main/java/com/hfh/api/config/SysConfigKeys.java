@@ -62,8 +62,8 @@ public final class SysConfigKeys {
     /** 账号锁定时长（秒） */
     public static final String LOGIN_LOCK_DURATION = "login.lock_duration";
 
-    /** 是否单设备登录（true-挤掉旧设备，false-允许多设备） */
-    public static final String LOGIN_SINGLE_DEVICE = "login.single_device";
+    /** 同一账号最多同时在线设备数，默认 3 */
+    public static final String LOGIN_MAX_ONLINE_DEVICES = "login.max_online_devices";
 
     // ================== Redis key 前缀 ==================
 

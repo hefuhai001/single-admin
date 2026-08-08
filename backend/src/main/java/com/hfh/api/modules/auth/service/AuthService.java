@@ -111,14 +111,63 @@ public class AuthService {
         // 登录成功，清除失败次数
         clearLoginFail(account);
 
-        // 单设备登录：先踢掉该账号所有已登录的 token
-        boolean singleDevice = configService.getBooleanConfigValue(SysConfigKeys.LOGIN_SINGLE_DEVICE, true);
-        if (singleDevice) {
-            StpUtil.logout(user.getId());
-        }
+        // 校验同一账号同时在线设备数量是否超出限制
+        checkMaxOnlineDevices(user.getId(), deviceId);
 
         // 登录生成双 token，使用 deviceId 区分设备
         return createTokenPair(user.getId(), deviceId);
+    }
+
+    /**
+     * 校验同一账号在线设备数量是否超出限制
+     * 如果当前设备不在线且已超出最大设备数，则抛出异常
+     *
+     * @param userId   用户ID
+     * @param deviceId 当前登录设备标识
+     */
+    private void checkMaxOnlineDevices(Long userId, String deviceId) {
+        int maxDevices = configService.getIntConfigValue(SysConfigKeys.LOGIN_MAX_ONLINE_DEVICES, 3);
+        if (maxDevices <= 0) {
+            return;
+        }
+
+        SaSession session = StpUtil.getSessionByLoginId(userId, false);
+        if (session == null) {
+            return;
+        }
+
+        String currentDevice = (deviceId != null && !deviceId.isEmpty()) ? deviceId : "web";
+        // 获取当前账号所有 accessToken 对应的 tokenSign（排除 refreshToken）
+        long onlineAccessCount = session.getTokenSignList().stream()
+                .filter(sign -> !sign.getDevice().startsWith("refresh-"))
+                .count();
+
+        // 当前设备已在线，不需要校验
+        boolean currentOnline = session.getTokenSignList().stream()
+                .filter(sign -> !sign.getDevice().startsWith("refresh-"))
+                .anyMatch(sign -> currentDevice.equals(sign.getDevice()));
+        if (currentOnline) {
+            return;
+        }
+
+        if (onlineAccessCount >= maxDevices) {
+            throw new BusinessException("当前账号同时在线设备数量已达上限，请先退出其他设备后再登录");
+        }
+
+        // 超出最大设备数时，按 tokenSignList 顺序踢掉最早的设备
+        // int needKick = accessTokenSigns.size() - maxDevices + 1;
+        // if (needKick > 0) {
+        //     for (int i = 0; i < needKick && i < accessTokenSigns.size(); i++) {
+        //         TokenSign sign = accessTokenSigns.get(i);
+        //         StpUtil.logoutByTokenValue(sign.getValue());
+        //         // 同时踢掉该设备对应的 refreshToken
+        //         String refreshDevice = "refresh-" + sign.getDevice();
+        //         session.getTokenSignList().stream()
+        //                 .filter(s -> refreshDevice.equals(s.getDevice()))
+        //                 .findFirst()
+        //                 .ifPresent(s -> StpUtil.logoutByTokenValue(s.getValue()));
+        //     }
+        // }
     }
 
     /**

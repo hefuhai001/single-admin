@@ -120,7 +120,7 @@ INSERT INTO `sys_config` VALUES (24, 'email.send.limit', '60', '邮箱验证码�
 INSERT INTO `sys_config` VALUES (23, 'captcha.slider.expire', '300', '滑块验证码有效期（秒）', 'captcha', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (12, 'login.max_attempts', '5', '登录最大尝试次数', 'login', 'integer', 1, 1, '超过锁定账号', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (13, 'login.lock_duration', '1800', '账号锁定时长（秒）', 'login', 'integer', 1, 1, '默认30分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (14, 'login.single_device', 'true', '是否单设备登录', 'login', 'boolean', 0, 1, 'true-挤掉旧设备，false-允许多设备', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (14, 'login.max_online_devices', '3', '同一账号最多同时在线设备数', 'login', 'integer', 1, 1, '超过后自动踢掉最早登录的设备，默认3个', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (15, 'sms.enable', 'false', '是否开启短信功能', 'sms', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (16, 'sms.provider', 'aliyun', '短信服务商', 'sms', 'string', 0, 1, 'aliyun-阿里云，tencent-腾讯云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (17, 'sms.sign_name', '通用后台', '短信签名', 'sms', 'string', 0, 1, '短信签名内容', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
