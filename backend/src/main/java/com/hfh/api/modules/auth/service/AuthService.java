@@ -5,6 +5,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hfh.api.config.SysConfigKeys;
 import com.hfh.api.exception.BusinessException;
 import com.hfh.api.modules.auth.dto.RegisterDTO;
 import com.hfh.api.modules.system.entity.ConfigEntity;
@@ -45,10 +46,10 @@ public class AuthService {
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     /** 登录失败次数 Redis key 前缀 */
-    private static final String LOGIN_FAIL_COUNT_KEY = "login:fail:";
+    private static final String LOGIN_FAIL_COUNT_KEY = SysConfigKeys.REDIS_LOGIN_FAIL_PREFIX;
 
     /** 账号锁定 Redis key 前缀 */
-    private static final String LOGIN_LOCK_KEY = "login:lock:";
+    private static final String LOGIN_LOCK_KEY = SysConfigKeys.REDIS_LOGIN_LOCK_PREFIX;
 
     /** 登录失败次数最大值 */
     private static final int MAX_LOGIN_FAIL_COUNT = 5;
@@ -131,8 +132,8 @@ public class AuthService {
      * @return 剩余可尝试次数；返回 0 表示账号已被锁定
      */
     private int handleLoginFail(String account) {
-        int maxAttempts = getIntConfig("login.max_attempts", MAX_LOGIN_FAIL_COUNT);
-        int lockDuration = getIntConfig("login.lock_duration", LOGIN_FAIL_LOCK_TIMEOUT);
+        int maxAttempts = getIntConfig(SysConfigKeys.LOGIN_MAX_ATTEMPTS, MAX_LOGIN_FAIL_COUNT);
+        int lockDuration = getIntConfig(SysConfigKeys.LOGIN_LOCK_DURATION, LOGIN_FAIL_LOCK_TIMEOUT);
 
         String failKey = LOGIN_FAIL_COUNT_KEY + account;
         Long failCount = redisTemplate.opsForValue().increment(failKey);
@@ -227,7 +228,7 @@ public class AuthService {
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> register(RegisterDTO dto) {
         // 1. 校验注册功能是否开启
-        ConfigEntity registerEnableConfig = configService.getConfigByKey("register.enable");
+        ConfigEntity registerEnableConfig = configService.getConfigByKey(SysConfigKeys.REGISTER_ENABLE);
         if (registerEnableConfig == null || !"true".equalsIgnoreCase(registerEnableConfig.getConfigValue())) {
             throw new BusinessException("注册功能已关闭");
         }
@@ -256,7 +257,7 @@ public class AuthService {
         }
 
         // 5. 校验邮箱验证码
-        ConfigEntity verifyCodeConfig = configService.getConfigByKey("register.verify_code.enable");
+        ConfigEntity verifyCodeConfig = configService.getConfigByKey(SysConfigKeys.REGISTER_VERIFY_CODE_ENABLE);
         if (verifyCodeConfig != null && "true".equalsIgnoreCase(verifyCodeConfig.getConfigValue())) {
             if (dto.getVerifyCode() == null || dto.getVerifyCode().isEmpty()) {
                 throw new BusinessException("邮箱验证码不能为空");
@@ -279,7 +280,7 @@ public class AuthService {
         user.setUpdatedAt(new Date());
 
         // 7. 分配默认机构
-        String defaultInstitutionCode = configService.getConfigValue("register.default_institution", "main");
+        String defaultInstitutionCode = configService.getConfigValue(SysConfigKeys.REGISTER_DEFAULT_INSTITUTION, "main");
         if (defaultInstitutionCode != null && !defaultInstitutionCode.isEmpty()) {
             InstitutionsEntity defaultInstitution = institutionsMapper.selectOne(
                     new QueryWrapper<InstitutionsEntity>().eq("institution_code", defaultInstitutionCode)
@@ -292,7 +293,7 @@ public class AuthService {
         userMapper.insert(user);
 
         // 8. 分配默认角色
-        String defaultRoleCode = configService.getConfigValue("register.default_role", "common_user");
+        String defaultRoleCode = configService.getConfigValue(SysConfigKeys.REGISTER_DEFAULT_ROLE, "common_user");
         RoleEntity defaultRole = roleMapper.selectOne(
                 new QueryWrapper<RoleEntity>().eq("role_code", defaultRoleCode)
         );

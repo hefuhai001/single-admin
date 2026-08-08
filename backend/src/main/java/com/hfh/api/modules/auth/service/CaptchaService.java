@@ -1,5 +1,6 @@
 package com.hfh.api.modules.auth.service;
 
+import com.hfh.api.config.SysConfigKeys;
 import com.hfh.api.exception.BusinessException;
 import com.hfh.api.modules.auth.dto.EmailCodeDTO;
 import com.hfh.api.modules.auth.dto.SliderCaptchaVO;
@@ -85,8 +86,8 @@ public class CaptchaService {
 
         // 4. 生成token并存入Redis
         String token = UUID.randomUUID().toString().replace("-", "");
-        Duration captchaTtl = getSecondsDuration("captcha.slider.expire", DEFAULT_CAPTCHA_EXPIRE_SECONDS);
-        redisTemplate.opsForValue().set("captcha:slider:" + token, String.valueOf(targetX), captchaTtl);
+        Duration captchaTtl = getSecondsDuration(SysConfigKeys.CAPTCHA_SLIDER_EXPIRE, DEFAULT_CAPTCHA_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set(SysConfigKeys.REDIS_CAPTCHA_SLIDER_PREFIX + token, String.valueOf(targetX), captchaTtl);
 
         SliderCaptchaVO vo = new SliderCaptchaVO();
         vo.setToken(token);
@@ -102,7 +103,7 @@ public class CaptchaService {
      * @return 验证通过后的临时 token，失败抛异常
      */
     public String verifySlider(SliderVerifyDTO dto) {
-        String redisKey = "captcha:slider:" + dto.getToken();
+        String redisKey = SysConfigKeys.REDIS_CAPTCHA_SLIDER_PREFIX + dto.getToken();
         String targetXStr = redisTemplate.opsForValue().get(redisKey);
         if (targetXStr == null) {
             throw new BusinessException("验证已过期，请重新获取");
@@ -118,8 +119,8 @@ public class CaptchaService {
 
         // 生成滑块验证通过的token
         String verifiedToken = UUID.randomUUID().toString().replace("-", "");
-        Duration captchaTtl = getSecondsDuration("captcha.slider.expire", DEFAULT_CAPTCHA_EXPIRE_SECONDS);
-        redisTemplate.opsForValue().set("captcha:verified:" + verifiedToken, "1", captchaTtl);
+        Duration captchaTtl = getSecondsDuration(SysConfigKeys.CAPTCHA_SLIDER_EXPIRE, DEFAULT_CAPTCHA_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set(SysConfigKeys.REDIS_CAPTCHA_VERIFIED_PREFIX + verifiedToken, "1", captchaTtl);
         return verifiedToken;
     }
 
@@ -128,7 +129,7 @@ public class CaptchaService {
      */
     public void sendEmailCode(EmailCodeDTO dto) {
         // 1. 校验滑块验证token
-        String verifiedKey = "captcha:verified:" + dto.getCaptchaToken();
+        String verifiedKey = SysConfigKeys.REDIS_CAPTCHA_VERIFIED_PREFIX + dto.getCaptchaToken();
         String verified = redisTemplate.opsForValue().get(verifiedKey);
         if (verified == null) {
             throw new BusinessException("滑块验证已过期，请重新验证");
@@ -137,8 +138,8 @@ public class CaptchaService {
         redisTemplate.delete(verifiedKey);
 
         // 2. 频率限制
-        Duration limitTtl = getSecondsDuration("email.send.limit", DEFAULT_EMAIL_LIMIT_SECONDS);
-        String limitKey = "captcha:email:limit:" + dto.getEmail();
+        Duration limitTtl = getSecondsDuration(SysConfigKeys.EMAIL_SEND_LIMIT, DEFAULT_EMAIL_LIMIT_SECONDS);
+        String limitKey = SysConfigKeys.REDIS_CAPTCHA_EMAIL_LIMIT_PREFIX + dto.getEmail();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(limitKey))) {
             throw new BusinessException("发送过于频繁，请稍后再试");
         }
@@ -147,8 +148,8 @@ public class CaptchaService {
         String code = String.format("%06d", random.nextInt(1000000));
 
         // 4. 存入Redis
-        Duration emailCodeTtl = getSecondsDuration("email.verify.expire", DEFAULT_EMAIL_CODE_EXPIRE_SECONDS);
-        redisTemplate.opsForValue().set("captcha:email:" + dto.getEmail(), code, emailCodeTtl);
+        Duration emailCodeTtl = getSecondsDuration(SysConfigKeys.EMAIL_VERIFY_EXPIRE, DEFAULT_EMAIL_CODE_EXPIRE_SECONDS);
+        redisTemplate.opsForValue().set(SysConfigKeys.REDIS_CAPTCHA_EMAIL_PREFIX + dto.getEmail(), code, emailCodeTtl);
 
         // 5. 设置发送频率限制
         redisTemplate.opsForValue().set(limitKey, "1", limitTtl);
@@ -159,7 +160,7 @@ public class CaptchaService {
         } catch (Exception e) {
             log.error("发送邮箱验证码失败: email={}, error={}", dto.getEmail(), e.getMessage());
             // 发送失败时清除验证码和限制
-            redisTemplate.delete("captcha:email:" + dto.getEmail());
+            redisTemplate.delete(SysConfigKeys.REDIS_CAPTCHA_EMAIL_PREFIX + dto.getEmail());
             redisTemplate.delete(limitKey);
             throw new BusinessException("验证码发送失败，请稍后重试");
         }
