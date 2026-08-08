@@ -56,7 +56,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
                 vo.setUsername(getUsername(loginId));
                 vo.setNickname(getNickname(loginId));
                 vo.setDeviceId(device);
-                vo.setLoginIp("-");
+                vo.setLoginIp(getLoginIp(tokenSign.getValue()));
                 vo.setLoginTime(new Date(session.getCreateTime()));
                 vo.setToken(tokenSign.getValue());
                 list.add(vo);
@@ -106,6 +106,15 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         }
 
         StpUtil.logoutByTokenValue(token);
+    }
+
+    private String getLoginIp(String tokenValue) {
+        SaSession tokenSession = StpUtil.getTokenSessionByToken(tokenValue);
+        if (tokenSession == null) {
+            return "-";
+        }
+        Object loginIp = tokenSession.get("loginIp");
+        return loginIp == null ? "-" : loginIp.toString();
     }
 
     private Long parseUserId(Object loginId) {

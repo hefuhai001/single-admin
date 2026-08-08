@@ -76,9 +76,10 @@ public class AuthService {
      * @param account  用户名或邮箱
      * @param password 密码
      * @param deviceId 设备标识（Web-UUID）
+     * @param loginIp  登录IP地址
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
-    public Map<String, Object> login(String account, String password, String deviceId) {
+    public Map<String, Object> login(String account, String password, String deviceId, String loginIp) {
         if (account == null || account.isEmpty()) {
             throw new BusinessException("用户名或密码错误");
         }
@@ -114,8 +115,8 @@ public class AuthService {
         // 校验同一账号同时在线设备数量是否超出限制
         checkMaxOnlineDevices(user.getId(), deviceId);
 
-        // 登录生成双 token，使用 deviceId 区分设备
-        return createTokenPair(user.getId(), deviceId);
+        // 登录生成双 token，使用 deviceId 区分设备，并记录登录 IP
+        return createTokenPair(user.getId(), deviceId, loginIp);
     }
 
     /**
@@ -176,14 +177,21 @@ public class AuthService {
      *
      * @param userId   用户ID
      * @param deviceId 设备标识
+     * @param loginIp  登录IP地址
      * @return 包含 accessToken 和 refreshToken 的 map
      */
-    private Map<String, Object> createTokenPair(Long userId, String deviceId) {
+    private Map<String, Object> createTokenPair(Long userId, String deviceId, String loginIp) {
         String device = (deviceId != null && !deviceId.isEmpty()) ? deviceId : "web";
 
         // 生成 accessToken
         StpUtil.login(userId, new SaLoginModel().setDevice(device));
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+
+        // 在 accessToken 的 Token-Session 中记录登录 IP
+        SaSession accessTokenSession = StpUtil.getTokenSessionByToken(tokenInfo.getTokenValue());
+        if (accessTokenSession != null && loginIp != null && !loginIp.isEmpty()) {
+            accessTokenSession.set("loginIp", loginIp);
+        }
 
         // 生成 refreshToken，使用 refresh-{device} 作为设备标识
         StpUtil.login(userId, new SaLoginModel()
@@ -269,9 +277,10 @@ public class AuthService {
      * 使用 refreshToken 换取新的 accessToken
      *
      * @param refreshToken refreshToken 值
+     * @param loginIp    登录IP地址
      * @return 新的 accessToken + refreshToken
      */
-    public Map<String, Object> refresh(String refreshToken) {
+    public Map<String, Object> refresh(String refreshToken, String loginIp) {
         // 校验 refreshToken 是否有效
         Object loginId = StpUtil.getLoginIdByToken(refreshToken);
         if (loginId == null) {
@@ -291,7 +300,7 @@ public class AuthService {
         StpUtil.logoutByTokenValue(refreshToken);
 
         // 生成新的双 token
-        return createTokenPair(Long.valueOf(loginId.toString()), deviceId);
+        return createTokenPair(Long.valueOf(loginId.toString()), deviceId, loginIp);
     }
 
     /**
@@ -382,6 +391,6 @@ public class AuthService {
         }
 
         // 9. 注册成功后直接登录并生成双 token
-        return createTokenPair(user.getId(), dto.getDeviceId());
+        return createTokenPair(user.getId(), dto.getDeviceId(), null);
     }
 }

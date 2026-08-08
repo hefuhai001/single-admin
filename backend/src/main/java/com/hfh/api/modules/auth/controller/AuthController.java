@@ -5,6 +5,7 @@ import cn.dev33.satoken.util.SaResult;
 import com.hfh.api.base.BaseController;
 import com.hfh.api.modules.auth.dto.RegisterDTO;
 import com.hfh.api.modules.auth.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,14 +35,17 @@ public class AuthController extends BaseController {
      * @param username 用户名或邮箱
      * @param password 密码
      * @param deviceId 设备标识（Web-UUID）
+     * @param request  HTTP请求，用于获取登录IP
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
     @PostMapping("/login")
     public SaResult login(@RequestParam("username") String username,
                           @RequestParam("password") String password,
-                          @RequestParam(value = "deviceId", required = false) String deviceId
+                          @RequestParam(value = "deviceId", required = false) String deviceId,
+                          HttpServletRequest request
     ) {
-        return SaResult.data(authService.login(username, password, deviceId));
+        String loginIp = request.getRemoteAddr();
+        return SaResult.data(authService.login(username, password, deviceId, loginIp));
     }
 
     /**
@@ -49,11 +53,14 @@ public class AuthController extends BaseController {
      * 使用 refreshToken 换取新的 accessToken
      *
      * @param refreshToken refreshToken 值
+     * @param request      HTTP请求，用于获取登录IP
      * @return 新的 accessToken
      */
     @PostMapping("/refresh")
-    public SaResult refresh(@RequestParam("refreshToken") String refreshToken) {
-        return SaResult.data(authService.refresh(refreshToken));
+    public SaResult refresh(@RequestParam("refreshToken") String refreshToken,
+                            HttpServletRequest request) {
+        String loginIp = request.getRemoteAddr();
+        return SaResult.data(authService.refresh(refreshToken, loginIp));
     }
 
     /**
