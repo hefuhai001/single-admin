@@ -11,7 +11,7 @@
  Target Server Version : 80045 (8.0.45)
  File Encoding         : 65001
 
- Date: 08/08/2026 02:16:28
+ Date: 09/08/2026 00:10:01
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `doc_feedbacks`  (
   INDEX `idx_priority`(`priority` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_if_institution` FOREIGN KEY (`institution_id`) REFERENCES `sys_institutions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '机构反馈表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '机构反馈表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of doc_feedbacks
@@ -74,7 +74,7 @@ CREATE TABLE `doc_guides`  (
   INDEX `idx_published_at`(`published_at` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_ig_institution` FOREIGN KEY (`institution_id`) REFERENCES `sys_institutions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '机构指南' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '机构指南' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of doc_guides
@@ -100,27 +100,25 @@ CREATE TABLE `sys_config`  (
   UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE,
   INDEX `idx_config_group`(`config_group` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统配置表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
 INSERT INTO `sys_config` VALUES (1, 'register.enable', 'true', '是否开启注册', 'system', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (2, 'register.verify_code.enable', 'true', '注册是否需要验证码', 'system', 'boolean', 1, 1, 'true-需要，false-不需要', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (3, 'register.default_role', 'common_user', '注册默认角色', 'system', 'string', 1, 1, 'common_user-普通用户，admin-管理员，guest-访客', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (4, 'register.default_institution', 'main', '注册默认机构', 'system', 'string', 1, 1, '', '2026-08-05 23:31:49', '2026-08-08 02:06:37');
-INSERT INTO `sys_config` VALUES (5, 'register.whitelist.enable', 'false', '是否开启客户端', 'system', 'boolean', 0, 1, '开启后登录跳转到客户端', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (3, 'register.default_role', 'user', '注册默认角色', 'system', 'string', 1, 1, 'user-普通用户，admin-管理员，guest-访客', '2026-08-05 23:31:49', '2026-08-08 19:22:36');
+INSERT INTO `sys_config` VALUES (4, 'register.default_institution', 'main', '注册默认机构', 'system', 'string', 1, 1, 'main-深圳总公司;nc-南昌分公司;cs-长沙分公司;', '2026-08-05 23:31:49', '2026-08-08 02:06:37');
+INSERT INTO `sys_config` VALUES (5, 'register.whitelist.enable', 'false', '是否开启客户端', 'system', 'boolean', 1, 1, '开启后登录跳转到客户端', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (6, 'email.verify.enable', 'true', '是否开启邮箱验证', 'email', 'boolean', 1, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (7, 'email.smtp.host', 'smtp.163.com', 'SMTP服务器地址', 'email', 'string', 1, 1, 'SMTP服务器地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (8, 'email.smtp.port', '465', 'SMTP端口', 'email', 'integer', 1, 1, 'SSL端口465，TLS端口587', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (9, 'email.sender', '18365404517@163.com', '发件人邮箱', 'email', 'string', 1, 1, '发送邮件的邮箱地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (10, 'email.sender.password', 'NPRDDKVXCLILSNQP', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (11, 'email.verify.expire', '300', '验证码有效期（秒）', 'email', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (24, 'email.send.limit', '60', '邮箱验证码发送间隔（秒）', 'email', 'integer', 1, 1, '默认60秒', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (23, 'captcha.slider.expire', '300', '滑块验证码有效期（秒）', 'captcha', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (12, 'login.max_attempts', '5', '登录最大尝试次数', 'login', 'integer', 1, 1, '超过锁定账号', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (13, 'login.lock_duration', '1800', '账号锁定时长（秒）', 'login', 'integer', 1, 1, '默认30分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (14, 'login.max_online_devices', '3', '同一账号最多同时在线设备数', 'login', 'integer', 1, 1, '超过后自动踢掉最早登录的设备，默认3个', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (14, 'login.max_online_devices', '1', '同一账号最多同时在线设备数', 'login', 'integer', 1, 1, '超过后自动踢掉最早登录的设备，默认3个', '2026-08-05 23:31:49', '2026-08-08 23:58:28');
 INSERT INTO `sys_config` VALUES (15, 'sms.enable', 'false', '是否开启短信功能', 'sms', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (16, 'sms.provider', 'aliyun', '短信服务商', 'sms', 'string', 0, 1, 'aliyun-阿里云，tencent-腾讯云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (17, 'sms.sign_name', '通用后台', '短信签名', 'sms', 'string', 0, 1, '短信签名内容', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
@@ -129,6 +127,8 @@ INSERT INTO `sys_config` VALUES (19, 'oss.provider', 'aliyun', 'OSS服务商', '
 INSERT INTO `sys_config` VALUES (20, 'oss.bucket_name', 'my-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (21, 'oss.upload_path', '/uploads', '上传路径前缀', 'oss', 'string', 0, 1, '文件存储路径', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (22, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (23, 'captcha.slider.expire', '300', '滑块验证码有效期（秒）', 'captcha', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (24, 'email.send.limit', '60', '邮箱验证码发送间隔（秒）', 'email', 'integer', 1, 1, '默认60秒', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -268,13 +268,13 @@ INSERT INTO `sys_permission` VALUES (25, 'feedbacks:add', '反馈新增', 1, 24,
 INSERT INTO `sys_permission` VALUES (26, 'feedbacks:delete', '反馈删除', 1, 24, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-04-15 01:44:23', '2026-04-15 01:44:23');
 INSERT INTO `sys_permission` VALUES (27, 'feedbacks:update', '反馈更新', 1, 24, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-04-15 01:44:23', '2026-04-15 01:44:23');
 INSERT INTO `sys_permission` VALUES (28, 'feedbacks:query', '反馈查询', 1, 24, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-04-15 01:44:23', '2026-04-15 01:44:23');
-INSERT INTO `sys_permission` VALUES (29, 'institutions:list', '机构管理', 2, 1, '/admin/system/institutions', '/admin/system/institutions/index', NULL, 'OfficeBuilding', 1, 1, 1, '2026-04-15 01:50:42', '2026-04-18 19:06:05');
+INSERT INTO `sys_permission` VALUES (29, 'institutions:list', '机构管理', 2, 1, '/admin/system/institutions', '/admin/system/institutions/index', NULL, 'OfficeBuilding', 3, 1, 1, '2026-04-15 01:50:42', '2026-04-18 19:06:05');
 INSERT INTO `sys_permission` VALUES (30, 'institutions:add', '机构新增', 1, 29, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (31, 'institutions:delete', '机构删除', 1, 29, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (32, 'institutions:update', '机构更新', 1, 29, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (33, 'institutions:query', '机构查询', 1, 29, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
-INSERT INTO `sys_permission` VALUES (34, 'minio', '文件管理', 2, 0, '/admin/minio', '', '/admin/minio/index', 'UploadFilled', 4, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (35, 'minio:list', '文件列表', 2, 34, '/admin/minio/index', '/admin/minio/index', NULL, 'Folder', 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (34, 'monitor', '系统监控', 2, 0, '/admin/minio', '', '/admin/minio/index', 'UploadFilled', 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (35, 'minio:list', '对象存储', 2, 34, '/admin/minio/index', '/admin/minio/index', NULL, 'Folder', 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (36, 'minio:bucket:query', '查询存储桶', 1, 35, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (37, 'minio:bucket:add', '创建存储桶', 1, 35, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (38, 'minio:bucket:delete', '删除存储桶', 1, 35, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
@@ -283,13 +283,12 @@ INSERT INTO `sys_permission` VALUES (40, 'minio:object:upload', '上传文件', 
 INSERT INTO `sys_permission` VALUES (41, 'minio:object:download', '下载文件', 1, 35, NULL, NULL, NULL, NULL, 6, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (42, 'minio:object:preview', '预览文件', 1, 35, NULL, NULL, NULL, NULL, 7, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (43, 'minio:object:delete', '删除文件', 1, 35, NULL, NULL, NULL, NULL, 8, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (44, 'job', '定时任务', 2, 0, '/admin/task/job', '', '/admin/task/job/index', 'List', 5, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
-INSERT INTO `sys_permission` VALUES (45, 'job:list', '定时任务管理', 2, 44, '/admin/task/job', '/admin/task/job/index', NULL, 'Timer', 7, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
+INSERT INTO `sys_permission` VALUES (45, 'job:list', '定时任务', 2, 34, '/admin/task/job', '/admin/task/job/index', NULL, 'Timer', 7, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (46, 'job:query', '定时任务查询', 1, 45, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (47, 'job:add', '定时任务新增', 1, 45, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (48, 'job:delete', '定时任务删除', 1, 45, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (49, 'job:update', '定时任务更新', 1, 45, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
-INSERT INTO `sys_permission` VALUES (50, 'jobLog:list', '定时任务日志', 2, 44, '/admin/task/jobLog', '/admin/task/jobLog/index', NULL, 'Document', 8, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
+INSERT INTO `sys_permission` VALUES (50, 'jobLog:list', '任务日志', 2, 34, '/admin/task/jobLog', '/admin/task/jobLog/index', NULL, 'Document', 8, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (51, 'guides', '文档管理', 2, 0, '/admin/document', '', '/admin/document/guide/index', 'Grid', 3, 1, 1, '2026-04-15 01:43:53', '2026-04-18 19:06:05');
 INSERT INTO `sys_permission` VALUES (149, 'dictData:list', '字典数据', 2, 1, '/admin/system/dictData', '/admin/system/dictData/index', NULL, 'Document', 3, 0, 1, '2026-08-05 15:52:42', '2026-08-05 15:52:42');
 INSERT INTO `sys_permission` VALUES (150, 'dictData:add', '数据新增', 1, 149, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-05 15:52:42', '2026-08-05 15:52:42');
@@ -462,7 +461,7 @@ CREATE TABLE `sys_user`  (
   UNIQUE INDEX `username`(`username` ASC) USING BTREE,
   INDEX `sys_user_sys_institutions_id_fk`(`institution_id` ASC) USING BTREE,
   CONSTRAINT `sys_user_sys_institutions_id_fk` FOREIGN KEY (`institution_id`) REFERENCES `sys_institutions` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
@@ -470,7 +469,7 @@ CREATE TABLE `sys_user`  (
 INSERT INTO `sys_user` VALUES (1, 1, 'admin', '$2a$10$rhfpPO4hfp01DkWG1IKq7OErtdBUvG8v/FBcgzfCTPhFLj7RtPgX.', '管理员', 'admin@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
 INSERT INTO `sys_user` VALUES (2, 2, 'usr', '$2a$10$DXoObZRO97Iyx8d/VXi3L.tLsMrwzGVlIsPEWPHZbn4KRSqZFs4Nu', '张三', 'zhang@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
 INSERT INTO `sys_user` VALUES (3, 2, 'tut', '$2a$10$rxqD4vasYuljMe4H.eSEoeb/zBtZbslMdgznGc0WVtlq9F7qSPjRO', '李四', 'li@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
-INSERT INTO `sys_user` VALUES (6, 1, 'hfh', '$2a$10$ownnOJpdIp11xCoSxxURsuF9nFJ1oL.Ccu11QdSY3BxoqP26m8P86', 'hfh', '2109664977@qq.com', '', 1, '2026-08-08 02:15:48', '2026-08-08 02:15:48');
+INSERT INTO `sys_user` VALUES (8, 1, 'aaa', '$2a$10$/pmGFxxQBOtm6/f8drA3.uACi7DtQFHgvBL6R4.WYrDddA7lJ.d8q', 'aaa', '2109664977@qq.com', '', 1, '2026-08-08 19:22:07', '2026-08-08 19:22:07');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -490,7 +489,7 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES (1, 1, '2026-04-14 01:02:28', '2026-04-14 01:02:28');
 INSERT INTO `sys_user_role` VALUES (2, 2, '2026-04-19 04:17:46', '2026-04-19 04:17:46');
 INSERT INTO `sys_user_role` VALUES (3, 3, '2026-04-19 04:17:53', '2026-04-19 04:17:53');
-INSERT INTO `sys_user_role` VALUES (6, 2, '2026-08-08 02:15:48', '2026-08-08 02:15:48');
+INSERT INTO `sys_user_role` VALUES (8, 2, '2026-08-08 19:23:58', '2026-08-08 19:23:58');
 
 -- ----------------------------
 -- Table structure for task_job
