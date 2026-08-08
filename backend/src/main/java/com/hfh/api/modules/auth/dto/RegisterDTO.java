@@ -42,4 +42,8 @@ public class RegisterDTO {
      * 手机号
      */
     private String phone;
+    /**
+     * 设备标识（Web-UUID）
+     */
+    private String deviceId;
 }

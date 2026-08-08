@@ -1,6 +1,7 @@
 package com.hfh.api.modules.auth.service;
 
 import cn.dev33.satoken.session.SaSession;
+import cn.dev33.satoken.session.TokenSign;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -24,11 +25,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.time.Duration;
 
 /**
  * 认证服务
@@ -40,8 +41,11 @@ public class AuthService {
     /** refreshToken 有效期：7天（秒） */
     private static final long REFRESH_TOKEN_TIMEOUT = 7 * 24 * 60 * 60;
 
-    /** session 中存储 refreshToken 的 key */
-    private static final String REFRESH_TOKEN_SESSION_KEY = "refreshToken";
+    /** refreshToken 标记：用于在 Token-Session 中标识这是一个 refreshToken */
+    private static final String REFRESH_TOKEN_MARK = "isRefresh";
+
+    /** refreshToken 在 Token-Session 中保存设备标识的 key */
+    private static final String REFRESH_TOKEN_DEVICE_KEY = "deviceId";
 
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
@@ -113,20 +117,37 @@ public class AuthService {
             StpUtil.logout(user.getId());
         }
 
-        // 登录生成 accessToken，使用 deviceId 作为设备标识
+        // 登录生成双 token，使用 deviceId 区分设备
+        return createTokenPair(user.getId(), deviceId);
+    }
+
+    /**
+     * 生成双 token（accessToken + refreshToken）
+     * refreshToken 会存入独立的 Token-Session，并按设备标识区分
+     *
+     * @param userId   用户ID
+     * @param deviceId 设备标识
+     * @return 包含 accessToken 和 refreshToken 的 map
+     */
+    private Map<String, Object> createTokenPair(Long userId, String deviceId) {
         String device = (deviceId != null && !deviceId.isEmpty()) ? deviceId : "web";
-        StpUtil.login(user.getId(), new SaLoginModel().setDevice(device));
+
+        // 生成 accessToken
+        StpUtil.login(userId, new SaLoginModel().setDevice(device));
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 
-        // 生成 refreshToken：复用同一 loginId，通过 SaLoginModel 设置 device 和更长有效期
-        StpUtil.login(user.getId(), new SaLoginModel()
+        // 生成 refreshToken，使用 refresh-{device} 作为设备标识
+        StpUtil.login(userId, new SaLoginModel()
                 .setDevice("refresh-" + device)
                 .setTimeout(REFRESH_TOKEN_TIMEOUT));
         String refreshTokenValue = StpUtil.getTokenValue();
 
-        // 将 refreshToken 存入用户 session，用于刷新时校验
-        SaSession session = StpUtil.getSessionByLoginId(user.getId(), true);
-        session.set(REFRESH_TOKEN_SESSION_KEY, refreshTokenValue);
+        // 在 refreshToken 的 Token-Session 中标记，用于刷新时校验
+        SaSession refreshTokenSession = StpUtil.getTokenSessionByToken(refreshTokenValue);
+        if (refreshTokenSession != null) {
+            refreshTokenSession.set(REFRESH_TOKEN_MARK, true);
+            refreshTokenSession.set(REFRESH_TOKEN_DEVICE_KEY, device);
+        }
 
         Map<String, Object> data = new HashMap<>();
         data.put("accessToken", tokenInfo.getTokenValue());
@@ -167,6 +188,34 @@ public class AuthService {
     }
 
     /**
+     * 退出登录（按设备退出）
+     * 仅注销当前设备的 accessToken 和对应 refreshToken，不影响其他设备
+     */
+    public void logout() {
+        if (!StpUtil.isLogin()) {
+            return;
+        }
+        Object loginId = StpUtil.getLoginId();
+        String currentToken = StpUtil.getTokenValue();
+        String device = StpUtil.getLoginDevice();
+
+        // 注销当前设备对应的 refreshToken
+        SaSession session = StpUtil.getSessionByLoginId(loginId, false);
+        if (session != null) {
+            String refreshDevice = "refresh-" + device;
+            for (TokenSign sign : session.getTokenSignList()) {
+                if (refreshDevice.equals(sign.getDevice())) {
+                    StpUtil.logoutByTokenValue(sign.getValue());
+                    break;
+                }
+            }
+        }
+
+        // 注销当前 accessToken
+        StpUtil.logoutByTokenValue(currentToken);
+    }
+
+    /**
      * 刷新 accessToken
      * 使用 refreshToken 换取新的 accessToken
      *
@@ -180,36 +229,20 @@ public class AuthService {
             throw new BusinessException("refreshToken 已失效，请重新登录");
         }
 
-        // 校验该 token 是否为 session 中登记的 refreshToken，防止 accessToken 被冒用
-        SaSession session = StpUtil.getSessionByLoginId(loginId, false);
-        if (session == null) {
-            throw new BusinessException("refreshToken 已失效，请重新登录");
-        }
-        String storedRefreshToken = session.getString(REFRESH_TOKEN_SESSION_KEY);
-        if (!refreshToken.equals(storedRefreshToken)) {
+        // 校验该 token 是否为 refreshToken（防止 accessToken 被冒用刷新）
+        SaSession tokenSession = StpUtil.getTokenSessionByToken(refreshToken);
+        if (tokenSession == null || !Boolean.TRUE.equals(tokenSession.get(REFRESH_TOKEN_MARK))) {
             throw new BusinessException("无效的 refreshToken");
         }
+
+        // 读取设备标识，刷新后保持同一设备
+        String deviceId = tokenSession.getString(REFRESH_TOKEN_DEVICE_KEY);
 
         // 作废旧 refreshToken
         StpUtil.logoutByTokenValue(refreshToken);
 
-        // 生成新的 accessToken
-        StpUtil.login(loginId);
-        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-
-        // 生成新的 refreshToken（轮换），防止 refreshToken 被重复使用
-        StpUtil.login(loginId, new SaLoginModel()
-                .setDevice("refresh")
-                .setTimeout(REFRESH_TOKEN_TIMEOUT));
-        String newRefreshToken = StpUtil.getTokenValue();
-
-        // 更新 session 中的 refreshToken
-        session.set(REFRESH_TOKEN_SESSION_KEY, newRefreshToken);
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("accessToken", tokenInfo.getTokenValue());
-        data.put("refreshToken", newRefreshToken);
-        return data;
+        // 生成新的双 token
+        return createTokenPair(Long.valueOf(loginId.toString()), deviceId);
     }
 
     /**
@@ -300,24 +333,6 @@ public class AuthService {
         }
 
         // 9. 注册成功后直接登录并生成双 token
-        StpUtil.login(user.getId());
-        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-
-        // 10. 生成 refreshToken
-        StpUtil.login(user.getId(), new SaLoginModel()
-                .setDevice("refresh")
-                .setTimeout(REFRESH_TOKEN_TIMEOUT));
-        String refreshTokenValue = StpUtil.getTokenValue();
-
-        // 11. 将 refreshToken 存入用户 session
-        SaSession session = StpUtil.getSessionByLoginId(user.getId(), true);
-        session.set(REFRESH_TOKEN_SESSION_KEY, refreshTokenValue);
-
-        // 12. 返回用户信息 + token
-        Map<String, Object> data = new HashMap<>();
-        data.put("user", user);
-        data.put("accessToken", tokenInfo.getTokenValue());
-        data.put("refreshToken", refreshTokenValue);
-        return data;
+        return createTokenPair(user.getId(), dto.getDeviceId());
     }
 }

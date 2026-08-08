@@ -41,7 +41,13 @@ export const useAuthStore = defineStore(
 
         async function register(registerData) {
             try {
-                const res = await api.auth.register(registerData)
+                // 使用本地固定的 deviceId，同一浏览器注册设备一致
+                let deviceId = localStorage.getItem('deviceId')
+                if (!deviceId) {
+                    deviceId = crypto.randomUUID()
+                    localStorage.setItem('deviceId', deviceId)
+                }
+                const res = await api.auth.register({ ...registerData, deviceId })
                 if (res.data && res.data.data) {
                     const data = res.data.data
                     // 注册成功后后端直接登录，返回双 token
