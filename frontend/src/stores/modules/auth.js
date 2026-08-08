@@ -13,7 +13,13 @@ export const useAuthStore = defineStore(
 
         async function login(loginData) {
             try {
-                const res = await api.auth.login(loginData.username, loginData.password)
+                // 使用本地固定的 deviceId，同一浏览器登录设备一致
+                let deviceId = localStorage.getItem('deviceId')
+                if (!deviceId) {
+                    deviceId = crypto.randomUUID()
+                    localStorage.setItem('deviceId', deviceId)
+                }
+                const res = await api.auth.login(loginData.username, loginData.password, deviceId)
                 if (res.data && res.data.data) {
                     const data = res.data.data
                     // 双 token 模式：后端返回 { accessToken, refreshToken }

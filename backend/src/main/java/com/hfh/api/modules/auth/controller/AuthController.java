@@ -31,15 +31,17 @@ public class AuthController extends BaseController {
     /**
      * 登录接口（双 token 模式）
      *
-     * @param username 用户名
+     * @param username 用户名或邮箱
      * @param password 密码
+     * @param deviceId 设备标识（Web-UUID）
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
     @PostMapping("/login")
     public SaResult login(@RequestParam("username") String username,
-                          @RequestParam("password") String password
+                          @RequestParam("password") String password,
+                          @RequestParam(value = "deviceId", required = false) String deviceId
     ) {
-        return SaResult.data(authService.login(username, password));
+        return SaResult.data(authService.login(username, password, deviceId));
     }
 
     /**

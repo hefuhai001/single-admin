@@ -4,10 +4,11 @@ import request from '@/utils/requestUtil.js'
  * login
  * @param {string} username
  * @param {string} password
+ * @param {string} deviceId
  * @returns
  */
-export function login(username, password) {
-    return request.post(`/auth/login?username=${username}&password=${password}`)
+export function login(username, password, deviceId) {
+    return request.post(`/auth/login?username=${username}&password=${password}&deviceId=${deviceId || ''}`)
 }
 
 /**

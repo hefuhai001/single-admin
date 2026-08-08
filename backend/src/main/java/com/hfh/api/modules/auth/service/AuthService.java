@@ -71,9 +71,10 @@ public class AuthService {
      *
      * @param account  用户名或邮箱
      * @param password 密码
+     * @param deviceId 设备标识（Web-UUID）
      * @return 登录成功返回 accessToken + refreshToken，失败返回错误信息
      */
-    public Map<String, Object> login(String account, String password) {
+    public Map<String, Object> login(String account, String password, String deviceId) {
         if (account == null || account.isEmpty()) {
             throw new BusinessException("用户名或密码错误");
         }
@@ -112,13 +113,14 @@ public class AuthService {
             StpUtil.logout(user.getId());
         }
 
-        // 登录生成 accessToken
-        StpUtil.login(user.getId());
+        // 登录生成 accessToken，使用 deviceId 作为设备标识
+        String device = (deviceId != null && !deviceId.isEmpty()) ? deviceId : "web";
+        StpUtil.login(user.getId(), new SaLoginModel().setDevice(device));
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 
         // 生成 refreshToken：复用同一 loginId，通过 SaLoginModel 设置 device 和更长有效期
         StpUtil.login(user.getId(), new SaLoginModel()
-                .setDevice("refresh")
+                .setDevice("refresh-" + device)
                 .setTimeout(REFRESH_TOKEN_TIMEOUT));
         String refreshTokenValue = StpUtil.getTokenValue();
 

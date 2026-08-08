@@ -16,6 +16,7 @@ request.interceptors.request.use((config) => {
     const authStore = useAuthStore()
     if (authStore.token) {
         config.headers['Authorization'] = 'Bearer ' + authStore.token
+        config.headers['X-Device-Id'] = authStore.deviceId || ''
     }
     config.headers['Accept'] = 'application/json, text/plain, */*'
     return config
