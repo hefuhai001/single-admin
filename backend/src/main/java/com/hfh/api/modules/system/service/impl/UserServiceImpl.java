@@ -3,9 +3,10 @@ package com.hfh.api.modules.system.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfh.api.modules.system.entity.PermissionEntity;
 import com.hfh.api.modules.system.entity.UserEntity;
-import com.hfh.api.modules.system.entity.vo.RouteVO;
 import com.hfh.api.modules.system.mapper.UserMapper;
 import com.hfh.api.modules.system.service.UserService;
+import com.hfh.api.modules.system.vo.RouteVO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -11,10 +11,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hfh.api.modules.monitor.minio.config.MinioProperties;
-import com.hfh.api.modules.monitor.minio.entity.vo.BucketVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.ObjectVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.UploadResultVO;
 import com.hfh.api.modules.monitor.minio.service.MinioService;
+import com.hfh.api.modules.monitor.minio.vo.BucketVO;
+import com.hfh.api.modules.monitor.minio.vo.ObjectVO;
+import com.hfh.api.modules.monitor.minio.vo.UploadResultVO;
 
 import java.io.InputStream;
 import java.util.ArrayList;

@@ -3,10 +3,11 @@ package com.hfh.api.modules.system.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfh.api.modules.system.entity.PermissionEntity;
 import com.hfh.api.modules.system.entity.RoleEntity;
-import com.hfh.api.modules.system.entity.vo.RoleVO;
 import com.hfh.api.modules.system.mapper.RoleMapper;
 import com.hfh.api.modules.system.service.PermissionService;
 import com.hfh.api.modules.system.service.RoleService;
+import com.hfh.api.modules.system.vo.RoleVO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

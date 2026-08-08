@@ -1,13 +1,11 @@
-package com.hfh.api.modules.system.entity.dto;
+package com.hfh.api.modules.system.dto;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class UserUpdateDTO {
-
-    private Long id;
+public class UserSaveDTO {
 
     private String username;
 

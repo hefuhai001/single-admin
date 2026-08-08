@@ -1,4 +1,4 @@
-package com.hfh.api.modules.monitor.minio.entity.vo;
+package com.hfh.api.modules.monitor.minio.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

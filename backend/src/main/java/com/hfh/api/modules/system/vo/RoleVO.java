@@ -1,4 +1,4 @@
-package com.hfh.api.modules.system.entity.vo;
+package com.hfh.api.modules.system.vo;
 
 import com.hfh.api.modules.system.entity.PermissionEntity;
 import lombok.Data;

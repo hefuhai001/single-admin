@@ -4,10 +4,10 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.util.SaResult;
 import com.hfh.api.base.BaseController;
 import com.hfh.api.modules.monitor.minio.config.MinioProperties;
-import com.hfh.api.modules.monitor.minio.entity.vo.BucketVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.ObjectVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.UploadResultVO;
 import com.hfh.api.modules.monitor.minio.service.MinioService;
+import com.hfh.api.modules.monitor.minio.vo.BucketVO;
+import com.hfh.api.modules.monitor.minio.vo.ObjectVO;
+import com.hfh.api.modules.monitor.minio.vo.UploadResultVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

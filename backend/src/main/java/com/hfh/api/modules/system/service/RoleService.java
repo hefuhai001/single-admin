@@ -2,7 +2,7 @@ package com.hfh.api.modules.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hfh.api.modules.system.entity.RoleEntity;
-import com.hfh.api.modules.system.entity.vo.RoleVO;
+import com.hfh.api.modules.system.vo.RoleVO;
 
 
 /**

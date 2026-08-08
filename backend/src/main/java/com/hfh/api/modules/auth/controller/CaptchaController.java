@@ -3,6 +3,7 @@ package com.hfh.api.modules.auth.controller;
 import com.hfh.api.modules.auth.dto.EmailCodeDTO;
 import com.hfh.api.modules.auth.dto.SliderVerifyDTO;
 import com.hfh.api.modules.auth.service.CaptchaService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

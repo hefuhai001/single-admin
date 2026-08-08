@@ -1,4 +1,4 @@
-package com.hfh.api.modules.auth.dto;
+package com.hfh.api.modules.auth.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

@@ -1,12 +1,11 @@
-package com.hfh.api.modules.system.entity.vo;
+package com.hfh.api.modules.system.dto;
 
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
-public class UserVO {
+public class UserUpdateDTO {
 
     private Long id;
 
@@ -21,10 +20,6 @@ public class UserVO {
     private String phone;
 
     private Integer status;
-
-    private Date createdAt;
-
-    private Date updatedAt;
 
     private List<Long> roleIds;
 }

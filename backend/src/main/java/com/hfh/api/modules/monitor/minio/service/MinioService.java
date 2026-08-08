@@ -2,9 +2,9 @@ package com.hfh.api.modules.monitor.minio.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hfh.api.modules.monitor.minio.entity.vo.BucketVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.ObjectVO;
-import com.hfh.api.modules.monitor.minio.entity.vo.UploadResultVO;
+import com.hfh.api.modules.monitor.minio.vo.BucketVO;
+import com.hfh.api.modules.monitor.minio.vo.ObjectVO;
+import com.hfh.api.modules.monitor.minio.vo.UploadResultVO;
 
 import java.io.InputStream;
 import java.util.List;

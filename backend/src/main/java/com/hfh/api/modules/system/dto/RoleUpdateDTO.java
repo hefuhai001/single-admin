@@ -1,4 +1,4 @@
-package com.hfh.api.modules.system.entity.dto;
+package com.hfh.api.modules.system.dto;
 
 import lombok.Data;
 
