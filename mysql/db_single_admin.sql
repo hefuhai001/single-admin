@@ -11,7 +11,7 @@
  Target Server Version : 80045 (8.0.45)
  File Encoding         : 65001
 
- Date: 09/08/2026 00:10:01
+ Date: 09/08/2026 00:48:16
 */
 
 SET NAMES utf8mb4;
@@ -235,7 +235,7 @@ CREATE TABLE `sys_permission`  (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `permission_code`(`permission_code` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 164 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限（1:接口权限 2:路由权限）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 167 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限（1:接口权限 2:路由权限）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_permission
@@ -273,8 +273,8 @@ INSERT INTO `sys_permission` VALUES (30, 'institutions:add', '机构新增', 1, 
 INSERT INTO `sys_permission` VALUES (31, 'institutions:delete', '机构删除', 1, 29, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (32, 'institutions:update', '机构更新', 1, 29, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (33, 'institutions:query', '机构查询', 1, 29, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
-INSERT INTO `sys_permission` VALUES (34, 'monitor', '系统监控', 2, 0, '/admin/minio', '', '/admin/minio/index', 'UploadFilled', 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (35, 'minio:list', '对象存储', 2, 34, '/admin/minio/index', '/admin/minio/index', NULL, 'Folder', 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (34, 'monitor', '系统监控', 2, 0, '/admin/minio', '', '/admin/minio/index', 'UploadFilled', 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (35, 'minio:list', '对象存储', 2, 34, '/admin/monitor/minio', '/admin/monitor/minio/index', NULL, 'Folder', 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (36, 'minio:bucket:query', '查询存储桶', 1, 35, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (37, 'minio:bucket:add', '创建存储桶', 1, 35, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (38, 'minio:bucket:delete', '删除存储桶', 1, 35, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
@@ -283,13 +283,13 @@ INSERT INTO `sys_permission` VALUES (40, 'minio:object:upload', '上传文件', 
 INSERT INTO `sys_permission` VALUES (41, 'minio:object:download', '下载文件', 1, 35, NULL, NULL, NULL, NULL, 6, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (42, 'minio:object:preview', '预览文件', 1, 35, NULL, NULL, NULL, NULL, 7, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (43, 'minio:object:delete', '删除文件', 1, 35, NULL, NULL, NULL, NULL, 8, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (45, 'job:list', '定时任务', 2, 34, '/admin/task/job', '/admin/task/job/index', NULL, 'Timer', 7, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
+INSERT INTO `sys_permission` VALUES (45, 'job:list', '定时任务', 2, 34, '/admin/monitor/task/job', '/admin/monitor/task/job/index', NULL, 'Timer', 3, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (46, 'job:query', '定时任务查询', 1, 45, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (47, 'job:add', '定时任务新增', 1, 45, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (48, 'job:delete', '定时任务删除', 1, 45, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (49, 'job:update', '定时任务更新', 1, 45, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
-INSERT INTO `sys_permission` VALUES (50, 'jobLog:list', '任务日志', 2, 34, '/admin/task/jobLog', '/admin/task/jobLog/index', NULL, 'Document', 8, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
-INSERT INTO `sys_permission` VALUES (51, 'guides', '文档管理', 2, 0, '/admin/document', '', '/admin/document/guide/index', 'Grid', 3, 1, 1, '2026-04-15 01:43:53', '2026-04-18 19:06:05');
+INSERT INTO `sys_permission` VALUES (50, 'jobLog:list', '任务日志', 2, 34, '/admin/monitor/task/jobLog', '/admin/monitor/task/jobLog/index', NULL, 'Document', 4, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
+INSERT INTO `sys_permission` VALUES (51, 'guides', '文档管理', 2, 0, '/admin/document', '', '/admin/document/guide/index', 'Grid', 4, 1, 1, '2026-04-15 01:43:53', '2026-04-18 19:06:05');
 INSERT INTO `sys_permission` VALUES (149, 'dictData:list', '字典数据', 2, 1, '/admin/system/dictData', '/admin/system/dictData/index', NULL, 'Document', 3, 0, 1, '2026-08-05 15:52:42', '2026-08-05 15:52:42');
 INSERT INTO `sys_permission` VALUES (150, 'dictData:add', '数据新增', 1, 149, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-05 15:52:42', '2026-08-05 15:52:42');
 INSERT INTO `sys_permission` VALUES (151, 'dictData:delete', '数据删除', 1, 149, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-05 15:52:42', '2026-08-05 15:52:42');
@@ -305,7 +305,7 @@ INSERT INTO `sys_permission` VALUES (160, 'config:add', '配置新增', 1, 159, 
 INSERT INTO `sys_permission` VALUES (161, 'config:delete', '配置删除', 1, 159, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
 INSERT INTO `sys_permission` VALUES (162, 'config:update', '配置更新', 1, 159, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
 INSERT INTO `sys_permission` VALUES (163, 'config:query', '配置查询', 1, 159, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
-INSERT INTO `sys_permission` VALUES (164, 'onlineUser:list', '在线用户', 2, 34, '/admin/monitor/online', '/admin/monitor/online/index', NULL, 'UserFilled', 9, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
+INSERT INTO `sys_permission` VALUES (164, 'onlineUser:list', '在线用户', 2, 34, '/admin/monitor/online', '/admin/monitor/online/index', NULL, 'User', 1, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
 INSERT INTO `sys_permission` VALUES (165, 'monitor:online:query', '在线用户查询', 1, 164, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
 INSERT INTO `sys_permission` VALUES (166, 'monitor:online:kick', '在线用户踢下线', 1, 164, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
 
@@ -348,75 +348,74 @@ CREATE TABLE `sys_role_permission`  (
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
-INSERT INTO `sys_role_permission` VALUES (1, 1, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 2, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 3, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 4, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 5, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 6, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 7, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 8, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 9, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 10, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 11, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 12, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 13, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 14, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 15, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 16, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 17, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 18, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 19, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 20, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 21, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 22, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 23, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 24, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 25, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 26, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 27, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 28, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 29, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 30, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 31, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 32, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 33, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 34, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 35, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 36, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 37, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 38, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 39, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 40, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 41, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 42, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 43, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 44, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 45, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 46, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 47, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 48, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 49, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 50, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 51, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 149, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 150, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 151, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 152, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 153, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 154, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 155, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 156, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 157, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 158, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 159, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 160, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 161, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 162, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 163, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 164, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 165, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
-INSERT INTO `sys_role_permission` VALUES (1, 166, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
+INSERT INTO `sys_role_permission` VALUES (1, 1, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 2, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 3, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 4, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 5, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 6, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 7, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 8, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 9, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 10, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 11, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 12, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 13, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 14, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 15, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 16, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 17, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 18, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 19, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 20, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 21, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 22, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 23, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 24, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 25, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 26, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 27, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 28, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 29, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 30, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 31, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 32, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 33, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 34, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 35, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 36, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 37, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 38, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 39, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 40, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 41, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 42, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 43, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 45, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 46, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 47, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 48, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 49, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 50, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 51, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 149, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 150, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 151, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 152, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 153, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 154, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 155, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 156, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 157, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 158, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 159, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 160, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 161, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 162, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 163, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 164, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 165, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
+INSERT INTO `sys_role_permission` VALUES (1, 166, '2026-08-09 00:22:44', '2026-08-09 00:22:44');
 INSERT INTO `sys_role_permission` VALUES (2, 1, '2026-06-19 00:49:48', '2026-06-19 00:49:48');
 INSERT INTO `sys_role_permission` VALUES (2, 5, '2026-06-19 00:49:48', '2026-06-19 00:49:48');
 INSERT INTO `sys_role_permission` VALUES (2, 6, '2026-06-19 00:49:48', '2026-06-19 00:49:48');
@@ -473,7 +472,7 @@ CREATE TABLE `sys_user`  (
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES (1, 1, 'admin', '$2a$10$rhfpPO4hfp01DkWG1IKq7OErtdBUvG8v/FBcgzfCTPhFLj7RtPgX.', '管理员', 'admin@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
-INSERT INTO `sys_user` VALUES (2, 2, 'usr', '$2a$10$DXoObZRO97Iyx8d/VXi3L.tLsMrwzGVlIsPEWPHZbn4KRSqZFs4Nu', '张三', 'zhang@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
+INSERT INTO `sys_user` VALUES (2, 2, 'user', '$2a$10$DXoObZRO97Iyx8d/VXi3L.tLsMrwzGVlIsPEWPHZbn4KRSqZFs4Nu', '张三', 'zhang@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-09 00:24:08');
 INSERT INTO `sys_user` VALUES (3, 2, 'tut', '$2a$10$rxqD4vasYuljMe4H.eSEoeb/zBtZbslMdgznGc0WVtlq9F7qSPjRO', '李四', 'li@example.com', NULL, 1, '2026-04-14 01:02:28', '2026-08-08 00:54:47');
 INSERT INTO `sys_user` VALUES (8, 1, 'aaa', '$2a$10$/pmGFxxQBOtm6/f8drA3.uACi7DtQFHgvBL6R4.WYrDddA7lJ.d8q', 'aaa', '2109664977@qq.com', '', 1, '2026-08-08 19:22:07', '2026-08-08 19:22:07');
 

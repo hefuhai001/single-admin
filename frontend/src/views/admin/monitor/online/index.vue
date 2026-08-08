@@ -85,7 +85,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh } from '@element-plus/icons-vue'
-import { getOnlineUsers, kickOnlineUser } from '@/api/modules/online.js'
+import { getOnlineUsers, kickOnlineUser } from '@/api/modules/monitor/online.js'
 import { useRouterStore } from '@/stores/modules/router.js'
 
 const routerStore = useRouterStore()
