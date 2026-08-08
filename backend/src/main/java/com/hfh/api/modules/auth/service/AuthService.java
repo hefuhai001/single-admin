@@ -50,6 +50,12 @@ public class AuthService {
     /** 账号锁定 Redis key 前缀 */
     private static final String LOGIN_LOCK_KEY = "login:lock:";
 
+    /** 登录失败次数最大值 */
+    private static final int MAX_LOGIN_FAIL_COUNT = 5;
+
+    /** 登录失败次数锁定时间（秒） */
+    private static final int LOGIN_FAIL_LOCK_TIMEOUT = 1800;
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
@@ -125,8 +131,8 @@ public class AuthService {
      * @return 剩余可尝试次数；返回 0 表示账号已被锁定
      */
     private int handleLoginFail(String account) {
-        int maxAttempts = getIntConfig("login.max_attempts", 5);
-        int lockDuration = getIntConfig("login.lock_duration", 1800);
+        int maxAttempts = getIntConfig("login.max_attempts", MAX_LOGIN_FAIL_COUNT);
+        int lockDuration = getIntConfig("login.lock_duration", LOGIN_FAIL_LOCK_TIMEOUT);
 
         String failKey = LOGIN_FAIL_COUNT_KEY + account;
         Long failCount = redisTemplate.opsForValue().increment(failKey);
