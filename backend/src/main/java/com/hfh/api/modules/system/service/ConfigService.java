@@ -60,4 +60,21 @@ public interface ConfigService extends IService<ConfigEntity> {
      * @return 是否成功
      */
     boolean deleteByIds(Collection<? extends Serializable> idList);
+    /**
+     * 根据 configKey 获取整型配置值，不存在或格式错误返回默认值
+     *
+     * @param configKey    配置键
+     * @param defaultValue 默认值
+     * @return 整型配置值
+     */
+    int getIntConfigValue(String configKey, int defaultValue);
+
+    /**
+     * 根据 configKey 获取布尔配置值，不存在返回默认值
+     *
+     * @param configKey    配置键
+     * @param defaultValue 默认值
+     * @return 布尔配置值
+     */
+    boolean getBooleanConfigValue(String configKey, boolean defaultValue);
 }

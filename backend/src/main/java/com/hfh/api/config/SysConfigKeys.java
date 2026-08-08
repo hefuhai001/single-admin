@@ -62,6 +62,9 @@ public final class SysConfigKeys {
     /** 账号锁定时长（秒） */
     public static final String LOGIN_LOCK_DURATION = "login.lock_duration";
 
+    /** 是否单设备登录（true-挤掉旧设备，false-允许多设备） */
+    public static final String LOGIN_SINGLE_DEVICE = "login.single_device";
+
     // ================== Redis key 前缀 ==================
 
     /** 滑块验证码坐标 Redis key 前缀 */

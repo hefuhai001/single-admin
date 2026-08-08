@@ -106,6 +106,12 @@ public class AuthService {
         // 登录成功，清除失败次数
         clearLoginFail(account);
 
+        // 单设备登录：先踢掉该账号所有已登录的 token
+        boolean singleDevice = configService.getBooleanConfigValue(SysConfigKeys.LOGIN_SINGLE_DEVICE, true);
+        if (singleDevice) {
+            StpUtil.logout(user.getId());
+        }
+
         // 登录生成 accessToken
         StpUtil.login(user.getId());
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
@@ -132,8 +138,8 @@ public class AuthService {
      * @return 剩余可尝试次数；返回 0 表示账号已被锁定
      */
     private int handleLoginFail(String account) {
-        int maxAttempts = getIntConfig(SysConfigKeys.LOGIN_MAX_ATTEMPTS, MAX_LOGIN_FAIL_COUNT);
-        int lockDuration = getIntConfig(SysConfigKeys.LOGIN_LOCK_DURATION, LOGIN_FAIL_LOCK_TIMEOUT);
+        int maxAttempts = configService.getIntConfigValue(SysConfigKeys.LOGIN_MAX_ATTEMPTS, MAX_LOGIN_FAIL_COUNT);
+        int lockDuration = configService.getIntConfigValue(SysConfigKeys.LOGIN_LOCK_DURATION, LOGIN_FAIL_LOCK_TIMEOUT);
 
         String failKey = LOGIN_FAIL_COUNT_KEY + account;
         Long failCount = redisTemplate.opsForValue().increment(failKey);
@@ -156,21 +162,6 @@ public class AuthService {
      */
     private void clearLoginFail(String account) {
         redisTemplate.delete(LOGIN_FAIL_COUNT_KEY + account);
-    }
-
-    /**
-     * 从系统配置读取整数类型的配置值
-     */
-    private int getIntConfig(String key, int defaultValue) {
-        String value = configService.getConfigValue(key, String.valueOf(defaultValue));
-        if (value == null || value.isEmpty()) {
-            return defaultValue;
-        }
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
     }
 
     /**

@@ -43,6 +43,28 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigEntity> i
     }
 
     @Override
+    public int getIntConfigValue(String configKey, int defaultValue) {
+        String value = getConfigValue(configKey);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public boolean getBooleanConfigValue(String configKey, boolean defaultValue) {
+        String value = getConfigValue(configKey);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        return "true".equalsIgnoreCase(value);
+    }
+
+    @Override
     @RefreshConfigCache
     public boolean save(ConfigEntity entity) {
         return super.save(entity);
