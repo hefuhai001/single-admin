@@ -305,6 +305,9 @@ INSERT INTO `sys_permission` VALUES (160, 'config:add', '配置新增', 1, 159, 
 INSERT INTO `sys_permission` VALUES (161, 'config:delete', '配置删除', 1, 159, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
 INSERT INTO `sys_permission` VALUES (162, 'config:update', '配置更新', 1, 159, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
 INSERT INTO `sys_permission` VALUES (163, 'config:query', '配置查询', 1, 159, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-08-05 23:53:42', '2026-08-05 23:53:42');
+INSERT INTO `sys_permission` VALUES (164, 'onlineUser:list', '在线用户', 2, 34, '/admin/monitor/online', '/admin/monitor/online/index', NULL, 'UserFilled', 9, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
+INSERT INTO `sys_permission` VALUES (165, 'monitor:online:query', '在线用户查询', 1, 164, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
+INSERT INTO `sys_permission` VALUES (166, 'monitor:online:kick', '在线用户踢下线', 1, 164, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-08 20:10:00', '2026-08-08 20:10:00');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -411,6 +414,9 @@ INSERT INTO `sys_role_permission` VALUES (1, 160, '2026-08-06 00:20:11', '2026-0
 INSERT INTO `sys_role_permission` VALUES (1, 161, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
 INSERT INTO `sys_role_permission` VALUES (1, 162, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
 INSERT INTO `sys_role_permission` VALUES (1, 163, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
+INSERT INTO `sys_role_permission` VALUES (1, 164, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
+INSERT INTO `sys_role_permission` VALUES (1, 165, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
+INSERT INTO `sys_role_permission` VALUES (1, 166, '2026-08-06 00:20:11', '2026-08-06 00:20:11');
 INSERT INTO `sys_role_permission` VALUES (2, 1, '2026-06-19 00:49:48', '2026-06-19 00:49:48');
 INSERT INTO `sys_role_permission` VALUES (2, 5, '2026-06-19 00:49:48', '2026-06-19 00:49:48');
 INSERT INTO `sys_role_permission` VALUES (2, 6, '2026-06-19 00:49:48', '2026-06-19 00:49:48');

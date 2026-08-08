@@ -10,8 +10,8 @@ import * as dictData from '@/api/modules/dictData'
 import * as config from '@/api/modules/config.js'
 import * as captcha from '@/api/modules/captcha.js'
 
+import * as online from '@/api/modules/online.js'
 import * as minio from '@/api/modules/minio.js'
-
 import * as job from '@/api/modules/job.js'
 import * as jobLog from '@/api/modules/jobLog.js'
 
@@ -28,8 +28,8 @@ const api = {
     config,
     captcha,
 
+    online,
     minio,
-
     job,
     jobLog,
 }
