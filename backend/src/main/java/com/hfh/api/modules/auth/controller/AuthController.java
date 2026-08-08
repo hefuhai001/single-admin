@@ -56,12 +56,16 @@ public class AuthController extends BaseController {
 
     /**
      * 退出登录接口
+     * 双 token 模式下，按当前 loginId 下线该账号所有 token
      *
      * @return 退出登录成功返回成功信息
      */
     @PostMapping("/logout")
     public SaResult logout() {
-        StpUtil.logout();
+        Object loginId = StpUtil.getLoginIdDefaultNull();
+        if (loginId != null) {
+            StpUtil.logout(loginId);
+        }
         return SaResult.ok();
     }
 
