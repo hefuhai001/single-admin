@@ -2,7 +2,7 @@
     <div class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#f0f5ff] via-[#e8f0fe] to-[#f5f3ff] dark:from-[#0f172a] dark:via-[#1e1b4b] dark:to-[#0f172a]">
         <GeoBackground />
 
-        <div class="relative z-10 w-[460px] max-w-[95vw] rounded-[20px] bg-white p-10 px-8 shadow-[0_20px_60px_rgba(0,0,0,0.08),0_4px_16px_rgba(0,0,0,0.04)] animate-[card-enter_0.7s_cubic-bezier(0.16,1,0.3,1)] dark:bg-[#1e293b] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3),0_4px_16px_rgba(0,0,0,0.2)]">
+        <div class="register-card relative z-10 w-[460px] max-w-[95vw] rounded-[20px] bg-white p-10 px-8 shadow-[0_20px_60px_rgba(0,0,0,0.08),0_4px_16px_rgba(0,0,0,0.04)] dark:bg-[#1e293b] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3),0_4px_16px_rgba(0,0,0,0.2)]">
             <div class="mb-8 text-center">
                 <h2 class="text-[1.75rem] font-bold tracking-tight text-[#1e293b] dark:text-[#e2e8f0]">创建账户</h2>
                 <p class="mt-2 text-[0.95rem] text-[#94a3b8]">请填写信息完成注册</p>
@@ -187,6 +187,10 @@ const goToLogin = () => {
 </script>
 
 <style scoped>
+.register-card {
+    animation: card-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes card-enter {
     from {
         opacity: 0;

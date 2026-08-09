@@ -56,6 +56,19 @@ export const useThemeStore = defineStore(
         function setFontSize(size) {
             theme.value.fontSize = size
             document.documentElement.style.fontSize = `${size}px`
+            applyFontSize(size)
+        }
+
+        function applyFontSize(size) {
+            const base = size || 14
+            const el = document.documentElement.style
+            el.setProperty('--el-font-size-base', `${base}px`)
+            el.setProperty('--el-font-size-small', `${Math.round(base * 0.8571)}px`)
+            el.setProperty('--el-font-size-medium', `${Math.round(base * 1.0714)}px`)
+            el.setProperty('--el-font-size-large', `${Math.round(base * 1.1429)}px`)
+            el.setProperty('--el-font-size-extra-large', `${Math.round(base * 1.4286)}px`)
+            el.setProperty('--el-font-size-extra-extra-large', `${Math.round(base * 1.7143)}px`)
+            el.setProperty('--el-font-size-extra-extra-extra-large', `${Math.round(base * 2.2857)}px`)
         }
 
         function toggleSidebar() {
@@ -93,6 +106,7 @@ export const useThemeStore = defineStore(
                 html.classList.remove('dark')
             }
             applyThemeKey()
+            applyFontSize(theme.value.fontSize)
         }
 
         function applyPrimaryColor() {
@@ -200,7 +214,10 @@ export const useThemeStore = defineStore(
             return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
         }
 
-        function initTheme() {
+        function initTheme(externalPrimaryColor) {
+            if (externalPrimaryColor && /^#([0-9A-Fa-f]{6})$/.test(externalPrimaryColor)) {
+                theme.value.primaryColor = externalPrimaryColor
+            }
             applyTheme()
             setFontSize(theme.value.fontSize)
         }

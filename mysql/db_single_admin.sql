@@ -132,6 +132,10 @@ INSERT INTO `sys_config` VALUES (24, 'oss.secretKey', 'root@XH2001!', 'OSS访问
 INSERT INTO `sys_config` VALUES (25, 'oss.bucket_name', 'default-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (26, 'oss.custom_domain', 'http://localhost:9000', '自定义域名', 'oss', 'string', 0, 1, '自定义域名配置', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (27, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (28, 'site.title', 'Single Admin', '网站标题', 'site', 'string', 0, 1, '网站标题，显示在侧边栏和页脚等位置', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (29, 'site.primary_color', '#409EFF', '网站主题色', 'site', 'string', 0, 1, '网站主题色，十六进制颜色值', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (30, 'site.icp', '粤ICP备2023000000号', 'ICP备案号', 'site', 'string', 0, 1, '网站底部备案号，为空则不显示', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (31, 'site.use_backend_theme_color', 'true', '是否使用后端主题色', 'site', 'boolean', 0, 1, 'true-使用后端配置的主题色，前端取色器隐藏；false-前端可自定义主题色', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 
 -- ----------------------------
 -- Table structure for sys_dict_data

@@ -37,7 +37,7 @@
                 </div>
             </section>
 
-            <section class="mb-8">
+            <section class="mb-8" v-if="!useBackendThemeColor">
                 <h3
                     class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-widest flex items-center gap-2"
                 >
@@ -58,6 +58,32 @@
                         </div>
                     </div>
                     <el-color-picker v-model="primaryColor" size="large" />
+                </div>
+            </section>
+
+            <section class="mb-8" v-else>
+                <h3
+                    class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-widest flex items-center gap-2"
+                >
+                    <span
+                        class="w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"
+                    ></span>
+                    主题色
+                </h3>
+                <div class="flex items-center gap-5 p-5 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div
+                        class="w-16 h-16 rounded-2xl shadow-lg ring-2 ring-white dark:ring-gray-700 transition-all duration-300"
+                        :style="{ background: themeStore.getPrimaryColor, boxShadow: `0 8px 24px ${themeStore.getPrimaryColor}40` }"
+                    ></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">后端主题色</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            已启用后端主题色配置，前端不可自定义
+                        </div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 font-mono tracking-wide mt-1">
+                            {{ themeStore.getPrimaryColor }}
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -160,7 +186,7 @@
                         show-stops
                         :marks="{ 12: '小', 14: '中', 16: '大', 18: '特大', 20: '超大' }"
                     />
-                    <div class="flex justify-between mt-2 text-xs text-gray-400">
+                    <div class="flex justify-between mt-6 text-xs text-gray-400">
                         <span>12px</span>
                         <span>14px</span>
                         <span>16px</span>
@@ -177,6 +203,7 @@
 import { computed } from 'vue'
 import { Sunny, Moon, Location, Bottom } from '@element-plus/icons-vue'
 import { useThemeStore } from '@/stores/modules/theme'
+import { useConfigStore } from '@/stores/modules/config'
 import { ElMessage } from 'element-plus'
 
 const props = defineProps({
@@ -189,6 +216,9 @@ const props = defineProps({
 const emit = defineEmits(['update:visible'])
 
 const themeStore = useThemeStore()
+const configStore = useConfigStore()
+
+const useBackendThemeColor = computed(() => configStore.isEnabled('site.use_backend_theme_color'))
 
 const drawerVisible = computed({
     get: () => props.visible,

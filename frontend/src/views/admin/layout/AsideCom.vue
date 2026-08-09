@@ -2,11 +2,12 @@
     <div class="aside-layout h-full flex flex-col">
         <!-- 固定顶部 Logo -->
         <div class="logo-area flex items-center px-4 py-2 shrink-0 bg-white dark:bg-[#1d1e1f]">
+
             <span
                 v-show="!themeStore.getSidebarCollapsed"
                 class="font-bold text-xl ml-2 text-theme-500 whitespace-nowrap"
             >
-                Single Admin
+                {{ siteTitle }}
             </span>
         </div>
 
@@ -64,6 +65,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouterStore } from '@/stores/modules/router'
 import { useThemeStore } from '@/stores/modules/theme'
+import { useConfigStore } from '@/stores/modules/config'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -71,6 +73,9 @@ import SvgIcon from '@/components/SvgIcon.vue'
 const route = useRoute()
 const routerStore = useRouterStore()
 const themeStore = useThemeStore()
+const configStore = useConfigStore()
+
+const siteTitle = computed(() => configStore.getValue('site.title', 'Single Admin'))
 
 const dynamicRoutes = computed(() => {
     const filterHidden = (routes) => {

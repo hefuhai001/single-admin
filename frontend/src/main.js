@@ -43,13 +43,21 @@ import { useThemeStore } from '@/stores/modules/theme'
 import { useConfigStore } from '@/stores/modules/config'
 // 全局状态管理
 app.use(pinia)
-// 初始化主题状态管理
-const themeStore = useThemeStore()
-// 初始化主题
-themeStore.initTheme()
-// 初始化全局配置
+// 初始化全局配置，完成后用数据库主题色覆盖本地默认主题色
 const configStore = useConfigStore()
-configStore.loadConfig()
+const themeStore = useThemeStore()
+configStore
+    .loadConfig()
+    .then(() => {
+        document.title = configStore.getValue('site.title', 'Single Admin')
+        const useBackendColor = configStore.isEnabled('site.use_backend_theme_color')
+        const primaryColor = useBackendColor ? configStore.getValue('site.primary_color') : null
+        themeStore.initTheme(primaryColor)
+    })
+    .catch((error) => {
+        console.error('加载全局配置失败:', error)
+        themeStore.initTheme()
+    })
 
 app.use(router)
 app.use(directives)
