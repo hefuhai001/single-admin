@@ -1,47 +1,56 @@
 package com.hfh.api.modules.monitor.oss.service.impl;
 
+import com.hfh.api.modules.monitor.oss.config.OssProperties;
+import com.hfh.api.modules.monitor.oss.enums.OssProvider;
+import com.hfh.api.modules.monitor.oss.service.OssStrategy;
+import com.hfh.api.modules.monitor.oss.service.support.AbstractOssStrategy;
+import com.hfh.api.modules.monitor.oss.vo.BucketVO;
+import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
+import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.DeleteError;
 import io.minio.messages.Item;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hfh.api.modules.monitor.oss.config.OssProperties;
-import com.hfh.api.modules.monitor.oss.service.OssService;
-import com.hfh.api.modules.monitor.oss.vo.BucketVO;
-import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
-import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * OSS 服务实现
+ * MinIO 策略实现
  */
 @Service
-@RequiredArgsConstructor
-public class OssServiceImpl implements OssService {
+public class MinioOssStrategyImpl extends AbstractOssStrategy implements OssStrategy {
 
-    private final MinioClient ossClient;
-    private final OssProperties ossProperties;
+    private final ObjectProvider<io.minio.MinioClient> minioClientProvider;
 
-    /**
-     * 存储桶名称规则：小写字母、数字、中划线，3-63 字符，不能以中划线开头或结尾
-     */
-    private static final Pattern BUCKET_NAME_PATTERN = Pattern.compile("^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$");
+    public MinioOssStrategyImpl(OssProperties ossProperties, ObjectProvider<io.minio.MinioClient> minioClientProvider) {
+        super(ossProperties);
+        this.minioClientProvider = minioClientProvider;
+    }
+
+    private io.minio.MinioClient getClient() {
+        return minioClientProvider.getIfAvailable(() -> {
+            throw new RuntimeException("MinIO 客户端未配置，请确认 oss.provider=minio");
+        });
+    }
+
+    @Override
+    public OssProvider getProvider() {
+        return OssProvider.MINIO;
+    }
 
     @Override
     public List<BucketVO> listBuckets() {
         try {
-            return ossClient.listBuckets().stream()
+            return getClient().listBuckets().stream()
                     .map(bucket -> new BucketVO()
                             .setName(bucket.name())
                             .setCreationDate(Date.from(bucket.creationDate().toInstant())))
@@ -55,12 +64,12 @@ public class OssServiceImpl implements OssService {
     public void createBucket(String bucketName) {
         validateBucketName(bucketName);
         try {
-            boolean exists = ossClient.bucketExists(
-                    BucketExistsArgs.builder().bucket(bucketName).build());
+            io.minio.MinioClient client = getClient();
+            boolean exists = client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (exists) {
                 throw new RuntimeException("存储桶已存在");
             }
-            ossClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -72,7 +81,7 @@ public class OssServiceImpl implements OssService {
     public void removeBucket(String bucketName) {
         validateBucketName(bucketName);
         try {
-            ossClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
+            getClient().removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
         } catch (Exception e) {
             throw new RuntimeException("删除存储桶失败，请确认存储桶为空：" + e.getMessage(), e);
         }
@@ -89,7 +98,7 @@ public class OssServiceImpl implements OssService {
                 builder.prefix(prefix);
             }
             List<ObjectVO> list = new ArrayList<>();
-            for (io.minio.Result<Item> result : ossClient.listObjects(builder.build())) {
+            for (io.minio.Result<Item> result : getClient().listObjects(builder.build())) {
                 Item item = result.get();
                 ObjectVO vo = new ObjectVO();
                 vo.setObjectName(item.objectName());
@@ -109,22 +118,20 @@ public class OssServiceImpl implements OssService {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("上传文件不能为空");
         }
-        String targetBucket = StringUtils.hasText(bucketName) ? bucketName : ossProperties.getBucketName();
+        String targetBucket = defaultBucketName(bucketName);
         validateBucketName(targetBucket);
         ensureBucketExists(targetBucket);
 
-        String targetObject = StringUtils.hasText(objectName) ? objectName : file.getOriginalFilename();
-        if (!StringUtils.hasText(targetObject)) {
-            throw new IllegalArgumentException("对象名称不能为空");
-        }
+        String targetObject = defaultObjectName(file, objectName);
         validateObjectName(targetObject);
 
         String contentType = StringUtils.hasText(file.getContentType())
                 ? file.getContentType()
                 : MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
+        io.minio.MinioClient client = getClient();
         try (InputStream inputStream = file.getInputStream()) {
-            ossClient.putObject(
+            client.putObject(
                     PutObjectArgs.builder()
                             .bucket(targetBucket)
                             .object(targetObject)
@@ -132,11 +139,8 @@ public class OssServiceImpl implements OssService {
                             .contentType(contentType)
                             .build());
 
-            StatObjectResponse stat = ossClient.statObject(
-                    StatObjectArgs.builder()
-                            .bucket(targetBucket)
-                            .object(targetObject)
-                            .build());
+            StatObjectResponse stat = client.statObject(
+                    StatObjectArgs.builder().bucket(targetBucket).object(targetObject).build());
 
             UploadResultVO result = new UploadResultVO();
             result.setBucket(targetBucket);
@@ -157,11 +161,7 @@ public class OssServiceImpl implements OssService {
         validateBucketName(bucketName);
         validateObjectName(objectName);
         try {
-            return ossClient.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .build());
+            return getClient().getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
             throw new RuntimeException("获取文件失败：" + e.getMessage(), e);
         }
@@ -175,7 +175,7 @@ public class OssServiceImpl implements OssService {
             expirySeconds = 3600;
         }
         try {
-            return ossClient.getPresignedObjectUrl(
+            return getClient().getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(bucketName)
@@ -192,11 +192,7 @@ public class OssServiceImpl implements OssService {
         validateBucketName(bucketName);
         validateObjectName(objectName);
         try {
-            ossClient.removeObject(
-                    RemoveObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .build());
+            getClient().removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
             throw new RuntimeException("删除对象失败：" + e.getMessage(), e);
         }
@@ -215,11 +211,8 @@ public class OssServiceImpl implements OssService {
                 .collect(Collectors.toList());
 
         try {
-            Iterable<io.minio.Result<DeleteError>> results = ossClient.removeObjects(
-                    RemoveObjectsArgs.builder()
-                            .bucket(bucketName)
-                            .objects(deleteObjects)
-                            .build());
+            Iterable<io.minio.Result<DeleteError>> results = getClient().removeObjects(
+                    RemoveObjectsArgs.builder().bucket(bucketName).objects(deleteObjects).build());
 
             List<String> errors = new ArrayList<>();
             for (io.minio.Result<DeleteError> result : results) {
@@ -239,43 +232,15 @@ public class OssServiceImpl implements OssService {
         }
     }
 
-    /**
-     * 如果存储桶不存在则自动创建
-     */
     private void ensureBucketExists(String bucketName) {
         try {
-            boolean exists = ossClient.bucketExists(
-                    BucketExistsArgs.builder().bucket(bucketName).build());
+            io.minio.MinioClient client = getClient();
+            boolean exists = client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (!exists) {
-                ossClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
         } catch (Exception e) {
             throw new RuntimeException("检查/创建存储桶失败：" + e.getMessage(), e);
         }
-    }
-
-    private void validateBucketName(String bucketName) {
-        if (!StringUtils.hasText(bucketName) || !BUCKET_NAME_PATTERN.matcher(bucketName).matches()) {
-            throw new IllegalArgumentException("存储桶名称不合法：" + bucketName);
-        }
-    }
-
-    private void validateObjectName(String objectName) {
-        if (!StringUtils.hasText(objectName)
-                || objectName.contains("..")
-                || objectName.contains("\\")
-                || objectName.startsWith("/")) {
-            throw new IllegalArgumentException("对象名称不合法：" + objectName);
-        }
-    }
-
-    private String buildPermanentUrl(String bucketName, String objectName) {
-        String domain = StringUtils.hasText(ossProperties.getCustomDomain())
-                ? ossProperties.getCustomDomain()
-                : ossProperties.getEndpoint();
-        if (!domain.endsWith("/")) {
-            domain = domain + "/";
-        }
-        return domain + bucketName + "/" + objectName;
     }
 }

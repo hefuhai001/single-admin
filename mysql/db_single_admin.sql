@@ -125,10 +125,13 @@ INSERT INTO `sys_config` VALUES (17, 'sms.enable', 'false', '是否开启短信�
 INSERT INTO `sys_config` VALUES (18, 'sms.provider', 'aliyun', '短信服务商', 'sms', 'string', 0, 1, 'aliyun-阿里云，tencent-腾讯云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (19, 'sms.sign_name', '通用后台', '短信签名', 'sms', 'string', 0, 1, '短信签名内容', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (20, 'oss.enable', 'false', '是否开启OSS存储', 'oss', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (21, 'oss.provider', 'aliyun', 'OSS服务商', 'oss', 'string', 0, 1, 'aliyun-阿里云，qiniu-七牛云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (22, 'oss.bucket_name', 'my-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (23, 'oss.upload_path', '/uploads', '上传路径前缀', 'oss', 'string', 0, 1, '文件存储路径', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (24, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (21, 'oss.provider', 'minio', 'OSS服务商', 'oss', 'string', 0, 1, 'minio-MinIO，aliyun-阿里云，qiniu-七牛云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (22, 'oss.endpoint', 'http://localhost:9000', 'OSS端点', 'oss', 'string', 0, 1, 'OSS端点', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (23, 'oss.accessKey', 'root', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (24, 'oss.secretKey', 'root@XH2001!', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (25, 'oss.bucket_name', 'default-bucket', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (26, 'oss.custom_domain', 'http://localhost:9000', '自定义域名', 'oss', 'string', 0, 1, '自定义域名配置', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (27, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 
 -- ----------------------------
 -- Table structure for sys_dict_data

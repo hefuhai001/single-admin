@@ -1,61 +1,102 @@
 package com.hfh.api.modules.monitor.oss.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import com.hfh.api.modules.monitor.oss.config.OssProperties;
+import com.hfh.api.modules.monitor.oss.enums.OssProvider;
 import com.hfh.api.modules.monitor.oss.vo.BucketVO;
 import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
 import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
+import com.hfh.api.modules.system.service.ConfigService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
 
 /**
- * OSS 文件存储服务
+ * OSS 路由服务（根据 sys_config 实时 provider 选择对应策略）
  */
-public interface OssService {
+@Slf4j
+@Service
+public class OssService implements com.hfh.api.modules.monitor.oss.service.OssStrategy {
 
-    /**
-     * 列出所有存储桶
-     */
-    List<BucketVO> listBuckets();
+    private final OssProperties ossProperties;
+    private final ConfigService configService;
+    private final List<OssStrategy> strategies;
 
-    /**
-     * 创建存储桶
-     */
-    void createBucket(String bucketName);
+    public OssService(OssProperties ossProperties, ConfigService configService, List<OssStrategy> strategies) {
+        this.ossProperties = ossProperties;
+        this.configService = configService;
+        this.strategies = strategies;
+    }
 
-    /**
-     * 删除存储桶（仅空桶可删除）
-     */
-    void removeBucket(String bucketName);
+    private String currentProviderValue() {
+        String provider = configService.getConfigValue("oss.provider");
+        if (!StringUtils.hasText(provider)) {
+            provider = ossProperties.getProvider();
+        }
+        return provider;
+    }
 
-    /**
-     * 列出指定存储桶下的对象
-     */
-    List<ObjectVO> listObjects(String bucketName, String prefix, boolean recursive);
+    private OssStrategy current() {
+        OssProvider provider = OssProvider.from(currentProviderValue());
+        log.debug("当前 OSS provider：{}", provider.getValue());
+        for (OssStrategy strategy : strategies) {
+            if (strategy.getProvider() == provider) {
+                return strategy;
+            }
+        }
+        throw new RuntimeException("不支持的 OSS 提供商：" + provider.getValue());
+    }
 
-    /**
-     * 上传文件
-     */
-    UploadResultVO upload(MultipartFile file, String bucketName, String objectName);
+    @Override
+    public OssProvider getProvider() {
+        return OssProvider.from(currentProviderValue());
+    }
 
-    /**
-     * 获取文件输入流
-     */
-    InputStream getObject(String bucketName, String objectName);
+    @Override
+    public List<BucketVO> listBuckets() {
+        return current().listBuckets();
+    }
 
-    /**
-     * 获取文件临时预览 URL
-     */
-    String getPreviewUrl(String bucketName, String objectName, int expirySeconds);
+    @Override
+    public void createBucket(String bucketName) {
+        current().createBucket(bucketName);
+    }
 
-    /**
-     * 删除单个对象
-     */
-    void removeObject(String bucketName, String objectName);
+    @Override
+    public void removeBucket(String bucketName) {
+        current().removeBucket(bucketName);
+    }
 
-    /**
-     * 批量删除对象
-     */
-    void removeObjects(String bucketName, List<String> objectNames);
+    @Override
+    public List<ObjectVO> listObjects(String bucketName, String prefix, boolean recursive) {
+        return current().listObjects(bucketName, prefix, recursive);
+    }
+
+    @Override
+    public UploadResultVO upload(MultipartFile file, String bucketName, String objectName) {
+        return current().upload(file, bucketName, objectName);
+    }
+
+    @Override
+    public InputStream getObject(String bucketName, String objectName) {
+        return current().getObject(bucketName, objectName);
+    }
+
+    @Override
+    public String getPreviewUrl(String bucketName, String objectName, int expirySeconds) {
+        return current().getPreviewUrl(bucketName, objectName, expirySeconds);
+    }
+
+    @Override
+    public void removeObject(String bucketName, String objectName) {
+        current().removeObject(bucketName, objectName);
+    }
+
+    @Override
+    public void removeObjects(String bucketName, List<String> objectNames) {
+        current().removeObjects(bucketName, objectNames);
+    }
 }

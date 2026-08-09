@@ -252,7 +252,7 @@ const previewObjectName = ref('')
 
 const loadBuckets = async () => {
     try {
-        const { data } = await api.minio.listBuckets()
+        const { data } = await api.oss.listBuckets()
         bucketList.value = data.data || []
         if (bucketList.value.length && !currentBucket.value) {
             currentBucket.value = bucketList.value[0].name
@@ -278,7 +278,7 @@ const handleQuery = async () => {
     loading.value = true
     try {
         queryParams.bucket = currentBucket.value
-        const { data } = await api.minio.listObjects(queryParams)
+        const { data } = await api.oss.listObjects(queryParams)
         tableData.value = data.data.records || []
         total.value = data.data.total || 0
     } catch (error) {
@@ -320,7 +320,7 @@ const handleCreateBucket = async () => {
     try {
         await bucketFormRef.value.validate()
         bucketSubmitLoading.value = true
-        await api.minio.createBucket(bucketForm.name)
+        await api.oss.createBucket(bucketForm.name)
         ElMessage.success('创建成功')
         bucketDialogVisible.value = false
         await loadBuckets()
@@ -338,7 +338,7 @@ const handleDeleteBucket = async () => {
         await ElMessageBox.confirm('删除存储桶前请确保为空，是否继续？', '提示', {
             type: 'warning',
         })
-        await api.minio.deleteBucket(currentBucket.value)
+        await api.oss.deleteBucket(currentBucket.value)
         ElMessage.success('删除成功')
         currentBucket.value = ''
         await loadBuckets()
@@ -351,7 +351,7 @@ const handleDeleteBucket = async () => {
 
 const handlePreview = async (row) => {
     try {
-        const { data } = await api.minio.previewFile({
+        const { data } = await api.oss.previewFile({
             bucket: currentBucket.value,
             objectName: row.objectName,
         })
@@ -365,7 +365,7 @@ const handlePreview = async (row) => {
 
 const handleDownload = async (row) => {
     try {
-        const { data } = await api.minio.downloadFile({
+        const { data } = await api.oss.downloadFile({
             bucket: currentBucket.value,
             objectName: row.objectName,
         })
@@ -389,7 +389,7 @@ const handleDownload = async (row) => {
 const handleDelete = async (row) => {
     try {
         await ElMessageBox.confirm('确定要删除该文件吗？', '提示', { type: 'warning' })
-        await api.minio.deleteObject({
+        await api.oss.deleteObject({
             bucket: currentBucket.value,
             objectName: row.objectName,
         })
@@ -405,7 +405,7 @@ const handleDelete = async (row) => {
 const handleBatchDelete = async () => {
     try {
         await ElMessageBox.confirm('确定要删除选中的文件吗？', '提示', { type: 'warning' })
-        await api.minio.batchDeleteObjects(currentBucket.value, selectedObjects.value)
+        await api.oss.batchDeleteObjects(currentBucket.value, selectedObjects.value)
         ElMessage.success('批量删除成功')
         handleQuery()
     } catch (error) {

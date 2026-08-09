@@ -683,7 +683,7 @@ const handleReplyUpload = async (options) => {
     const formData = new FormData()
     formData.append('file', file)
     try {
-        const { data } = await api.minio.uploadFile(formData)
+        const { data } = await api.oss.uploadFile(formData)
         replyFormData.attachmentUrl = data.data.permanentUrl || data.data.url
         ElMessage.success('上传成功')
     } catch (error) {

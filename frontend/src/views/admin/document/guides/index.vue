@@ -582,7 +582,7 @@ const handleUpload = async (options) => {
     const fd = new FormData()
     fd.append('file', file)
     try {
-        const { data } = await api.minio.uploadFile(fd)
+        const { data } = await api.oss.uploadFile(fd)
         formData.guideFileUrl = data.data.permanentUrl || data.data.url
         ElMessage.success('上传成功')
         formRef.value?.validateField('guideFileUrl')

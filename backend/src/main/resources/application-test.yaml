@@ -27,9 +27,3 @@ spring:
           starttls:
             enable: true
         debug: true
-oss:
-  endpoint: http://127.0.0.1:9000
-  accessKey: xsmart
-  secretKey: xsmartstorage
-  bucket-name: temporary
-

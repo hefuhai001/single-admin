@@ -46,6 +46,8 @@
         <!-- 工具类版本 -->
         <commons-pool2.version>2.12.0</commons-pool2.version>
         <minio.version>8.5.7</minio.version>
+        <aliyun.oss.version>3.17.4</aliyun.oss.version>
+        <qiniu.oss.version>7.13.1</qiniu.oss.version>
         <lombok.version>1.18.44</lombok.version>
         <freemarker.version>2.3.33</freemarker.version>
         <mysql.version>8.0.33</mysql.version>
@@ -148,6 +150,16 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun.oss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>${qiniu.oss.version}</version>
         </dependency>
         <!--    工具类库    -->
         <dependency>

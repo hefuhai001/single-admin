@@ -28,9 +28,3 @@ spring:
           starttls:
             enable: true
         debug: true
-oss:
-  endpoint: http://localhost:9000
-  accessKey: root
-  secretKey: root@XH2001!
-  bucket-name: default-bucket
-  custom-domain: http://localhost:9000

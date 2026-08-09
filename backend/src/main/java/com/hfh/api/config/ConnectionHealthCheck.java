@@ -1,19 +1,22 @@
 package com.hfh.api.config;
 
+import com.hfh.api.modules.monitor.oss.config.OssProperties;
+import com.hfh.api.modules.monitor.oss.service.OssService;
 import com.zaxxer.hikari.HikariDataSource;
-import io.minio.MinioClient;
-import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 服务启动时连通性检查
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -21,7 +24,8 @@ public class ConnectionHealthCheck implements CommandLineRunner {
 
     private final DataSource dataSource;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final MinioClient minioClient;
+    private final OssProperties ossProperties;
+    private final OssService ossService;
 
     @Override
     public void run(String... args) {
@@ -33,10 +37,10 @@ public class ConnectionHealthCheck implements CommandLineRunner {
 
         boolean mysqlOk = checkMySQL(report);
         boolean redisOk = checkRedis(report);
-        boolean minioOk = checkMinIO(report);
+        boolean ossOk = checkOss(report);
 
         report.append("+------------------------------------------------------------+\n");
-        if (mysqlOk && redisOk && minioOk) {
+        if (mysqlOk && redisOk && ossOk) {
             report.append("  Status: All services connected successfully\n");
         } else {
             report.append("  Status: Some services failed, please check the report above\n");
@@ -86,16 +90,17 @@ public class ConnectionHealthCheck implements CommandLineRunner {
         }
     }
 
-    private boolean checkMinIO(StringBuilder report) {
+    private boolean checkOss(StringBuilder report) {
         long start = System.currentTimeMillis();
+        String provider = StringUtils.hasText(ossProperties.getProvider()) ? ossProperties.getProvider() : "minio";
         try {
-            List<Bucket> buckets = minioClient.listBuckets();
+            int bucketCount = ossService.listBuckets().size();
             long cost = System.currentTimeMillis() - start;
-            report.append(String.format("  [OK]  MinIO   | %d ms | Service OK, %d bucket(s)%n", cost, buckets.size()));
+            report.append(String.format("  [OK]  OSS(%s) | %d ms | Service OK, %d bucket(s)%n", provider, cost, bucketCount));
             return true;
         } catch (Exception e) {
             long cost = System.currentTimeMillis() - start;
-            report.append(String.format("  [FAIL] MinIO   | %d ms | %s%n", cost, e.getMessage()));
+            report.append(String.format("  [FAIL] OSS(%s) | %d ms | %s%n", provider, cost, e.getMessage()));
             return false;
         }
     }

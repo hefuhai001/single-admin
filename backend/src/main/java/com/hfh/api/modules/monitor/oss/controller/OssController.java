@@ -14,10 +14,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,23 +110,24 @@ public class OssController extends BaseController {
     @SaCheckPermission("oss:object:download")
     @GetMapping("/objects/download")
     @Operation(summary = "下载文件")
-    public ResponseEntity<InputStreamResource> download(
+    public void download(
             @Parameter(description = "存储桶名称") @RequestParam String bucket,
             @Parameter(description = "对象名称") @RequestParam String objectName,
             HttpServletResponse response) {
         String bucketName = StringUtils.hasText(bucket) ? bucket : ossProperties.getBucketName();
-        InputStream inputStream = ossService.getObject(bucketName, objectName);
 
         String filename = objectName.contains("/") ? objectName.substring(objectName.lastIndexOf("/") + 1) : objectName;
         String encoded = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"; filename*=UTF-8''" + encoded);
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"; filename*=UTF-8''" + encoded);
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(new InputStreamResource(inputStream));
+        try (InputStream inputStream = ossService.getObject(bucketName, objectName)) {
+            inputStream.transferTo(response.getOutputStream());
+            response.getOutputStream().flush();
+        } catch (Exception e) {
+            throw new RuntimeException("下载文件失败：" + e.getMessage(), e);
+        }
     }
 
     @SaCheckPermission("oss:object:preview")
