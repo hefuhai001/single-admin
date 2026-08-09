@@ -1,4 +1,4 @@
-package com.hfh.api.modules.monitor.minio.service.impl;
+package com.hfh.api.modules.monitor.oss.service.impl;
 
 import io.minio.*;
 import io.minio.http.Method;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hfh.api.modules.monitor.minio.config.MinioProperties;
-import com.hfh.api.modules.monitor.minio.service.MinioService;
-import com.hfh.api.modules.monitor.minio.vo.BucketVO;
-import com.hfh.api.modules.monitor.minio.vo.ObjectVO;
-import com.hfh.api.modules.monitor.minio.vo.UploadResultVO;
+import com.hfh.api.modules.monitor.oss.config.MinioProperties;
+import com.hfh.api.modules.monitor.oss.service.MinioService;
+import com.hfh.api.modules.monitor.oss.vo.BucketVO;
+import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
+import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
 
 import java.io.InputStream;
 import java.util.ArrayList;

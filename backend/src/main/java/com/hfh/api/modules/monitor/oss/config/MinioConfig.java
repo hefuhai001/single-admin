@@ -1,4 +1,4 @@
-package com.hfh.api.modules.monitor.minio.config;
+package com.hfh.api.modules.monitor.oss.config;
 
 import io.minio.MinioClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

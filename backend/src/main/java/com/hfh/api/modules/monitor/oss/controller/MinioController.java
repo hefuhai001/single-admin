@@ -1,13 +1,13 @@
-package com.hfh.api.modules.monitor.minio.controller;
+package com.hfh.api.modules.monitor.oss.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.util.SaResult;
 import com.hfh.api.base.BaseController;
-import com.hfh.api.modules.monitor.minio.config.MinioProperties;
-import com.hfh.api.modules.monitor.minio.service.MinioService;
-import com.hfh.api.modules.monitor.minio.vo.BucketVO;
-import com.hfh.api.modules.monitor.minio.vo.ObjectVO;
-import com.hfh.api.modules.monitor.minio.vo.UploadResultVO;
+import com.hfh.api.modules.monitor.oss.config.MinioProperties;
+import com.hfh.api.modules.monitor.oss.service.MinioService;
+import com.hfh.api.modules.monitor.oss.vo.BucketVO;
+import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
+import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +33,7 @@ import java.util.Map;
  * MinIO 文件管理接口
  */
 @RestController(value = "minioController")
-@RequestMapping("/admin/minio")
+@RequestMapping("/admin/oss")
 @RequiredArgsConstructor
 @Tag(name = "MinIO文件管理", description = "MinIO 存储桶与文件管理接口")
 public class MinioController extends BaseController {
@@ -43,7 +43,7 @@ public class MinioController extends BaseController {
 
     // ==================== 存储桶管理 ====================
 
-    @SaCheckPermission("minio:bucket:query")
+    @SaCheckPermission("oss:bucket:query")
     @GetMapping("/buckets")
     @Operation(summary = "查询存储桶列表")
     public SaResult listBuckets() {
@@ -51,7 +51,7 @@ public class MinioController extends BaseController {
         return SaResult.data(buckets);
     }
 
-    @SaCheckPermission("minio:bucket:add")
+    @SaCheckPermission("oss:bucket:add")
     @PostMapping("/buckets/{bucketName}")
     @Operation(summary = "创建存储桶")
     public SaResult createBucket(
@@ -60,7 +60,7 @@ public class MinioController extends BaseController {
         return SaResult.ok("创建成功");
     }
 
-    @SaCheckPermission("minio:bucket:delete")
+    @SaCheckPermission("oss:bucket:delete")
     @DeleteMapping("/buckets/{bucketName}")
     @Operation(summary = "删除存储桶")
     public SaResult deleteBucket(
@@ -71,7 +71,7 @@ public class MinioController extends BaseController {
 
     // ==================== 对象/文件管理 ====================
 
-    @SaCheckPermission("minio:object:query")
+    @SaCheckPermission("oss:object:query")
     @GetMapping("/objects")
     @Operation(summary = "分页查询对象列表")
     public SaResult listObjects(
@@ -97,7 +97,7 @@ public class MinioController extends BaseController {
         return SaResult.data(page);
     }
 
-    @SaCheckPermission("minio:object:upload")
+    @SaCheckPermission("oss:object:upload")
     @PostMapping("/objects/upload")
     @Operation(summary = "上传文件")
     public SaResult upload(
@@ -109,7 +109,7 @@ public class MinioController extends BaseController {
         return SaResult.data(result);
     }
 
-    @SaCheckPermission("minio:object:download")
+    @SaCheckPermission("oss:object:download")
     @GetMapping("/objects/download")
     @Operation(summary = "下载文件")
     public ResponseEntity<InputStreamResource> download(
@@ -131,7 +131,7 @@ public class MinioController extends BaseController {
                 .body(new InputStreamResource(inputStream));
     }
 
-    @SaCheckPermission("minio:object:preview")
+    @SaCheckPermission("oss:object:preview")
     @GetMapping("/objects/preview")
     @Operation(summary = "获取文件预览地址")
     public SaResult preview(
@@ -143,7 +143,7 @@ public class MinioController extends BaseController {
         return SaResult.data(url);
     }
 
-    @SaCheckPermission("minio:object:delete")
+    @SaCheckPermission("oss:object:delete")
     @DeleteMapping("/objects")
     @Operation(summary = "删除对象")
     public SaResult deleteObject(
@@ -154,7 +154,7 @@ public class MinioController extends BaseController {
         return SaResult.ok("删除成功");
     }
 
-    @SaCheckPermission("minio:object:delete")
+    @SaCheckPermission("oss:object:delete")
     @DeleteMapping("/objects/batch")
     @Operation(summary = "批量删除对象")
     public SaResult deleteObjectsBatch(

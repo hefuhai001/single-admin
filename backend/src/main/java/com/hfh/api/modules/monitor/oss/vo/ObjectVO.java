@@ -1,4 +1,4 @@
-package com.hfh.api.modules.monitor.minio.vo;
+package com.hfh.api.modules.monitor.oss.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

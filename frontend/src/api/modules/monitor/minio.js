@@ -5,7 +5,7 @@ import request from '@/utils/requestUtil.js'
  * @returns {Promise}
  */
 export function listBuckets() {
-    return request.get('/admin/minio/buckets')
+    return request.get('/admin/oss/buckets')
 }
 
 /**
@@ -14,7 +14,7 @@ export function listBuckets() {
  * @returns {Promise}
  */
 export function createBucket(bucketName) {
-    return request.post('/admin/minio/buckets/' + bucketName)
+    return request.post('/admin/oss/buckets/' + bucketName)
 }
 
 /**
@@ -23,7 +23,7 @@ export function createBucket(bucketName) {
  * @returns {Promise}
  */
 export function deleteBucket(bucketName) {
-    return request.delete('/admin/minio/buckets/' + bucketName)
+    return request.delete('/admin/oss/buckets/' + bucketName)
 }
 
 /**
@@ -32,7 +32,7 @@ export function deleteBucket(bucketName) {
  * @returns {Promise}
  */
 export function listObjects(params) {
-    return request.get('/admin/minio/objects', { params })
+    return request.get('/admin/oss/objects', { params })
 }
 
 /**
@@ -41,7 +41,7 @@ export function listObjects(params) {
  * @returns {Promise}
  */
 export function uploadFile(data) {
-    return request.post('/admin/minio/objects/upload', data, {
+    return request.post('/admin/oss/objects/upload', data, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -54,7 +54,7 @@ export function uploadFile(data) {
  * @returns {Promise}
  */
 export function downloadFile(params) {
-    return request.get('/admin/minio/objects/download', {
+    return request.get('/admin/oss/objects/download', {
         params,
         responseType: 'blob',
     })
@@ -66,7 +66,7 @@ export function downloadFile(params) {
  * @returns {Promise}
  */
 export function previewFile(params) {
-    return request.get('/admin/minio/objects/preview', { params })
+    return request.get('/admin/oss/objects/preview', { params })
 }
 
 /**
@@ -75,7 +75,7 @@ export function previewFile(params) {
  * @returns {Promise}
  */
 export function deleteObject(params) {
-    return request.delete('/admin/minio/objects', { params })
+    return request.delete('/admin/oss/objects', { params })
 }
 
 /**
@@ -85,7 +85,7 @@ export function deleteObject(params) {
  * @returns {Promise}
  */
 export function batchDeleteObjects(bucket, objectNames) {
-    return request.delete('/admin/minio/objects/batch', {
+    return request.delete('/admin/oss/objects/batch', {
         params: { bucket },
         data: objectNames,
     })

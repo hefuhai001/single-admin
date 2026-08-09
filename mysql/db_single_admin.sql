@@ -11,7 +11,7 @@
  Target Server Version : 80045 (8.0.45)
  File Encoding         : 65001
 
- Date: 09/08/2026 01:41:11
+ Date: 09/08/2026 14:18:21
 */
 
 SET NAMES utf8mb4;
@@ -274,15 +274,15 @@ INSERT INTO `sys_permission` VALUES (31, 'institutions:delete', '机构删除', 
 INSERT INTO `sys_permission` VALUES (32, 'institutions:update', '机构更新', 1, 29, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (33, 'institutions:query', '机构查询', 1, 29, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-04-15 01:50:42', '2026-04-15 01:50:42');
 INSERT INTO `sys_permission` VALUES (34, 'monitor', '系统监控', 2, 0, '/admin/minio', '', '/admin/minio/index', 'UploadFilled', 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (35, 'minio:list', '对象存储', 2, 34, '/admin/monitor/minio', '/admin/monitor/minio/index', NULL, 'Folder', 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (36, 'minio:bucket:query', '查询存储桶', 1, 35, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (37, 'minio:bucket:add', '创建存储桶', 1, 35, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (38, 'minio:bucket:delete', '删除存储桶', 1, 35, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (39, 'minio:object:query', '查询文件', 1, 35, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (40, 'minio:object:upload', '上传文件', 1, 35, NULL, NULL, NULL, NULL, 5, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (41, 'minio:object:download', '下载文件', 1, 35, NULL, NULL, NULL, NULL, 6, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (42, 'minio:object:preview', '预览文件', 1, 35, NULL, NULL, NULL, NULL, 7, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
-INSERT INTO `sys_permission` VALUES (43, 'minio:object:delete', '删除文件', 1, 35, NULL, NULL, NULL, NULL, 8, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (35, 'oss:list', '对象存储', 2, 34, '/admin/monitor/oss', '/admin/monitor/oss/index', NULL, 'Folder', 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (36, 'oss:bucket:query', '查询存储桶', 1, 35, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (37, 'oss:bucket:add', '创建存储桶', 1, 35, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (38, 'oss:bucket:delete', '删除存储桶', 1, 35, NULL, NULL, NULL, NULL, 3, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (39, 'oss:object:query', '查询文件', 1, 35, NULL, NULL, NULL, NULL, 4, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (40, 'oss:object:upload', '上传文件', 1, 35, NULL, NULL, NULL, NULL, 5, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (41, 'oss:object:download', '下载文件', 1, 35, NULL, NULL, NULL, NULL, 6, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (42, 'oss:object:preview', '预览文件', 1, 35, NULL, NULL, NULL, NULL, 7, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
+INSERT INTO `sys_permission` VALUES (43, 'oss:object:delete', '删除文件', 1, 35, NULL, NULL, NULL, NULL, 8, 1, 1, '2026-06-17 22:43:07', '2026-06-17 22:43:07');
 INSERT INTO `sys_permission` VALUES (45, 'job:list', '定时任务', 2, 34, '/admin/monitor/task/job', '/admin/monitor/task/job/index', NULL, 'Timer', 3, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (46, 'job:query', '定时任务查询', 1, 45, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
 INSERT INTO `sys_permission` VALUES (47, 'job:add', '定时任务新增', 1, 45, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-07-04 01:20:00', '2026-07-04 01:20:00');
