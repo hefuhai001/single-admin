@@ -1,12 +1,12 @@
 /* ==================== 默认主题：科技蓝 ==================== */
 html {
-    --el-color-primary: #3b82f6 !important;
+    --el-color-primary: #3b82f6;
     --el-color-primary-dark-2: #1d4ed8;
-    --el-color-primary-light-3: #2563eb !important;
-    --el-color-primary-light-5: #60a5fa !important;
-    --el-color-primary-light-7: #93c5fd !important;
-    --el-color-primary-light-8: #bfdbfe !important;
-    --el-color-primary-light-9: #eff6ff !important;
+    --el-color-primary-light-3: #2563eb;
+    --el-color-primary-light-5: #60a5fa;
+    --el-color-primary-light-7: #93c5fd;
+    --el-color-primary-light-8: #bfdbfe;
+    --el-color-primary-light-9: #eff6ff;
     --logo-primary: #3b82f6;
     --logo-light: #9fc6f3;
     --logo-lighter: #cfe3f9;

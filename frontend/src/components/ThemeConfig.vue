@@ -46,67 +46,22 @@
                     ></span>
                     主题色
                 </h3>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="flex items-center gap-5 p-5 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <div
-                        v-for="theme in themeStore.getThemePresets()"
-                        :key="theme.key"
-                        @click="selectTheme(theme.key)"
-                        class="relative p-4 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                        :class="[
-                            themeStore.getThemeKey === theme.key
-                                ? 'ring-2 ring-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 shadow-lg'
-                                : 'border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:shadow-md bg-white dark:bg-gray-800',
-                        ]"
-                    >
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center text-xl transform transition-transform duration-300 hover:rotate-12"
-                                :style="{ background: theme.preview }"
-                            >
-                                {{ theme.icon }}
-                            </div>
-                            <div>
-                                <div class="font-bold text-sm text-gray-800 dark:text-gray-200">
-                                    {{ theme.label }}
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ theme.description }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            v-if="themeStore.getThemeKey === theme.key"
-                            class="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-lg animate-pulse"
-                        >
-                            <el-icon><Check /></el-icon>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div
-                    class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 text-center"
-                >
-                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        当前主题：<span class="font-bold text-blue-600 dark:text-blue-400">{{
-                            themeStore.currentTheme?.label
-                        }}</span>
-                    </div>
-                    <div class="flex items-center justify-center gap-2">
-                        <div
-                            class="w-8 h-8 rounded-full shadow-lg"
-                            :style="{ background: themeStore.getPrimaryColor }"
-                        ></div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                        class="w-16 h-16 rounded-2xl shadow-lg ring-2 ring-white dark:ring-gray-700 transition-all duration-300"
+                        :style="{ background: themeStore.getPrimaryColor, boxShadow: `0 8px 24px ${themeStore.getPrimaryColor}40` }"
+                    ></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">自定义主题色</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 font-mono tracking-wide">
                             {{ themeStore.getPrimaryColor }}
                         </div>
                     </div>
+                    <el-color-picker v-model="primaryColor" size="large" />
                 </div>
             </section>
 
-            <section class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <section class="mt-2 pt-4 border-gray-200 dark:border-gray-700">
                 <h3
                     class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-widest flex items-center gap-2"
                 >
@@ -219,8 +174,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { Sunny, Moon, Check, Location, Bottom } from '@element-plus/icons-vue'
+import { computed } from 'vue'
+import { Sunny, Moon, Location, Bottom } from '@element-plus/icons-vue'
 import { useThemeStore } from '@/stores/modules/theme'
 import { ElMessage } from 'element-plus'
 
@@ -255,14 +210,17 @@ const fontSize = computed({
     set: (val) => themeStore.setFontSize(val),
 })
 
+const primaryColor = computed({
+    get: () => themeStore.getPrimaryColor,
+    set: (val) => {
+        themeStore.setPrimaryColor(val)
+        ElMessage.success('主题色已更新')
+    },
+})
+
 const toggleTheme = (value) => {
     themeStore.setMode(value ? 'dark' : 'light')
     ElMessage.success(`已切换到${themeStore.isDark ? '暗色' : '亮色'}模式`)
-}
-
-const selectTheme = (key) => {
-    themeStore.setThemeKey(key)
-    ElMessage.success(`已切换到${themeStore.currentTheme?.label}主题`)
 }
 
 const handleBreadcrumbChange = (value) => {

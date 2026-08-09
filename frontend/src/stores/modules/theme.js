@@ -4,54 +4,10 @@ import { defineStore } from 'pinia'
 const defaultTheme = {
     mode: 'light',
     primaryColor: '#409EFF',
-    themeKey: 'blue',
     fontSize: 14,
     sidebarCollapsed: false,
     showBreadcrumb: true,
     showFooter: true,
-}
-
-const themePresets = {
-    blue: {
-        key: 'blue',
-        label: '科技蓝',
-        icon: '🔵',
-        description: '专业、信任',
-        primaryColor: '#409EFF',
-        preview: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-    },
-    violet: {
-        key: 'violet',
-        label: '紫罗兰',
-        icon: '🟣',
-        description: '创意、优雅',
-        primaryColor: '#8b5cf6',
-        preview: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-    },
-    orange: {
-        key: 'orange',
-        label: '活力橙',
-        icon: '🟠',
-        description: '热情、活力',
-        primaryColor: '#f97316',
-        preview: 'linear-gradient(135deg, #f97316, #c2410c)',
-    },
-    rose: {
-        key: 'rose',
-        label: '玫瑰红',
-        icon: '🔴',
-        description: '浪漫、醒目',
-        primaryColor: '#f43f5e',
-        preview: 'linear-gradient(135deg, #f43f5e, #be123c)',
-    },
-    cyan: {
-        key: 'cyan',
-        label: '清新青',
-        icon: '🔷',
-        description: '清新、科技',
-        primaryColor: '#06b6d4',
-        preview: 'linear-gradient(135deg, #06b6d4, #0e7490)',
-    },
 }
 
 export const useThemeStore = defineStore(
@@ -60,15 +16,17 @@ export const useThemeStore = defineStore(
         const theme = ref({ ...defaultTheme })
 
         const getMode = computed(() => theme.value.mode)
-        const getPrimaryColor = computed(() => theme.value.primaryColor)
-        const getThemeKey = computed(() => theme.value.themeKey)
+        const getPrimaryColor = computed(() => theme.value.primaryColor || defaultTheme.primaryColor)
         const getFontSize = computed(() => theme.value.fontSize)
         const getSidebarCollapsed = computed(() => theme.value.sidebarCollapsed)
         const getShowBreadcrumb = computed(() => theme.value.showBreadcrumb)
         const getShowFooter = computed(() => theme.value.showFooter)
         const isDark = computed(() => theme.value.mode === 'dark')
 
-        const currentTheme = computed(() => themePresets[theme.value.themeKey] || themePresets.blue)
+        const currentTheme = computed(() => ({
+            label: '自定义主题',
+            primaryColor: getPrimaryColor.value,
+        }))
 
         function setMode(mode) {
             theme.value.mode = mode
@@ -81,23 +39,18 @@ export const useThemeStore = defineStore(
         }
 
         function setPrimaryColor(color) {
-            theme.value.primaryColor = color
+            theme.value.primaryColor = normalizeColor(color)
             applyPrimaryColor()
-        }
-
-        function setThemeKey(key) {
-            const preset = themePresets[key]
-            if (preset) {
-                theme.value.themeKey = key
-                theme.value.primaryColor = preset.primaryColor
-                applyThemeKey()
-            }
         }
 
         function applyThemeKey() {
             const html = document.documentElement
-            html.setAttribute('data-theme', theme.value.themeKey)
+            html.setAttribute('data-theme', 'custom')
             applyPrimaryColor()
+        }
+
+        function normalizeColor(color) {
+            return color && /^#([0-9A-Fa-f]{6})$/.test(color) ? color : defaultTheme.primaryColor
         }
 
         function setFontSize(size) {
@@ -123,6 +76,7 @@ export const useThemeStore = defineStore(
 
         function setTheme(newTheme) {
             theme.value = { ...defaultTheme, ...newTheme }
+            theme.value.primaryColor = normalizeColor(theme.value.primaryColor)
             applyTheme()
         }
 
@@ -142,7 +96,8 @@ export const useThemeStore = defineStore(
         }
 
         function applyPrimaryColor() {
-            const primaryColor = theme.value.primaryColor
+            const primaryColor = normalizeColor(theme.value.primaryColor)
+            theme.value.primaryColor = primaryColor
             const el = document.documentElement.style
 
             el.setProperty('--el-color-primary', primaryColor)
@@ -152,6 +107,76 @@ export const useThemeStore = defineStore(
             el.setProperty('--el-color-primary-light-8', mixColor(primaryColor, '#ffffff', 0.8))
             el.setProperty('--el-color-primary-light-9', mixColor(primaryColor, '#ffffff', 0.9))
             el.setProperty('--el-color-primary-dark-2', mixColor(primaryColor, '#000000', 0.2))
+
+            applyThemeScale(primaryColor)
+        }
+
+        function applyThemeScale(color) {
+            const hsl = hexToHsl(color)
+            const scale = generateThemeScale(hsl)
+            const el = document.documentElement.style
+            for (const [key, value] of Object.entries(scale)) {
+                el.setProperty(key, value)
+            }
+            el.setProperty('--logo-primary', color)
+            el.setProperty('--logo-light', scale['--theme-300'])
+            el.setProperty('--logo-lighter', scale['--theme-100'])
+        }
+
+        function generateThemeScale(hsl) {
+            const steps = {
+                50: 97,
+                100: 93,
+                200: 86,
+                300: 78,
+                400: 68,
+                500: 50,
+                600: 42,
+                700: 34,
+                800: 26,
+                900: 18,
+                950: 10,
+            }
+            const scale = {}
+            for (const [step, lightness] of Object.entries(steps)) {
+                scale[`--theme-${step}`] = hslToCss(hsl.h, hsl.s, lightness)
+            }
+            return scale
+        }
+
+        function hexToHsl(hex) {
+            let r = parseInt(hex.slice(1, 3), 16) / 255
+            let g = parseInt(hex.slice(3, 5), 16) / 255
+            let b = parseInt(hex.slice(5, 7), 16) / 255
+
+            const max = Math.max(r, g, b)
+            const min = Math.min(r, g, b)
+            let h = 0
+            let s = 0
+            let l = (max + min) / 2
+
+            if (max !== min) {
+                const d = max - min
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+                switch (max) {
+                    case r:
+                        h = (g - b) / d + (g < b ? 6 : 0)
+                        break
+                    case g:
+                        h = (b - r) / d + 2
+                        break
+                    case b:
+                        h = (r - g) / d + 4
+                        break
+                }
+                h /= 6
+            }
+
+            return { h: h * 360, s: s * 100, l: l * 100 }
+        }
+
+        function hslToCss(h, s, l) {
+            return `hsl(${Math.round(h)} ${Math.round(s)}% ${Math.round(l)}%)`
         }
 
         function mixColor(color1, color2, ratio) {
@@ -180,15 +205,10 @@ export const useThemeStore = defineStore(
             setFontSize(theme.value.fontSize)
         }
 
-        function getThemePresets() {
-            return Object.values(themePresets)
-        }
-
         return {
             theme,
             getMode,
             getPrimaryColor,
-            getThemeKey,
             getFontSize,
             getSidebarCollapsed,
             getShowBreadcrumb,
@@ -198,7 +218,6 @@ export const useThemeStore = defineStore(
             setMode,
             toggleMode,
             setPrimaryColor,
-            setThemeKey,
             setFontSize,
             toggleSidebar,
             setSidebarCollapsed,
@@ -207,7 +226,6 @@ export const useThemeStore = defineStore(
             setTheme,
             resetTheme,
             initTheme,
-            getThemePresets,
         }
     },
     {

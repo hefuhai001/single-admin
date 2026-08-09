@@ -2,7 +2,6 @@
     <div class="aside-layout h-full flex flex-col">
         <!-- 固定顶部 Logo -->
         <div class="logo-area flex items-center px-4 py-2 shrink-0 bg-white dark:bg-[#1d1e1f]">
-            <svg-icon name="logo" class="logo-icon" />
             <span
                 v-show="!themeStore.getSidebarCollapsed"
                 class="font-bold text-xl ml-2 text-theme-500 whitespace-nowrap"
