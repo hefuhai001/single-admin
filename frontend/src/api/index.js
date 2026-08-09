@@ -11,7 +11,7 @@ import * as config from '@/api/modules/system/config.js'
 import * as captcha from '@/api/modules/captcha.js'
 
 import * as online from '@/api/modules/monitor/online.js'
-import * as minio from '@/api/modules/monitor/minio.js'
+import * as oss from '@/api/modules/monitor/oss.js'
 import * as job from '@/api/modules/monitor/job.js'
 import * as jobLog from '@/api/modules/monitor/jobLog.js'
 
@@ -29,7 +29,7 @@ const api = {
     captcha,
 
     online,
-    minio,
+    oss,
     job,
     jobLog,
 }
