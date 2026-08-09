@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hfh.api.modules.monitor.oss.config.MinioProperties;
-import com.hfh.api.modules.monitor.oss.service.MinioService;
+import com.hfh.api.modules.monitor.oss.config.OssProperties;
+import com.hfh.api.modules.monitor.oss.service.OssService;
 import com.hfh.api.modules.monitor.oss.vo.BucketVO;
 import com.hfh.api.modules.monitor.oss.vo.ObjectVO;
 import com.hfh.api.modules.monitor.oss.vo.UploadResultVO;
@@ -24,14 +24,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * MinIO 服务实现
+ * OSS 服务实现
  */
 @Service
 @RequiredArgsConstructor
-public class MinioServiceImpl implements MinioService {
+public class OssServiceImpl implements OssService {
 
-    private final MinioClient minioClient;
-    private final MinioProperties minioProperties;
+    private final MinioClient ossClient;
+    private final OssProperties ossProperties;
 
     /**
      * 存储桶名称规则：小写字母、数字、中划线，3-63 字符，不能以中划线开头或结尾
@@ -41,7 +41,7 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public List<BucketVO> listBuckets() {
         try {
-            return minioClient.listBuckets().stream()
+            return ossClient.listBuckets().stream()
                     .map(bucket -> new BucketVO()
                             .setName(bucket.name())
                             .setCreationDate(Date.from(bucket.creationDate().toInstant())))
@@ -55,12 +55,12 @@ public class MinioServiceImpl implements MinioService {
     public void createBucket(String bucketName) {
         validateBucketName(bucketName);
         try {
-            boolean exists = minioClient.bucketExists(
+            boolean exists = ossClient.bucketExists(
                     BucketExistsArgs.builder().bucket(bucketName).build());
             if (exists) {
                 throw new RuntimeException("存储桶已存在");
             }
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            ossClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class MinioServiceImpl implements MinioService {
     public void removeBucket(String bucketName) {
         validateBucketName(bucketName);
         try {
-            minioClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
+            ossClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
         } catch (Exception e) {
             throw new RuntimeException("删除存储桶失败，请确认存储桶为空：" + e.getMessage(), e);
         }
@@ -89,7 +89,7 @@ public class MinioServiceImpl implements MinioService {
                 builder.prefix(prefix);
             }
             List<ObjectVO> list = new ArrayList<>();
-            for (io.minio.Result<Item> result : minioClient.listObjects(builder.build())) {
+            for (io.minio.Result<Item> result : ossClient.listObjects(builder.build())) {
                 Item item = result.get();
                 ObjectVO vo = new ObjectVO();
                 vo.setObjectName(item.objectName());
@@ -109,7 +109,7 @@ public class MinioServiceImpl implements MinioService {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("上传文件不能为空");
         }
-        String targetBucket = StringUtils.hasText(bucketName) ? bucketName : minioProperties.getBucketName();
+        String targetBucket = StringUtils.hasText(bucketName) ? bucketName : ossProperties.getBucketName();
         validateBucketName(targetBucket);
         ensureBucketExists(targetBucket);
 
@@ -124,7 +124,7 @@ public class MinioServiceImpl implements MinioService {
                 : MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
         try (InputStream inputStream = file.getInputStream()) {
-            minioClient.putObject(
+            ossClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(targetBucket)
                             .object(targetObject)
@@ -132,7 +132,7 @@ public class MinioServiceImpl implements MinioService {
                             .contentType(contentType)
                             .build());
 
-            StatObjectResponse stat = minioClient.statObject(
+            StatObjectResponse stat = ossClient.statObject(
                     StatObjectArgs.builder()
                             .bucket(targetBucket)
                             .object(targetObject)
@@ -157,7 +157,7 @@ public class MinioServiceImpl implements MinioService {
         validateBucketName(bucketName);
         validateObjectName(objectName);
         try {
-            return minioClient.getObject(
+            return ossClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(bucketName)
                             .object(objectName)
@@ -175,7 +175,7 @@ public class MinioServiceImpl implements MinioService {
             expirySeconds = 3600;
         }
         try {
-            return minioClient.getPresignedObjectUrl(
+            return ossClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(bucketName)
@@ -192,7 +192,7 @@ public class MinioServiceImpl implements MinioService {
         validateBucketName(bucketName);
         validateObjectName(objectName);
         try {
-            minioClient.removeObject(
+            ossClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
                             .object(objectName)
@@ -215,7 +215,7 @@ public class MinioServiceImpl implements MinioService {
                 .collect(Collectors.toList());
 
         try {
-            Iterable<io.minio.Result<DeleteError>> results = minioClient.removeObjects(
+            Iterable<io.minio.Result<DeleteError>> results = ossClient.removeObjects(
                     RemoveObjectsArgs.builder()
                             .bucket(bucketName)
                             .objects(deleteObjects)
@@ -244,10 +244,10 @@ public class MinioServiceImpl implements MinioService {
      */
     private void ensureBucketExists(String bucketName) {
         try {
-            boolean exists = minioClient.bucketExists(
+            boolean exists = ossClient.bucketExists(
                     BucketExistsArgs.builder().bucket(bucketName).build());
             if (!exists) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                ossClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
         } catch (Exception e) {
             throw new RuntimeException("检查/创建存储桶失败：" + e.getMessage(), e);
@@ -270,9 +270,9 @@ public class MinioServiceImpl implements MinioService {
     }
 
     private String buildPermanentUrl(String bucketName, String objectName) {
-        String domain = StringUtils.hasText(minioProperties.getCustomDomain())
-                ? minioProperties.getCustomDomain()
-                : minioProperties.getEndpoint();
+        String domain = StringUtils.hasText(ossProperties.getCustomDomain())
+                ? ossProperties.getCustomDomain()
+                : ossProperties.getEndpoint();
         if (!domain.endsWith("/")) {
             domain = domain + "/";
         }

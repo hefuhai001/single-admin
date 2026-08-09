@@ -6,14 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * MinIO 客户端配置
+ * OSS 客户端配置
  */
 @Configuration
-@EnableConfigurationProperties(MinioProperties.class)
-public class MinioConfig {
+@EnableConfigurationProperties(OssProperties.class)
+public class OssConfig {
 
     @Bean
-    public MinioClient minioClient(MinioProperties properties) {
+    public MinioClient ossClient(OssProperties properties) {
         return MinioClient.builder()
                 .endpoint(properties.getEndpoint())
                 .credentials(properties.getAccessKey(), properties.getSecretKey())

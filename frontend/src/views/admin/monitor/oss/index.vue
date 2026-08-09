@@ -18,7 +18,7 @@
                 <el-button
                     type="primary"
                     @click="openCreateBucket"
-                    v-if="routerStore.hasPermission('minio:bucket:add')"
+                    v-if="routerStore.hasPermission('oss:bucket:add')"
                 >
                     <el-icon>
                         <Plus />
@@ -30,7 +30,7 @@
                     plain
                     :disabled="!currentBucket"
                     @click="handleDeleteBucket"
-                    v-if="routerStore.hasPermission('minio:bucket:delete')"
+                    v-if="routerStore.hasPermission('oss:bucket:delete')"
                 >
                     <el-icon>
                         <Delete />
@@ -49,7 +49,7 @@
                     <el-button
                         type="primary"
                         :disabled="!currentBucket"
-                        v-if="routerStore.hasPermission('minio:object:upload')"
+                        v-if="routerStore.hasPermission('oss:object:upload')"
                     >
                         <el-icon>
                             <Upload />
@@ -75,7 +75,7 @@
                     plain
                     :disabled="selectedObjects.length === 0"
                     @click="handleBatchDelete"
-                    v-if="routerStore.hasPermission('minio:object:delete')"
+                    v-if="routerStore.hasPermission('oss:object:delete')"
                 >
                     <el-icon>
                         <Delete />
@@ -116,7 +116,7 @@
                             type="primary"
                             link
                             @click="handlePreview(row)"
-                            v-if="routerStore.hasPermission('minio:object:preview')"
+                            v-if="routerStore.hasPermission('oss:object:preview')"
                         >
                             <el-icon>
                                 <View />
@@ -127,7 +127,7 @@
                             type="primary"
                             link
                             @click="handleDownload(row)"
-                            v-if="routerStore.hasPermission('minio:object:download')"
+                            v-if="routerStore.hasPermission('oss:object:download')"
                         >
                             <el-icon>
                                 <Download />
@@ -138,7 +138,7 @@
                             type="danger"
                             link
                             @click="handleDelete(row)"
-                            v-if="routerStore.hasPermission('minio:object:delete')"
+                            v-if="routerStore.hasPermission('oss:object:delete')"
                         >
                             <el-icon>
                                 <Delete />
@@ -224,7 +224,7 @@ const queryParams = reactive({
     recursive: true,
 })
 
-const uploadAction = computed(() => import.meta.env.VITE_API_URL + '/admin/minio/objects/upload')
+const uploadAction = computed(() => import.meta.env.VITE_API_URL + '/admin/oss/objects/upload')
 const uploadHeaders = computed(() => ({
     Authorization: 'Bearer ' + authStore.token,
 }))

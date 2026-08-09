@@ -28,7 +28,7 @@ spring:
           starttls:
             enable: true
         debug: true
-minio:
+oss:
   endpoint: http://localhost:9000
   accessKey: root
   secretKey: root@XH2001!

@@ -27,7 +27,7 @@ spring:
           starttls:
             enable: true
         debug: true
-minio:
+oss:
   endpoint: http://127.0.0.1:9000
   accessKey: xsmart
   secretKey: xsmartstorage

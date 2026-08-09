@@ -10,9 +10,9 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * MinIO 文件存储服务
+ * OSS 文件存储服务
  */
-public interface MinioService {
+public interface OssService {
 
     /**
      * 列出所有存储桶

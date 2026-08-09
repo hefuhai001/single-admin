@@ -4,14 +4,14 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * MinIO 配置属性
+ * OSS 配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "minio")
-public class MinioProperties {
+@ConfigurationProperties(prefix = "oss")
+public class OssProperties {
 
     /**
-     * MinIO 服务地址
+     * OSS 服务地址
      */
     private String endpoint;
 
