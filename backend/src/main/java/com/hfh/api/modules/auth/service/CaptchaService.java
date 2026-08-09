@@ -297,7 +297,7 @@ public class CaptchaService {
     private void sendVerificationEmail(String email, String code) throws MessagingException, java.io.UnsupportedEncodingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-        helper.setFrom("18365404517@163.com", "语音记账");
+        helper.setFrom("18365404517@163.com", "Single Admin");
         helper.setTo(email);
         helper.setSubject("Single Admin - 邮箱验证码");
         helper.setText(
