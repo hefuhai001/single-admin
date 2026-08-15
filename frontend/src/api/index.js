@@ -15,6 +15,7 @@ import * as online from '@/api/modules/monitor/online.js'
 import * as oss from '@/api/modules/monitor/oss.js'
 import * as job from '@/api/modules/monitor/job.js'
 import * as jobLog from '@/api/modules/monitor/jobLog.js'
+import * as redis from '@/api/modules/monitor/redis.js'
 
 const api = {
     auth,
@@ -34,6 +35,7 @@ const api = {
     oss,
     job,
     jobLog,
+    redis,
 }
 
 export default api
