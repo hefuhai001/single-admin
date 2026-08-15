@@ -395,7 +395,7 @@ const resetForm = () => {
 }
 
 const goToLog = () => {
-    router.push('/admin/task/jobLog')
+    router.push('/admin/monitor/task/jobLog')
 }
 
 handleQuery()
