@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱验证码</title>
+</head>
+<body>
+<div style="padding:24px;font-family:system-ui,-apple-system,sans-serif;">
+    <h2 style="margin:0 0 16px;color:#4667e2;">邮箱验证码</h2>
+    <p style="font-size:15px;color:#333;">您的验证码是：</p>
+    <p style="font-size:32px;font-weight:bold;color:#4667e2;letter-spacing:6px;margin:8px 0;" th:text="${code}">123456</p>
+    <p style="font-size:13px;color:#999;">验证码<span th:text="${expireMinutes}">5</span>分钟内有效，请勿泄露给他人。</p>
+</div>
+</body>
+</html>

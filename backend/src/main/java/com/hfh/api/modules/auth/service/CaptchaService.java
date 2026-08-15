@@ -14,6 +14,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,6 +40,7 @@ public class CaptchaService {
     private final StringRedisTemplate redisTemplate;
     private final JavaMailSender mailSender;
     private final ConfigService configService;
+    private final TemplateEngine templateEngine;
 
     private static final int WIDTH = 280;
     private static final int HEIGHT = 155;
@@ -156,7 +159,8 @@ public class CaptchaService {
 
         // 6. 发送邮件
         try {
-            sendVerificationEmail(dto.getEmail(), code);
+            long expireMinutes = Math.max(1, emailCodeTtl.toMinutes());
+            sendVerificationEmail(dto.getEmail(), code, expireMinutes);
         } catch (Exception e) {
             log.error("发送邮箱验证码失败: email={}, error={}", dto.getEmail(), e.getMessage());
             // 发送失败时清除验证码和限制
@@ -294,21 +298,19 @@ public class CaptchaService {
     /**
      * 发送验证码邮件
      */
-    private void sendVerificationEmail(String email, String code) throws MessagingException, java.io.UnsupportedEncodingException {
+    private void sendVerificationEmail(String email, String code, long expireMinutes) throws MessagingException, java.io.UnsupportedEncodingException {
+        // 渲染邮件模板（templates/mail/verification-code.html）
+        Context context = new Context();
+        context.setVariable("code", code);
+        context.setVariable("expireMinutes", expireMinutes);
+        String htmlContent = templateEngine.process("mail/verification-code", context);
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         helper.setFrom("18365404517@163.com", "Single Admin");
         helper.setTo(email);
         helper.setSubject("Single Admin - 邮箱验证码");
-        helper.setText(
-                "<div style='padding:24px;font-family:system-ui,-apple-system,sans-serif;'>" +
-                        "<h2 style='margin:0 0 16px;color:#4667e2;'>邮箱验证码</h2>" +
-                        "<p style='font-size:15px;color:#333;'>您的验证码是：</p>" +
-                        "<p style='font-size:32px;font-weight:bold;color:#4667e2;letter-spacing:6px;margin:8px 0;'>" + code + "</p>" +
-                        "<p style='font-size:13px;color:#999;'>验证码5分钟内有效，请勿泄露给他人。</p>" +
-                        "</div>",
-                true
-        );
+        helper.setText(htmlContent, true);
         mailSender.send(mimeMessage);
     }
 }

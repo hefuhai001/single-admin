@@ -9,6 +9,7 @@ import * as dictType from '@/api/modules/system/dictType'
 import * as dictData from '@/api/modules/system/dictData'
 import * as config from '@/api/modules/system/config.js'
 import * as captcha from '@/api/modules/captcha.js'
+import * as email from '@/api/modules/email.js'
 
 import * as online from '@/api/modules/monitor/online.js'
 import * as oss from '@/api/modules/monitor/oss.js'
@@ -27,6 +28,7 @@ const api = {
     dictData,
     config,
     captcha,
+    email,
 
     online,
     oss,

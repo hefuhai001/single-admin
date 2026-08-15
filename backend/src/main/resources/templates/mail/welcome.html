@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎加入 Single Admin</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f2f3;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f2f3;padding:32px 16px;">
+    <tr>
+        <td align="center">
+            <!-- 邮件卡片 -->
+            <table cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e5e5;box-shadow:0 20px 60px rgba(0,0,0,0.06);">
+                <!-- 品牌头：科技蓝渐变 -->
+                <tr>
+                    <td style="background-color:#3b82f6;background-image:linear-gradient(160deg,#3b82f6 0%,#2563eb 100%);padding:32px 40px;text-align:center;">
+                        <h1 style="margin:0;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">欢迎加入 Single Admin</h1>
+                        <p style="margin:8px 0 0;font-size:13px;color:#dbeafe;">企业级一站式解决方案</p>
+                    </td>
+                </tr>
+                <!-- 正文 -->
+                <tr>
+                    <td style="padding:40px;">
+                        <p style="margin:0 0 16px;font-size:15px;color:#1a1a1a;line-height:1.8;">尊敬的 <strong th:text="${username}" style="color:#3b82f6;">用户</strong>，您好！</p>
+                        <p style="margin:0 0 24px;font-size:14px;color:#525252;line-height:1.8;">感谢您注册我们的服务。您的验证码是：</p>
+                        <p style="margin:0 0 24px;font-size:32px;font-weight:bold;color:#3b82f6;letter-spacing:8px;text-align:center;background-color:#eff6ff;border:1px dashed #bfdbfe;border-radius:12px;padding:20px 0;" th:text="${code}">123456</p>
+                        <p style="margin:0 0 32px;text-align:center;">
+                            <a th:href="${link}" style="display:inline-block;padding:12px 32px;background-color:#3b82f6;background-image:linear-gradient(160deg,#3b82f6 0%,#2563eb 100%);color:#ffffff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:600;letter-spacing:0.1em;box-shadow:0 8px 24px rgba(59,130,246,0.35);">立即激活</a>
+                        </p>
+                        <p style="margin:0;font-size:13px;color:#94a3b8;text-align:center;">此验证码有效期为 <span th:text="${expireMinutes}">30</span> 分钟，请勿泄露给他人。</p>
+                    </td>
+                </tr>
+                <!-- 页脚 -->
+                <tr>
+                    <td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e5e5e5;text-align:center;">
+                        <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">如非本人操作，请忽略此邮件。</p>
+                        <p style="margin:0;font-size:12px;color:#94a3b8;">© 2026 Single Admin · 企业级一站式解决方案</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
