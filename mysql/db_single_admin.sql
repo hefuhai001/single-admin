@@ -11,7 +11,7 @@
  Target Server Version : 80045 (8.0.45)
  File Encoding         : 65001
 
- Date: 16/08/2026 00:54:17
+ Date: 16/08/2026 00:57:32
 */
 
 SET NAMES utf8mb4;
@@ -318,7 +318,7 @@ INSERT INTO `sys_permission` VALUES (166, 'monitor:online:kick', '在线用户�
 INSERT INTO `sys_permission` VALUES (167, 'email', '邮件管理', 2, 34, '/admin/monitor/email', '/admin/monitor/email/index', '', 'Message', 3, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
 INSERT INTO `sys_permission` VALUES (169, 'email:send', '发送邮件', 1, 167, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
 INSERT INTO `sys_permission` VALUES (170, 'email:batch', '批量发送', 1, 167, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
-INSERT INTO `sys_permission` VALUES (171, 'redis:list', 'Redis缓存', 2, 34, '/admin/monitor/redis', '/admin/monitor/redis/index', NULL, 'Coin', 5, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
+INSERT INTO `sys_permission` VALUES (171, 'redis:list', '缓存监控', 2, 34, '/admin/monitor/redis', '/admin/monitor/redis/index', NULL, 'Coin', 5, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
 INSERT INTO `sys_permission` VALUES (172, 'monitor:redis:query', 'Redis缓存查询', 1, 171, NULL, NULL, NULL, NULL, 1, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
 INSERT INTO `sys_permission` VALUES (173, 'monitor:redis:delete', 'Redis缓存删除', 1, 171, NULL, NULL, NULL, NULL, 2, 1, 1, '2026-08-15 00:00:00', '2026-08-15 00:00:00');
 
