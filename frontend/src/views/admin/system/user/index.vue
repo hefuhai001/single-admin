@@ -18,7 +18,7 @@
                 highlight-current
                 @node-click="handleNodeClick"
             >
-                <template #default="{ node, data }">
+                <template #default="{ node }">
                     <span>
                         <el-icon class="mr-2 text-blue-500">
                             <User />

@@ -64,47 +64,25 @@ export default defineConfig(({ mode }) => {
             },
             rollupOptions: {
                 output: {
-                    // 关键：手动分包策略
+                    // 手动分包：只按当前实际依赖划分，避免引入未使用的库判断
                     manualChunks: (id) => {
-                        // 把 node_modules 从入口文件剥离
-                        if (id.includes('node_modules')) {
-                            // Vue 生态
-                            // if (
-                            // 	id.includes('vue') ||
-                            // 	id.includes('vue-router') ||
-                            // 	id.includes('pinia')
-                            // ) {
-                            // 	return 'vue-vendor';
-                            // }
-                            // 图表库（最可能的大头）
-                            if (
-                                id.includes('echarts') ||
-                                id.includes('chart.js') ||
-                                id.includes('d3') ||
-                                id.includes('plotly.js')
-                            ) {
-                                return 'charts'
-                            }
-                            // UI 组件库
-                            if (
-                                id.includes('element-plus') ||
-                                id.includes('ant-design-vue') ||
-                                id.includes('vuetify')
-                            ) {
-                                return 'ui-vendor'
-                            }
-                            // 工具库
-                            if (
-                                id.includes('lodash') ||
-                                id.includes('moment') ||
-                                id.includes('dayjs') ||
-                                id.includes('axios')
-                            ) {
-                                return 'utils'
-                            }
-                            // 其他依赖
-                            return 'vendor'
+                        if (!id.includes('node_modules')) {
+                            return undefined
                         }
+                        // 图表库（打包体积最大的部分）
+                        if (id.includes('echarts')) {
+                            return 'charts'
+                        }
+                        // UI 组件库（含图标）
+                        if (id.includes('element-plus') || id.includes('@element-plus')) {
+                            return 'ui-vendor'
+                        }
+                        // 通用工具库
+                        if (id.includes('axios') || id.includes('dayjs')) {
+                            return 'utils'
+                        }
+                        // 其余第三方依赖
+                        return 'vendor'
                     },
                 },
             },
@@ -119,11 +97,11 @@ export default defineConfig(({ mode }) => {
                     target: env.VITE_API_PROXY,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
-                    configure: (proxy, options) => {
-                        proxy.on('error', (err, req, res) => {
+                    configure: (proxy) => {
+                        proxy.on('error', (err) => {
                             console.log('代理错误:', err)
                         })
-                        proxy.on('proxyReq', (proxyReq, req, res) => {
+                        proxy.on('proxyReq', (proxyReq, req) => {
                             console.log('代理请求:', req.method, req.url)
                         })
                     },
@@ -133,11 +111,11 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                     ws: true,
                     rewrite: (path) => path.replace(/^\/ws/, ''),
-                    configure: (proxy, op, tions) => {
-                        proxy.on('error', (err, req, res) => {
+                    configure: (proxy) => {
+                        proxy.on('error', (err) => {
                             console.log('WebSocket 代理错误:', err)
                         })
-                        proxy.on('proxyReqWs', (proxyReq, req, socket, options, head) => {
+                        proxy.on('proxyReqWs', (proxyReq, req) => {
                             console.log('WebSocket 连接:', req.url)
                         })
                     },
@@ -148,11 +126,11 @@ export default defineConfig(({ mode }) => {
                     headers: {
                         Authorization: 'Basic ' + btoa('admin:admin123'),
                     },
-                    configure: (proxy, options) => {
-                        proxy.on('error', (err, req, res) => {
+                    configure: (proxy) => {
+                        proxy.on('error', (err) => {
                             console.log('代理错误:', err)
                         })
-                        proxy.on('proxyReq', (proxyReq, req, res) => {
+                        proxy.on('proxyReq', (proxyReq, req) => {
                             console.log('代理请求:', req.method, req.url)
                         })
                     },

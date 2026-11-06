@@ -1,33 +1,17 @@
 import { useRouterStore } from '@/stores/modules/router.js'
-
-const modules = import.meta.glob('@/views/**/*.vue')
+import { viewModules } from './viewRegistry.generated.js'
 
 /**
- * 根据组件路径查找对应的模块
- * Vite 的 import.meta.glob 返回的键格式可能为 /src/views/... 或 ./src/views/...
- * 这里同时尝试两种格式
+ * 视图组件通过构建前生成的显式注册表查找（scripts/generate-view-registry.mjs），
+ * 避免 import.meta.glob 每次启动/构建时全量扫描 src/views。
  */
 function findModule(componentPath) {
-    let path = componentPath
-    if (path.startsWith('/')) {
-        path = path.substring(1)
+    if (!componentPath) {
+        return undefined
     }
 
-    const candidates = [`/src/views/${path}.vue`, `./src/views/${path}.vue`]
-
-    for (const key of candidates) {
-        if (modules[key]) {
-            return modules[key]
-        }
-    }
-
-    // 兜底：遍历所有键，通过后缀匹配
-    const allKeys = Object.keys(modules)
-    const matchedKey = allKeys.find(
-        (key) => key.replace(/^\.\//, '').replace(/^\//, '') === `src/views/${path}.vue`,
-    )
-
-    return matchedKey ? modules[matchedKey] : undefined
+    const normalized = componentPath.trim().replace(/^\/+/, '').replace(/\.vue$/, '')
+    return viewModules[`/src/views/${normalized}.vue`]
 }
 
 export function transformRoutes(routes) {

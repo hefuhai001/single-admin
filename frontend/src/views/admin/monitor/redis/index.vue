@@ -141,16 +141,6 @@
     </div>
 </template>
 
-<style scoped>
-/* 让卡片 body 变为 flex 容器并填满剩余高度，保证左侧树可滚动、右侧详情固定 */
-.key-browser-card :deep(.el-card__body) {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-</style>
-
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -404,3 +394,13 @@ onUnmounted(() => {
     chart?.dispose()
 })
 </script>
+
+<style scoped>
+/* 让卡片 body 变为 flex 容器并填满剩余高度，保证左侧树可滚动、右侧详情固定 */
+.key-browser-card :deep(.el-card__body) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+</style>

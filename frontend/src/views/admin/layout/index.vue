@@ -1,12 +1,12 @@
 <template>
     <el-container>
         <el-aside :width="asideWidth" class="border-r dark:border-gray-600">
-            <aside-com />
+            <AsideCom />
         </el-aside>
         <el-container class="relative">
             <el-header style="padding: 0; height: 90px" class="border-b dark:border-gray-600">
-                <header-com />
-                <tabs-com />
+                <HeaderCom />
+                <TabsCom />
             </el-header>
             <el-main
                 class="bg-[#f1f2f3] dark:bg-[#1d1e1f]"
@@ -32,7 +32,7 @@
                 height="24px"
                 class="border-t dark:border-gray-600 dark:bg-[#1d1e1f]"
             >
-                <footer-com />
+                <FooterCom />
             </el-footer>
         </el-container>
     </el-container>
