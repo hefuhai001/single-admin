@@ -10,7 +10,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-db_single_admin}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/db_single_admin.sql:/docker-entrypoint-initdb.d/db_single_admin.sql:ro
+      # 表结构与初始化数据由后端启动时的 Flyway（backend/src/main/resources/db/migration）创建
     command: >
       --default-authentication-plugin=mysql_native_password
       --character-set-server=${MYSQL_CHARACTER_SET:-utf8mb4}

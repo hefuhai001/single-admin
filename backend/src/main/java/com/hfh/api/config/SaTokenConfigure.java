@@ -32,7 +32,9 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                             // 健康检查端点，供容器 healthcheck 与探针访问
                             "/actuator/health",
                             "/actuator/health/**",
-                            "/actuator/info"
+                            "/actuator/info",
+                            // Prometheus 抓取端点（其余 metrics 端点仍需登录）
+                            "/actuator/prometheus"
                     )
                     .notMatch("/auth/login", "/auth/refresh", "/auth/register", "/system/config/list", "/captcha/**")
                     // 3. 其余接口必须登录

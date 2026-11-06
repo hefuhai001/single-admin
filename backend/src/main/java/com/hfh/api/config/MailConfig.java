@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -26,8 +27,12 @@ public class MailConfig {
 
     /**
      * 创建 JavaMailSender Bean
+     * <p>
+     * 邮箱参数从系统配置表读取，因此需要等待 Flyway 完成建表与初始化数据后再创建。
+     * </p>
      */
     @Bean
+    @DependsOn("flywayInitializer")
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
 

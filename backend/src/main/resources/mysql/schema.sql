@@ -1,3 +1,4 @@
+-- [DEPRECATED] 保留作历史参考；实际建表由 Flyway 脚本 db/migration/V1__init.sql 负责。
 create table sys_institutions
 (
     id                bigint auto_increment comment '机构ID'

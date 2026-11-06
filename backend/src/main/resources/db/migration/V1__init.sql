@@ -1,3 +1,6 @@
+-- V1: 初始化表结构与基础数据（由 mysql/db_single_admin.sql 整理而来）
+-- 仅在空库首次启动时执行；已有库由 baseline-on-migrate 记为基线，不会重复执行本脚本。
+
 /*
  Navicat Premium Dump SQL
 
@@ -20,7 +23,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for doc_feedbacks
 -- ----------------------------
-DROP TABLE IF EXISTS `doc_feedbacks`;
 CREATE TABLE `doc_feedbacks`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '反馈ID',
   `institution_id` bigint NOT NULL COMMENT '机构ID',
@@ -53,7 +55,6 @@ CREATE TABLE `doc_feedbacks`  (
 -- ----------------------------
 -- Table structure for doc_guides
 -- ----------------------------
-DROP TABLE IF EXISTS `doc_guides`;
 CREATE TABLE `doc_guides`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '指南ID',
   `institution_id` bigint NOT NULL COMMENT '机构ID',
@@ -83,7 +84,6 @@ CREATE TABLE `doc_guides`  (
 -- ----------------------------
 -- Table structure for sys_config
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '配置键（唯一标识，如：register.enable）',
@@ -140,7 +140,6 @@ INSERT INTO `sys_config` VALUES (31, 'site.use_backend_theme_color', 'true', '�
 -- ----------------------------
 -- Table structure for sys_dict_data
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '所属字典类型（关联dict_type）',
@@ -176,7 +175,6 @@ INSERT INTO `sys_dict_data` VALUES (14, 'pay_method', '银行卡支付', 'bank',
 -- ----------------------------
 -- Table structure for sys_dict_type
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典名称（如：性别）',
@@ -197,7 +195,6 @@ INSERT INTO `sys_dict_type` VALUES (4, '支付方式', 'pay_method', 1);
 -- ----------------------------
 -- Table structure for sys_institutions
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_institutions`;
 CREATE TABLE `sys_institutions`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '机构ID',
   `parent_id` bigint NULL DEFAULT NULL COMMENT '父机构ID(上级机构)',
@@ -224,7 +221,6 @@ INSERT INTO `sys_institutions` VALUES (3, 1, 'cs', '长沙分公司', 1, 1, '202
 -- ----------------------------
 -- Table structure for sys_permission
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `permission_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -325,7 +321,6 @@ INSERT INTO `sys_permission` VALUES (173, 'monitor:redis:delete', 'Redis缓存�
 -- ----------------------------
 -- Table structure for sys_role
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `role_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -349,7 +344,6 @@ INSERT INTO `sys_role` VALUES (3, '访客', 'guest', '访客权限', 1, '2026-04
 -- ----------------------------
 -- Table structure for sys_role_permission
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_role_permission`;
 CREATE TABLE `sys_role_permission`  (
   `role_id` bigint NOT NULL,
   `permission_id` bigint NOT NULL,
@@ -469,7 +463,6 @@ INSERT INTO `sys_role_permission` VALUES (3, 6, '2026-04-19 04:20:15', '2026-04-
 -- ----------------------------
 -- Table structure for sys_user
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `institution_id` bigint NULL DEFAULT NULL,
@@ -498,7 +491,6 @@ INSERT INTO `sys_user` VALUES (8, 1, 'aaa', '$2a$10$/pmGFxxQBOtm6/f8drA3.uACi7Dt
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role`  (
   `user_id` bigint NOT NULL,
   `role_id` bigint NOT NULL,
@@ -518,7 +510,6 @@ INSERT INTO `sys_user_role` VALUES (8, 2, '2026-08-08 19:23:58', '2026-08-08 19:
 -- ----------------------------
 -- Table structure for task_job
 -- ----------------------------
-DROP TABLE IF EXISTS `task_job`;
 CREATE TABLE `task_job`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `job_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务名称',
@@ -545,7 +536,6 @@ INSERT INTO `task_job` VALUES (1, '示例任务：打印HELLO WORLD', 'DEFAULT',
 -- ----------------------------
 -- Table structure for task_job_log
 -- ----------------------------
-DROP TABLE IF EXISTS `task_job_log`;
 CREATE TABLE `task_job_log`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `job_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务名称',

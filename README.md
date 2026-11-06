@@ -131,7 +131,7 @@ single-admin/
 │   └── src/main/resources/
 │       ├── mapper/                   # MyBatis XML 映射
 │       │   └── system/               # system 模块 Mapper XML
-│       ├── mysql/schema.sql          # 建表参考脚本
+│       ├── db/migration/V1__init.sql # Flyway 迁移脚本（建表 + 初始化数据）
 │       └── application*.yaml         # 配置文件
 │
 ├── frontend/                         # 前端项目 (Vue 3 + Vite)
@@ -151,7 +151,7 @@ single-admin/
 │
 ├── mysql/                            # MySQL 配置与初始化脚本
 │   ├── .env
-│   └── db_single_admin.sql           # 初始化脚本
+│   └── db_single_admin.sql           # 历史 SQL dump（已废弃，仅作参考）
 ├── redis/                            # Redis 配置
 ├── minio/                            # MinIO 配置
 ├── docker-compose.yml                # Docker 编排配置
@@ -177,7 +177,7 @@ single-admin/
 - **sys_user_role** — 用户角色关联表（多对多）
 - **sys_role_permission** — 角色权限关联表（多对多）
 
-> 详细建表 SQL 请参见 `mysql/db_single_admin.sql`
+> 详细建表 SQL 请参见 `backend/src/main/resources/db/migration/V1__init.sql`（由 Flyway 在启动时执行）
 
 ---
 
@@ -196,8 +196,8 @@ single-admin/
 ### 后端启动
 
 ```bash
-# 1. 创建数据库并导入初始化脚本
-mysql -u root -p < mysql/db_single_admin.sql
+# 1. 创建空数据库（表结构与初始化数据由后端启动时的 Flyway 自动执行）
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_single_admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 
 # 2. 配置本地凭据
 # 复制 backend/.env.example 为 backend/.env，填写数据库与 Redis 密码
@@ -207,7 +207,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档地址：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`
+后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档地址：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`，Prometheus 指标：`http://localhost:9999/actuator/prometheus`
 
 ### 前端启动
 
