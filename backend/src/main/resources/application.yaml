@@ -1,9 +1,11 @@
 server:
   # 端口统一由 SERVER_PORT 控制：本地默认 9999，容器内由 docker-compose 注入 8080
   port: ${SERVER_PORT:9999}
+  # 优雅停机：等待在途请求处理完成后再退出
+  shutdown: graceful
   undertow:
-    io-threads: 4 # IO 线程数，默认为 CPU 核心数
-    worker-threads: 20  # 工作线程数
+    io-threads: ${UNDERTOW_IO_THREADS:4} # IO 线程数，默认为 CPU 核心数
+    worker-threads: ${UNDERTOW_WORKER_THREADS:20}  # 工作线程数
     buffer-size: 1024 # 缓冲区大小（字节）
     direct-buffers: true  # 是否分配直接内存（NIO 使用）
     max-http-post-size: 10MB  # 最大 HTTP POST 大小
@@ -12,6 +14,19 @@ spring:
     active: dev
   application:
     name: backend
+  # 优雅停机等待时间
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  # 数据源连接池公共参数，各 profile 可按需覆盖
+  datasource:
+    hikari:
+      pool-name: single-admin-pool
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:30000}
+      idle-timeout: ${DB_IDLE_TIMEOUT_MS:600000}
+      max-lifetime: ${DB_MAX_LIFETIME_MS:1800000}
+      validation-timeout: ${DB_VALIDATION_TIMEOUT_MS:5000}
   # 本地开发时从 backend/.env 读取数据库、Redis 凭据（文件不存在时忽略）
   config:
     import: optional:file:.env[.properties]
@@ -64,8 +79,6 @@ sa-token:
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL
   global-config:
     db-config:
       table-prefix:

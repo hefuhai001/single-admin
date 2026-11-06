@@ -28,3 +28,8 @@ spring:
           starttls:
             enable: true
         debug: true
+
+# 仅开发环境打印 SQL，生产环境不输出 SQL 日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
