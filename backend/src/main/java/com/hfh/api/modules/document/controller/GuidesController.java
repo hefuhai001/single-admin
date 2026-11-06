@@ -5,13 +5,17 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.modules.document.dto.GuidesSaveDTO;
+import com.hfh.api.modules.document.dto.GuidesUpdateDTO;
 import com.hfh.api.modules.document.entity.GuidesEntity;
 import com.hfh.api.modules.document.service.GuidesService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
@@ -87,7 +91,9 @@ public class GuidesController extends BaseController {
     @SaCheckPermission("guides:add")
     @PostMapping
     @Operation(summary = "新增机构指南表")
-    public SaResult saveGuides(@RequestBody GuidesEntity entity) {
+    public SaResult saveGuides(@Valid @RequestBody GuidesSaveDTO dto) {
+        GuidesEntity entity = new GuidesEntity();
+        BeanUtils.copyProperties(dto, entity);
         if (entity.getCreatedBy() == null) {
             entity.setCreatedBy(getCurrentUserId());
         }
@@ -104,7 +110,9 @@ public class GuidesController extends BaseController {
     @SaCheckPermission("guides:update")
     @PutMapping
     @Operation(summary = "更新机构指南表")
-    public SaResult updateGuides(@RequestBody GuidesEntity entity) {
+    public SaResult updateGuides(@Valid @RequestBody GuidesUpdateDTO dto) {
+        GuidesEntity entity = new GuidesEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = guidesService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

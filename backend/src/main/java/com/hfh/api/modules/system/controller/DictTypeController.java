@@ -1,6 +1,8 @@
 package com.hfh.api.modules.system.controller;
 
 import com.hfh.api.modules.system.annotation.RefreshDictCache;
+import com.hfh.api.modules.system.dto.DictTypeSaveDTO;
+import com.hfh.api.modules.system.dto.DictTypeUpdateDTO;
 import com.hfh.api.modules.system.entity.DictTypeEntity;
 import com.hfh.api.modules.system.service.DictTypeService;
 import com.hfh.api.base.BaseController;
@@ -11,7 +13,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "dictTypeEntityController")
@@ -77,7 +81,9 @@ public class DictTypeController extends BaseController {
     @PostMapping
     @Operation(summary = "新增")
     @RefreshDictCache
-    public SaResult saveDictType(@RequestBody DictTypeEntity entity) {
+    public SaResult saveDictType(@Valid @RequestBody DictTypeSaveDTO dto) {
+        DictTypeEntity entity = new DictTypeEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = dictTypeService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -89,7 +95,9 @@ public class DictTypeController extends BaseController {
     @PutMapping
     @Operation(summary = "更新")
     @RefreshDictCache
-    public SaResult updateDictType(@RequestBody DictTypeEntity entity) {
+    public SaResult updateDictType(@Valid @RequestBody DictTypeUpdateDTO dto) {
+        DictTypeEntity entity = new DictTypeEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = dictTypeService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

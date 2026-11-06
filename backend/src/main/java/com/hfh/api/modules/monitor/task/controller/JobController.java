@@ -5,12 +5,16 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.modules.monitor.task.dto.JobSaveDTO;
+import com.hfh.api.modules.monitor.task.dto.JobUpdateDTO;
 import com.hfh.api.modules.monitor.task.entity.JobEntity;
 import com.hfh.api.modules.monitor.task.service.JobService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,7 +66,9 @@ public class JobController extends BaseController {
     @SaCheckPermission("job:add")
     @PostMapping
     @Operation(summary = "新增定时任务")
-    public SaResult saveJob(@RequestBody JobEntity job) {
+    public SaResult saveJob(@Valid @RequestBody JobSaveDTO dto) {
+        JobEntity job = new JobEntity();
+        BeanUtils.copyProperties(dto, job);
         boolean success = jobService.addJob(job);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -70,7 +76,9 @@ public class JobController extends BaseController {
     @SaCheckPermission("job:update")
     @PutMapping
     @Operation(summary = "更新定时任务")
-    public SaResult updateJob(@RequestBody JobEntity job) {
+    public SaResult updateJob(@Valid @RequestBody JobUpdateDTO dto) {
+        JobEntity job = new JobEntity();
+        BeanUtils.copyProperties(dto, job);
         boolean success = jobService.updateJob(job);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

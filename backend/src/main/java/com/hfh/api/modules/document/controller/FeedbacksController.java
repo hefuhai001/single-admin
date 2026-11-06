@@ -5,13 +5,17 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.modules.document.dto.FeedbacksSaveDTO;
+import com.hfh.api.modules.document.dto.FeedbacksUpdateDTO;
 import com.hfh.api.modules.document.entity.FeedbacksEntity;
 import com.hfh.api.modules.document.service.FeedbacksService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
@@ -94,7 +98,9 @@ public class FeedbacksController extends BaseController {
     @SaCheckPermission("feedbacks:add")
     @PostMapping
     @Operation(summary = "新增机构反馈表")
-    public SaResult saveFeedbacks(@RequestBody FeedbacksEntity entity) {
+    public SaResult saveFeedbacks(@Valid @RequestBody FeedbacksSaveDTO dto) {
+        FeedbacksEntity entity = new FeedbacksEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = feedbacksService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -105,7 +111,9 @@ public class FeedbacksController extends BaseController {
     @SaCheckPermission("feedbacks:update")
     @PutMapping
     @Operation(summary = "更新机构反馈表")
-    public SaResult updateFeedbacks(@RequestBody FeedbacksEntity entity) {
+    public SaResult updateFeedbacks(@Valid @RequestBody FeedbacksUpdateDTO dto) {
+        FeedbacksEntity entity = new FeedbacksEntity();
+        BeanUtils.copyProperties(dto, entity);
         if (entity.getRepliedBy() != null && entity.getRepliedAt() == null) {
             entity.setRepliedAt(new Date());
         }

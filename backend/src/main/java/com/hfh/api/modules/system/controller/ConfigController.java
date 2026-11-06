@@ -1,5 +1,7 @@
 package com.hfh.api.modules.system.controller;
 
+import com.hfh.api.modules.system.dto.ConfigSaveDTO;
+import com.hfh.api.modules.system.dto.ConfigUpdateDTO;
 import com.hfh.api.modules.system.entity.ConfigEntity;
 import com.hfh.api.modules.system.service.ConfigService;
 import com.hfh.api.base.BaseController;
@@ -10,7 +12,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -99,7 +103,9 @@ public class ConfigController extends BaseController {
     @SaCheckPermission("config:add")
     @PostMapping
     @Operation(summary = "新增系统配置表")
-    public SaResult saveConfig(@RequestBody ConfigEntity entity) {
+    public SaResult saveConfig(@Valid @RequestBody ConfigSaveDTO dto) {
+        ConfigEntity entity = new ConfigEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = configService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -110,7 +116,9 @@ public class ConfigController extends BaseController {
     @SaCheckPermission("config:update")
     @PutMapping
     @Operation(summary = "更新系统配置表")
-    public SaResult updateConfig(@RequestBody ConfigEntity entity) {
+    public SaResult updateConfig(@Valid @RequestBody ConfigUpdateDTO dto) {
+        ConfigEntity entity = new ConfigEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = configService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

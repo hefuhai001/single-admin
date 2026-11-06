@@ -5,12 +5,16 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.modules.system.dto.PermissionSaveDTO;
+import com.hfh.api.modules.system.dto.PermissionUpdateDTO;
 import com.hfh.api.modules.system.entity.PermissionEntity;
 import com.hfh.api.modules.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "permissionEntityController")
@@ -79,7 +83,9 @@ public class PermissionController extends BaseController {
     @SaCheckPermission("permission:add")
     @PostMapping
     @Operation(summary = "新增权限表（1:接口权限 2:路由权限）")
-    public SaResult savePermission(@RequestBody PermissionEntity entity) {
+    public SaResult savePermission(@Valid @RequestBody PermissionSaveDTO dto) {
+        PermissionEntity entity = new PermissionEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = permissionService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -87,7 +93,9 @@ public class PermissionController extends BaseController {
     @SaCheckPermission("permission:update")
     @PutMapping
     @Operation(summary = "更新权限表（1:接口权限 2:路由权限）")
-    public SaResult updatePermission(@RequestBody PermissionEntity entity) {
+    public SaResult updatePermission(@Valid @RequestBody PermissionUpdateDTO dto) {
+        PermissionEntity entity = new PermissionEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = permissionService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

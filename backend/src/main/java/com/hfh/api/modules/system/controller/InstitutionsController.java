@@ -5,12 +5,16 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.modules.system.dto.InstitutionsSaveDTO;
+import com.hfh.api.modules.system.dto.InstitutionsUpdateDTO;
 import com.hfh.api.modules.system.entity.InstitutionsEntity;
 import com.hfh.api.modules.system.service.InstitutionsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "institutionsEntityController")
@@ -84,7 +88,9 @@ public class InstitutionsController extends BaseController {
     @SaCheckPermission("institutions:add")
     @PostMapping
     @Operation(summary = "新增机构")
-    public SaResult saveInstitutions(@RequestBody InstitutionsEntity entity) {
+    public SaResult saveInstitutions(@Valid @RequestBody InstitutionsSaveDTO dto) {
+        InstitutionsEntity entity = new InstitutionsEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = institutionsService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -95,7 +101,9 @@ public class InstitutionsController extends BaseController {
     @SaCheckPermission("institutions:update")
     @PutMapping
     @Operation(summary = "更新机构")
-    public SaResult updateInstitutions(@RequestBody InstitutionsEntity entity) {
+    public SaResult updateInstitutions(@Valid @RequestBody InstitutionsUpdateDTO dto) {
+        InstitutionsEntity entity = new InstitutionsEntity();
+        BeanUtils.copyProperties(dto, entity);
         boolean success = institutionsService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }
