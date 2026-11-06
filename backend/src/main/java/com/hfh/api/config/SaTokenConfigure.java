@@ -28,7 +28,11 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                             "/webjars/**",
                             "/swagger-resources/configuration/ui",
                             "/swagger-resources/configuration/security",
-                            "/favicon.ico"
+                            "/favicon.ico",
+                            // 健康检查端点，供容器 healthcheck 与探针访问
+                            "/actuator/health",
+                            "/actuator/health/**",
+                            "/actuator/info"
                     )
                     .notMatch("/auth/login", "/auth/refresh", "/auth/register", "/system/config/list", "/captcha/**")
                     // 3. 其余接口必须登录

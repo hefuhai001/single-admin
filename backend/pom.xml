@@ -200,6 +200,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Actuator 健康检查与运行指标 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- Apache POI for XLSX export -->
         <dependency>
             <groupId>org.apache.poi</groupId>

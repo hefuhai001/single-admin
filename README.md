@@ -131,7 +131,7 @@ single-admin/
 │   └── src/main/resources/
 │       ├── mapper/                   # MyBatis XML 映射
 │       │   └── system/               # system 模块 Mapper XML
-│       ├── sql/                      # 数据库脚本
+│       ├── mysql/schema.sql          # 建表参考脚本
 │       └── application*.yaml         # 配置文件
 │
 ├── frontend/                         # 前端项目 (Vue 3 + Vite)
@@ -149,13 +149,14 @@ single-admin/
 │   │   └── utils/                    # 工具函数
 │   └── package.json
 │
-└── docker/                           # Docker 部署
-    ├── docker-compose.yml            # 编排配置
-    ├── mysql/                        # MySQL 配置
-    ├── redis/                        # Redis 配置
-    ├── minio/                        # MinIO 配置
-    ├── backend/                      # 后端部署配置
-    └── frontend/                     # 前端 Nginx 配置
+├── mysql/                            # MySQL 配置与初始化脚本
+│   ├── .env
+│   └── db_single_admin.sql           # 初始化脚本
+├── redis/                            # Redis 配置
+├── minio/                            # MinIO 配置
+├── docker-compose.yml                # Docker 编排配置
+├── .env / .env.example               # 部署环境变量
+└── docs/                             # 设计与方案文档
 ```
 
 ---
@@ -176,7 +177,7 @@ single-admin/
 - **sys_user_role** — 用户角色关联表（多对多）
 - **sys_role_permission** — 角色权限关联表（多对多）
 
-> 详细建表 SQL 请参见 `backend/src/main/resources/sql/db_single_admin.sql`
+> 详细建表 SQL 请参见 `mysql/db_single_admin.sql`
 
 ---
 
@@ -185,6 +186,7 @@ single-admin/
 ### 环境要求
 
 - Node.js >= 20.19.0
+- pnpm（通过 `corepack enable pnpm` 启用）
 - Java >= 25
 - Maven 3.x
 - MySQL 8.0+
@@ -195,7 +197,7 @@ single-admin/
 
 ```bash
 # 1. 创建数据库并导入初始化脚本
-mysql -u root -p < backend/src/main/resources/sql/db_single_admin.sql
+mysql -u root -p < mysql/db_single_admin.sql
 
 # 2. 修改数据库连接配置
 # 编辑 backend/src/main/resources/application-dev.yaml
@@ -205,26 +207,26 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-后端服务默认运行在 `http://localhost:8080`，API 文档地址：`http://localhost:8080/doc.html`
+后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档地址：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`
 
 ### 前端启动
 
 ```bash
-# 1. 安装依赖
+# 1. 安装依赖（项目使用 pnpm，锁文件已纳入版本控制）
 cd frontend
-npm install
+corepack enable pnpm
+pnpm install
 
 # 2. 启动开发服务器
-npm run dev
+pnpm dev
 ```
 
-前端开发服务器默认运行在 `http://localhost:5173`
+前端开发服务器默认运行在 `http://localhost:9998`
 
 ### Docker 部署（推荐）
 
 ```bash
-# 一键启动全部服务
-cd docker
+# 一键启动全部服务（在项目根目录执行）
 docker compose up -d
 ```
 
@@ -243,12 +245,12 @@ Docker Compose 将自动启动以下服务：
 
 | 命令 | 说明 |
 |------|------|
-| `npm run dev` | 开发环境启动 |
-| `npm run dev:test` | 测试环境启动 |
-| `npm run build` | 生产环境构建 |
-| `npm run build:test` | 测试环境构建 |
-| `npm run lint` | 代码检查 |
-| `npm run format` | 代码格式化 |
+| `pnpm dev` | 开发环境启动 |
+| `pnpm dev:test` | 测试环境启动 |
+| `pnpm build` | 生产环境构建 |
+| `pnpm build:test` | 测试环境构建 |
+| `pnpm lint` | 代码检查 |
+| `pnpm format` | 代码格式化 |
 
 ### 后端
 

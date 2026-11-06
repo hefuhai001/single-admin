@@ -1,5 +1,6 @@
 server:
-  port: 9999
+  # 端口统一由 SERVER_PORT 控制：本地默认 9999，容器内由 docker-compose 注入 8080
+  port: ${SERVER_PORT:9999}
   undertow:
     io-threads: 4 # IO 线程数，默认为 CPU 核心数
     worker-threads: 20  # 工作线程数
@@ -81,6 +82,15 @@ springdoc:
     operations-sorter: order
   api-docs:
     path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
 
 logging:
   file:
