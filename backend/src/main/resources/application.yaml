@@ -8,7 +8,7 @@ server:
     max-http-post-size: 10MB  # 最大 HTTP POST 大小
 spring:
   profiles:
-    active: test
+    active: dev
   application:
     name: backend
   jackson:
