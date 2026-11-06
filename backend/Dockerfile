@@ -23,9 +23,9 @@ RUN apk add --no-cache curl tzdata && \
 # 设置时区
 ENV TZ=Asia/Shanghai
 
-# 创建应用目录并设置权限
+# 创建应用目录并设置权限（logs 仅用于 OOM 堆转储）
 WORKDIR /app
-RUN chown -R appuser:appgroup /app
+RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
 
 # 从构建阶段复制 jar 文件
 COPY --from=builder /build/target/*.jar app.jar

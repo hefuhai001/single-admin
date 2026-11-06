@@ -118,13 +118,8 @@ management:
       application: ${spring.application.name}
 
 logging:
-  file:
-    name: ./logs/app.log
-  logback:
-    rollingpolicy:
-      max-file-size: 100MB
-      max-history: 30
-      total-size-cap: 3GB
+  # 日志统一输出到 stdout，由容器/采集端（如 Loki、ELK）负责落盘与聚合；
+  # 生产环境通过 application-prod.yaml 开启结构化 JSON 格式。
   level:
     com.hfh: INFO
     org.springframework: INFO

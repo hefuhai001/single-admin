@@ -41,8 +41,11 @@ springdoc:
   swagger-ui:
     enabled: false
 
-# 生产环境不输出 SQL 调试日志
+# 生产环境不输出 SQL 调试日志；日志以 JSON 输出到 stdout（含 MDC 中的 traceId），便于 Loki/ELK 采集
 logging:
+  structured:
+    format:
+      console: logstash
   level:
     root: INFO
     com.hfh: INFO

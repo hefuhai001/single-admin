@@ -35,14 +35,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
+    # docker compose（非 Swarm）使用 cpus / mem_limit 限制资源，deploy.resources 不生效
+    cpus: 1
+    mem_limit: 1g
     security_opt:
       - no-new-privileges:true
 
@@ -81,14 +76,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+    cpus: 0.5
+    mem_limit: 512m
     security_opt:
       - no-new-privileges:true
 
@@ -119,14 +108,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
+    cpus: 1
+    mem_limit: 1g
     security_opt:
       - no-new-privileges:true
 
@@ -155,8 +138,6 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}
       JAVA_OPTS: ${JAVA_OPTS:--XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0}
-    volumes:
-      - backend_data:/app
     restart: unless-stopped
     networks:
       - webnet
@@ -178,14 +159,8 @@ services:
       options:
         max-size: "20m"
         max-file: "5"
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-        reservations:
-          cpus: '1'
-          memory: 1G
+    cpus: 2
+    mem_limit: 2g
     security_opt:
       - no-new-privileges:true
     read_only: false
@@ -221,14 +196,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-        reservations:
-          cpus: '0.25'
-          memory: 128M
+    cpus: 0.5
+    mem_limit: 256m
     security_opt:
       - no-new-privileges:true
 
@@ -238,8 +207,6 @@ volumes:
   redis_data:
     driver: local
   minio_data:
-    driver: local
-  backend_data:
     driver: local
 
 networks:
