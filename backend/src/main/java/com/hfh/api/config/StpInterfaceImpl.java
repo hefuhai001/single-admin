@@ -14,19 +14,32 @@ public class StpInterfaceImpl implements StpInterface {
 
     private final UserRoleMapper userRoleMapper;
     private final RolePermissionMapper rolePermissionMapper;
+    private final PermissionCache permissionCache;
 
-    /* 获取权限码列表 */
+    /* 获取权限码列表（优先命中缓存） */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         Long userId = Long.valueOf(loginId.toString());
-        return rolePermissionMapper.listPermissionByUserId(userId);
+        List<String> cached = permissionCache.getPermissions(userId);
+        if (cached != null) {
+            return cached;
+        }
+        List<String> permissions = rolePermissionMapper.listPermissionByUserId(userId);
+        permissionCache.putPermissions(userId, permissions);
+        return permissions;
     }
 
-    /* 获取角色列表 */
+    /* 获取角色列表（优先命中缓存） */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         Long userId = Long.valueOf(loginId.toString());
-        return userRoleMapper.listRoleByUserId(userId);
+        List<String> cached = permissionCache.getRoles(userId);
+        if (cached != null) {
+            return cached;
+        }
+        List<String> roles = userRoleMapper.listRoleByUserId(userId);
+        permissionCache.putRoles(userId, roles);
+        return roles;
     }
 
 }

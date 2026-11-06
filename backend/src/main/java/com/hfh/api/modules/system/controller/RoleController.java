@@ -5,6 +5,7 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
+import com.hfh.api.config.PermissionCache;
 import com.hfh.api.modules.system.dto.RoleSaveDTO;
 import com.hfh.api.modules.system.dto.RoleUpdateDTO;
 import com.hfh.api.modules.system.entity.RoleEntity;
@@ -18,6 +19,7 @@ import com.hfh.api.modules.system.vo.RoleVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class RoleController extends BaseController {
     private final RoleService roleService;
     private final RolePermissionService rolePermissionService;
     private final UserRoleService userRoleService;
+    private final PermissionCache permissionCache;
     /**
      * 查询所有角色表接口
      * 
@@ -83,7 +86,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("role:add")
     @PostMapping
     @Operation(summary = "新增角色表")
-    public SaResult saveRole(@RequestBody RoleSaveDTO dto) {
+    public SaResult saveRole(@Valid @RequestBody RoleSaveDTO dto) {
         RoleEntity entity = new RoleEntity();
         entity.setRoleName(dto.getRoleName());
         entity.setRoleCode(dto.getRoleCode());
@@ -100,7 +103,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("role:update")
     @PutMapping
     @Operation(summary = "更新角色表")
-    public SaResult updateRole(@RequestBody RoleUpdateDTO dto) {
+    public SaResult updateRole(@Valid @RequestBody RoleUpdateDTO dto) {
         RoleEntity entity = new RoleEntity();
         entity.setId(dto.getId());
         entity.setRoleName(dto.getRoleName());
@@ -132,7 +135,11 @@ public class RoleController extends BaseController {
         
         // 最后删除角色数据
         boolean success = roleService.removeById(id);
-        return success ? SaResult.ok("删除成功") : SaResult.error("删除失败");
+        if (!success) {
+            return SaResult.error("删除失败");
+        }
+        permissionCache.evictAll();
+        return SaResult.ok("删除成功");
     }
 
     @SaCheckPermission("role:delete")
@@ -156,6 +163,10 @@ public class RoleController extends BaseController {
         
         // 最后批量删除角色数据
         boolean success = roleService.removeByIds(ids);
-        return success ? SaResult.ok("批量删除成功") : SaResult.error("批量删除失败");
+        if (!success) {
+            return SaResult.error("批量删除失败");
+        }
+        permissionCache.evictAll();
+        return SaResult.ok("批量删除成功");
     }
 }

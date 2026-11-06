@@ -2,9 +2,11 @@ package com.hfh.api.modules.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hfh.api.config.PermissionCache;
 import com.hfh.api.modules.system.entity.RolePermissionEntity;
 import com.hfh.api.modules.system.mapper.RolePermissionMapper;
 import com.hfh.api.modules.system.service.RolePermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +22,10 @@ import java.util.stream.Collectors;
  * @since 2026-04-01
  */
 @Service
+@RequiredArgsConstructor
 public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper, RolePermissionEntity> implements RolePermissionService {
+
+    private final PermissionCache permissionCache;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -42,5 +47,7 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
                     .collect(Collectors.toList());
             this.saveBatch(rolePermissions);
         }
+        // 角色权限变动会影响所有持有该角色的用户，直接清空缓存
+        permissionCache.evictAll();
     }
 }
