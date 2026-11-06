@@ -118,7 +118,7 @@ INSERT INTO `sys_config` VALUES (10, 'email.verify.enable', 'true', '是否开�
 INSERT INTO `sys_config` VALUES (11, 'email.smtp.host', 'smtp.163.com', 'SMTP服务器地址', 'email', 'string', 1, 1, 'SMTP服务器地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (12, 'email.smtp.port', '465', 'SMTP端口', 'email', 'integer', 1, 1, 'SSL端口465，TLS端口587', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (13, 'email.sender', '18365404517@163.com', '发件人邮箱', 'email', 'string', 1, 1, '发送邮件的邮箱地址', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (14, 'email.sender.password', 'NPRDDKVXCLILSNQP', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (14, 'email.sender.password', '', '发件人授权码', 'email', 'string', 1, 1, '邮箱授权码或密码，请在系统配置中填写，勿提交真实凭据', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (15, 'email.verify.expire', '300', '验证码有效期（秒）', 'email', 'integer', 1, 1, '默认5分钟', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (16, 'email.send.limit', '60', '邮箱验证码发送间隔（秒）', 'email', 'integer', 1, 1, '默认60秒', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (17, 'sms.enable', 'false', '是否开启短信功能', 'sms', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
@@ -127,8 +127,8 @@ INSERT INTO `sys_config` VALUES (19, 'sms.sign_name', '通用后台', '短信签
 INSERT INTO `sys_config` VALUES (20, 'oss.enable', 'false', '是否开启OSS存储', 'oss', 'boolean', 0, 1, 'true-开启，false-关闭', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (21, 'oss.provider', 'aliyun', 'OSS服务商', 'oss', 'string', 0, 1, 'minio-MinIO，aliyun-阿里云，qiniu-七牛云', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (22, 'oss.endpoint', 'oss-cn-beijing.aliyuncs.com', 'OSS端点', 'oss', 'string', 0, 1, 'OSS端点', '2026-08-05 23:31:49', '2026-08-09 15:41:18');
-INSERT INTO `sys_config` VALUES (23, 'oss.accessKey', '', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
-INSERT INTO `sys_config` VALUES (24, 'oss.secretKey', '', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (23, 'oss.accessKey', '', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥，请在系统配置中填写，勿提交真实凭据', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
+INSERT INTO `sys_config` VALUES (24, 'oss.secretKey', '', 'OSS访问密钥', 'oss', 'string', 0, 1, 'OSS访问密钥，请在系统配置中填写，勿提交真实凭据', '2026-08-05 23:31:49', '2026-08-05 23:31:49');
 INSERT INTO `sys_config` VALUES (25, 'oss.bucket_name', 'hfh-asia', '存储桶名称', 'oss', 'string', 0, 1, 'OSS Bucket名称', '2026-08-05 23:31:49', '2026-08-09 15:41:44');
 INSERT INTO `sys_config` VALUES (26, 'oss.custom_domain', 'oss-cn-beijing.aliyuncs.com', '自定义域名', 'oss', 'string', 0, 1, '自定义域名配置', '2026-08-05 23:31:49', '2026-08-09 15:42:13');
 INSERT INTO `sys_config` VALUES (27, 'oss.max_file_size', '10485760', '最大文件大小（字节）', 'oss', 'integer', 0, 1, '默认10MB', '2026-08-05 23:31:49', '2026-08-05 23:31:49');

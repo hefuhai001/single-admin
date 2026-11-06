@@ -73,7 +73,6 @@ public class UserController extends BaseController {
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer size,
             @Parameter(description = "用户ID") @RequestParam(required = false) Long id,
             @Parameter(description = "用户名") @RequestParam(required = false) String username,
-            @Parameter(description = "密码（加密存储）") @RequestParam(required = false) String password,
             @Parameter(description = "昵称") @RequestParam(required = false) String nickname,
             @Parameter(description = "邮箱") @RequestParam(required = false) String email,
             @Parameter(description = "手机号") @RequestParam(required = false) String phone,
@@ -84,7 +83,6 @@ public class UserController extends BaseController {
         QueryWrapper<UserEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(id != null, "id", id);
         wrapper.like(username != null && !username.isEmpty(), "username", username);
-        wrapper.like(password != null && !password.isEmpty(), "password", password);
         wrapper.like(nickname != null && !nickname.isEmpty(), "nickname", nickname);
         wrapper.like(email != null && !email.isEmpty(), "email", email);
         wrapper.like(phone != null && !phone.isEmpty(), "phone", phone);
@@ -113,7 +111,6 @@ public class UserController extends BaseController {
         UserVO vo = new UserVO();
         vo.setId(entity.getId());
         vo.setUsername(entity.getUsername());
-        vo.setPassword(entity.getPassword());
         vo.setNickname(entity.getNickname());
         vo.setEmail(entity.getEmail());
         vo.setPhone(entity.getPhone());

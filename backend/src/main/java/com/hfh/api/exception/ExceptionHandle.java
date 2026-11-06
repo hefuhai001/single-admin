@@ -102,9 +102,9 @@ public class ExceptionHandle {
     // 邮件发送异常
     @ExceptionHandler(MailException.class)
     public ResponseEntity<?> handleMailException(MailException e) {
-        log.error("邮件发送异常: {}", e.getMessage());
+        log.error("邮件发送异常: {}", e.getMessage(), e);
         return ResponseEntity.badRequest().body(
-                Map.of("code", 500, "message", "邮件发送失败: " + e.getMessage())
+                Map.of("code", 500, "message", "邮件发送失败，请稍后重试")
         );
     }
 
@@ -115,12 +115,12 @@ public class ExceptionHandle {
         return SaResult.code(e.getCode()).setMsg(e.getMessage());
     }
 
-    // 系统异常
+    // 系统异常：仅记录服务端日志，响应中不返回异常细节，避免泄露内部信息
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
-        log.error("系统异常: {}", e.getMessage(), e);
+        log.error("系统异常", e);
         return ResponseEntity.internalServerError().body(
-                Map.of("code", 500, "message", "系统内部错误: " + e.getMessage())
+                Map.of("code", 500, "message", "系统内部错误，请稍后重试")
         );
     }
 

@@ -1,6 +1,7 @@
 package com.hfh.api.modules.monitor.mail.service;
 
 import com.hfh.api.config.SysConfigKeys;
+import com.hfh.api.exception.BusinessException;
 import com.hfh.api.modules.monitor.mail.dto.EmailRequest;
 import com.hfh.api.modules.monitor.mail.dto.TemplateEmailRequest;
 import com.hfh.api.modules.monitor.mail.dto.WelcomeTemplateVariables;
@@ -33,18 +34,19 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class EmailService {
 
-    /** 发件人默认值（与 sys_config 中 email.sender 一致） */
-    private static final String DEFAULT_FROM = "18365404517@163.com";
-
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final ConfigService configService;
 
     /**
-     * 获取发件人邮箱（从系统配置表读取，未配置时使用默认值）
+     * 获取发件人邮箱（只从系统配置表读取，不在代码中硬编码邮箱地址）
      */
     private String getFrom() {
-        return configService.getConfigValue(SysConfigKeys.EMAIL_SENDER, DEFAULT_FROM);
+        String from = configService.getConfigValue(SysConfigKeys.EMAIL_SENDER, "");
+        if (from.isEmpty()) {
+            throw new BusinessException("未配置发件人邮箱 email.sender");
+        }
+        return from;
     }
 
     /**

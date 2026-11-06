@@ -199,8 +199,8 @@ single-admin/
 # 1. 创建数据库并导入初始化脚本
 mysql -u root -p < mysql/db_single_admin.sql
 
-# 2. 修改数据库连接配置
-# 编辑 backend/src/main/resources/application-dev.yaml
+# 2. 配置本地凭据
+# 复制 backend/.env.example 为 backend/.env，填写数据库与 Redis 密码
 
 # 3. 启动后端服务
 cd backend

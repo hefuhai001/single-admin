@@ -7,7 +7,6 @@ import request from '@/utils/requestUtil.js'
  * @param {number} params.size 每页大小
  * @param {Long} params.id 用户ID
  * @param {String} params.username 用户名
- * @param {String} params.password 密码（加密存储）
  * @param {String} params.nickname 昵称
  * @param {String} params.email 邮箱
  * @param {String} params.phone 手机号

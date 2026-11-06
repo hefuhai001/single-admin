@@ -13,11 +13,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController(value = "configEntityController")
 @RequestMapping("/system/config")
 @RequiredArgsConstructor
 @Tag(name = "系统配置表管理", description = "系统配置表增删改查接口")
 public class ConfigController extends BaseController {
+
+    /**
+     * 允许公开访问的配置键：仅包含前端渲染必需、且不含任何敏感信息的项。
+     * 邮箱授权码、OSS 密钥等配置不会出现在公开接口的返回结果中。
+     */
+    private static final Set<String> PUBLIC_CONFIG_KEYS = Set.of(
+            "site.title",
+            "site.icp",
+            "site.primary_color",
+            "site.use_backend_theme_color",
+            "register.enable",
+            "register.verify_code.enable"
+    );
 
     private final ConfigService configService;
 
@@ -36,12 +51,14 @@ public class ConfigController extends BaseController {
     }
 
     /**
-     * 查询所有系统配置表
+     * 查询公开的系统配置（免登录接口，仅供前端渲染使用）
+     * <p>只返回 {@link #PUBLIC_CONFIG_KEYS} 白名单内的配置项。</p>
      */
     @GetMapping("/list")
-    @Operation(summary = "查询所有系统配置表")
+    @Operation(summary = "查询公开的系统配置")
     public SaResult listConfig() {
         QueryWrapper<ConfigEntity> wrapper = new QueryWrapper<>();
+        wrapper.in("config_key", PUBLIC_CONFIG_KEYS);
         wrapper.orderByAsc("id");
         return SaResult.data(configService.list(wrapper));
     }

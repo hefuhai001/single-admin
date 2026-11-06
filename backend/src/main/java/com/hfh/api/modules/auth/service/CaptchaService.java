@@ -307,7 +307,11 @@ public class CaptchaService {
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-        helper.setFrom("18365404517@163.com", "Single Admin");
+        String from = configService.getConfigValue(SysConfigKeys.EMAIL_SENDER, "");
+        if (from.isEmpty()) {
+            throw new BusinessException("未配置发件人邮箱 email.sender");
+        }
+        helper.setFrom(from, "Single Admin");
         helper.setTo(email);
         helper.setSubject("Single Admin - 邮箱验证码");
         helper.setText(htmlContent, true);

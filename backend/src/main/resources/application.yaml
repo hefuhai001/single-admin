@@ -12,6 +12,9 @@ spring:
     active: dev
   application:
     name: backend
+  # 本地开发时从 backend/.env 读取数据库、Redis 凭据（文件不存在时忽略）
+  config:
+    import: optional:file:.env[.properties]
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss

@@ -33,8 +33,12 @@ public class MailConfig {
 
         String host = configService.getConfigValue("email.smtp.host", "smtp.163.com");
         int port = parseInt(configService.getConfigValue("email.smtp.port", "465"), 465);
-        String username = configService.getConfigValue("email.sender", "18365404517@163.com");
-        String password = configService.getConfigValue("email.sender.password", "NPRDDKVXCLILSNQP");
+        // 账号与授权码只从系统配置表读取，不在代码中保留任何默认凭据
+        String username = configService.getConfigValue("email.sender", "");
+        String password = configService.getConfigValue("email.sender.password", "");
+        if (username.isEmpty() || password.isEmpty()) {
+            log.warn("邮件配置不完整，请在系统配置中填写 email.sender 与 email.sender.password");
+        }
 
         sender.setHost(host);
         sender.setPort(port);

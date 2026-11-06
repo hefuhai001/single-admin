@@ -32,6 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
+### 环境变量（含凭据，禁止提交）###
+.env
+!.env.example
+
 
 # Logs
 logs

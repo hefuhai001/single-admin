@@ -1,6 +1,7 @@
 package com.hfh.api.modules.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -45,8 +46,9 @@ public class UserEntity implements Serializable {
     private String username;
 
     /**
-     * 密码（加密存储）
+     * 密码（加密存储），禁止随接口响应序列化输出
      */
+    @JsonIgnore
     @TableField("password")
     private String password;
 
