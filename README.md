@@ -202,7 +202,14 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_single_admin CHARACTER SET
 # 2. 配置本地凭据
 # 复制 backend/.env.example 为 backend/.env，填写数据库与 Redis 密码
 
+[Environment]::SetEnvironmentVariable('JAVA_HOME','C:\Program Files\BellSoft\LibericaJDK-25','User')
+
 # 3. 启动后端服务
+$env:JAVA_HOME = 'C:\Program Files\BellSoft\LibericaJDK-25'
+$env:Path = "$env:JAVA_HOME\bin;" + $env:Path
+java --version
+javac --version
+
 cd backend
 ./mvnw spring-boot:run
 ```
