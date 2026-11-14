@@ -3,6 +3,8 @@ server:
   port: ${SERVER_PORT:9999}
   # 优雅停机：等待在途请求处理完成后再退出
   shutdown: graceful
+  # 通过 nginx 反向代理时，从 X-Forwarded-For / X-Real-IP 解析真实客户端 IP
+  forward-headers-strategy: framework
   undertow:
     io-threads: ${UNDERTOW_IO_THREADS:4} # IO 线程数，默认为 CPU 核心数
     worker-threads: ${UNDERTOW_WORKER_THREADS:20}  # 工作线程数
