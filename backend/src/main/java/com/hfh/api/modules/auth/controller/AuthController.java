@@ -6,6 +6,7 @@ import com.hfh.api.base.BaseController;
 import com.hfh.api.modules.auth.dto.RegisterDTO;
 import com.hfh.api.modules.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,7 +93,7 @@ public class AuthController extends BaseController {
      * @return 注册结果
      */
     @PostMapping("/register")
-    public SaResult register(@RequestBody RegisterDTO dto) {
+    public SaResult register(@Valid @RequestBody RegisterDTO dto) {
         return SaResult.data(authService.register(dto));
     }
 }
