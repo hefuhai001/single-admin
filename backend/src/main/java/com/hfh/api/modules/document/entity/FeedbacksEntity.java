@@ -103,10 +103,4 @@ public class FeedbacksEntity implements Serializable {
 
     @TableField("updated_at")
     private Date updatedAt;
-
-    /**
-     * 软删除
-     */
-    @TableField("is_deleted")
-    private Boolean isDeleted;
 }
