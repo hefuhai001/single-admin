@@ -171,6 +171,8 @@ services:
       dockerfile: Dockerfile
       args:
         - BUILD_ENV=production
+        # 从根目录 .env 插值注入前端构建变量，不把 .env 拷入构建上下文
+        - VITE_API_URL=${VITE_API_URL:-/api}
     image: vd-frontend:${VERSION:-latest}
     container_name: vd-frontend
     ports:

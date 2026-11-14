@@ -130,7 +130,7 @@ pnpm test
 
 ## 不要提交的内容
 
-- `.env`、`backend/.env` 等包含凭据的文件；
+- 项目根目录 `.env` 等包含凭据的文件（模板 `.env.example` 可提交）；
 - 数据库导出、日志、构建产物（`target/`、`dist/`、`coverage/`）；
 - IDE 个人配置（`.idea/`、`.vscode/` 中的个人设置）。
 

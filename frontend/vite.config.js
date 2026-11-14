@@ -11,10 +11,38 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 
 // https://vite.dev/config/
+// 全项目唯一的 .env 位于项目根目录（frontend/ 的上一级）
+const rootDir = fileURLToPath(new URL('../', import.meta.url))
+
+// 各 mode 的默认代理目标；根目录 .env 中的 VITE_* 变量可覆盖
+const proxyTargets = {
+    development: {
+        api: 'http://127.0.0.1:9999',
+        ws: 'ws://127.0.0.1:9999',
+        actuator: 'http://127.0.0.1:9999',
+    },
+    test: {
+        api: 'http://39.98.51.161:9000/api',
+        ws: 'ws://39.98.51.161:9000/api',
+        actuator: 'http://39.98.51.161:9999/actuator',
+    },
+    production: {
+        api: 'https://next.xsmartanalysis.com/api',
+        ws: 'ws://next.xsmartanalysis.com/api',
+        actuator: 'http://39.98.51.161:9999/actuator',
+    },
+}
+
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd())
+    const env = loadEnv(mode, rootDir)
+    const proxyTarget = proxyTargets[mode] || proxyTargets.development
 
     return {
+        envDir: rootDir,
+        // CI / 未创建 .env 的环境也能构建出可用产物（默认值可被 .env 或 build args 覆盖）
+        define: {
+            'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api'),
+        },
         plugins: [
             vue(),
             vueJsx(),
@@ -94,7 +122,7 @@ export default defineConfig(({ mode }) => {
             open: false,
             proxy: {
                 '/api': {
-                    target: env.VITE_API_PROXY,
+                    target: env.VITE_API_PROXY || proxyTarget.api,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                     configure: (proxy) => {
@@ -107,7 +135,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
                 '/ws': {
-                    target: env.VITE_WS_PROXY,
+                    target: env.VITE_WS_PROXY || proxyTarget.ws,
                     changeOrigin: true,
                     ws: true,
                     rewrite: (path) => path.replace(/^\/ws/, ''),
@@ -121,7 +149,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
                 '/actuator': {
-                    target: env.VITE_ACTUATOR_PROXY,
+                    target: env.VITE_ACTUATOR_PROXY || proxyTarget.actuator,
                     changeOrigin: true,
                     headers: {
                         Authorization: 'Basic ' + btoa('admin:admin123'),

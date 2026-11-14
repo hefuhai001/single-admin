@@ -151,7 +151,7 @@ single-admin/
 ├── docker/                           # 容器辅助脚本
 │   └── redis/redis-entrypoint.sh     # Redis 启动脚本（从环境变量生成配置）
 ├── docker-compose.yml                # Docker 编排配置
-├── .env / .env.example               # 部署环境变量
+├── .env / .env.example               # 全项目唯一环境变量（前后端 / 本地 / Docker 共用）
 └── docs/                             # 项目文档
     ├── IMPROVEMENTS.md               # 改进评估清单与推进计划
     └── test-report.md                # 单元测试与覆盖率报告
@@ -191,6 +191,8 @@ single-admin/
 - Redis
 - MinIO
 
+> **环境变量**：全项目只使用项目根目录的 `.env`（从 `.env.example` 复制，已被 git 忽略，禁止提交）。docker compose、后端本地开发（Spring 导入）、前端 Vite 与前端 Docker 构建都读取它；不要再创建 `backend/.env` 或 `frontend/.env.*`。各变量含义见 `.env.example` 注释。
+
 ### 后端启动
 
 ```bash
@@ -198,7 +200,7 @@ single-admin/
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_single_admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 
 # 2. 配置本地凭据
-# 复制 backend/.env.example 为 backend/.env，填写数据库与 Redis 密码
+# 在项目根目录复制 .env.example 为 .env，填写数据库与 Redis 密码
 
 [Environment]::SetEnvironmentVariable('JAVA_HOME','C:\Program Files\BellSoft\LibericaJDK-25','User')
 
@@ -235,7 +237,10 @@ pnpm dev
 ### Docker 部署（推荐）
 
 ```bash
-# 一键启动全部服务（在项目根目录执行）
+# 1. 首次部署：复制统一模板并填写凭据（PowerShell 用 Copy-Item .env.example .env）
+cp .env.example .env
+
+# 2. 一键启动全部服务（在项目根目录执行）
 docker compose up -d
 ```
 
@@ -245,6 +250,8 @@ Docker Compose 将自动启动以下服务：
 - MinIO
 - 后端 API 服务
 - 前端 Nginx 服务
+
+compose 从根目录 `.env` 读取端口与凭据并注入后端容器；前端构建通过 `build args` 注入 `VITE_API_URL`，`.env` 本身不会进入镜像。
 
 发布与回滚：
 - 推送 `v*` tag 会触发发布流水线，构建前后端镜像并推送到 GHCR，同时生成 GitHub Release 变更记录。

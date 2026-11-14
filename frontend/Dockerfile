@@ -4,6 +4,11 @@ FROM node:22 AS builder
 # 设置工作目录
 WORKDIR /app
 
+# 前端构建变量由 docker compose 从根目录 .env 通过 build args 注入
+# 只注入公开变量，绝不把含凭据的 .env 复制进镜像
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
 # 启用 pnpm 并设置镜像源
 RUN corepack enable pnpm && \
     pnpm config set registry https://registry.npmmirror.com
