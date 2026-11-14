@@ -271,6 +271,17 @@ Docker Compose 将自动启动以下服务：
 
 ---
 
+## 文档
+
+- [文档索引](docs/README.md)
+- [改进评估清单](docs/IMPROVEMENTS.md)
+- [测试与覆盖率报告](docs/test-report.md)
+- [贡献指南](docs/CONTRIBUTING.md)
+- [安全策略](docs/SECURITY.md)
+- [变更日志](docs/CHANGELOG.md)
+
+---
+
 ## 许可证
 
-MIT License
+本项目基于 [MIT License](LICENSE) 开源。
