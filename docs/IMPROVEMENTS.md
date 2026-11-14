@@ -116,58 +116,65 @@
 
 ### P1-1 注册接口缺少参数校验
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[AuthController.java](../backend/src/main/java/com/hfh/api/modules/auth/controller/AuthController.java)、[RegisterDTO.java](../backend/src/main/java/com/hfh/api/modules/auth/dto/RegisterDTO.java)
 - 现状：`register(@RequestBody RegisterDTO dto)` 未加 `@Valid`，DTO 上无任何约束注解。
 - 影响：用户名/密码为空时会在 `BCryptPasswordEncoder.encode(null)` 处抛异常，返回 500 而非友好提示；超长用户名/密码会触发数据库异常。
+- 修复：DTO 增加 `@NotBlank`、`@Size`、`@Email`、`@Pattern`（密码需含字母和数字）等约束，控制器加 `@Valid`，由全局异常处理返回友好提示；前端注册表单同步密码复杂度规则。
 - 建议：补充 `@NotBlank`、`@Size`、`@Email` 等约束，控制器加 `@Valid`；密码增加复杂度校验。
 
 ### P1-2 `sys_user.email` 缺少唯一索引
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[V1__init.sql](../backend/src/main/resources/db/migration/V1__init.sql)
 - 现状：`sys_user` 仅有 `username` 唯一索引，邮箱唯一性只在 `AuthService.register` 中应用层查重。
 - 影响：并发注册可写入重复邮箱；此后按邮箱登录使用 `selectOne` 会抛 `TooManyResultsException`。
+- 修复：新增 [V2__add_user_email_unique.sql](../backend/src/main/resources/db/migration/V2__add_user_email_unique.sql)，先将重复邮箱中除最早记录外置空，再添加唯一索引 `uk_email`。
 - 建议：新增 Flyway 迁移脚本 `V2__add_user_email_unique.sql`，先清理重复数据再加唯一索引（MySQL 允许多个 `NULL`）。
 
 ### P1-3 部署后客户端 IP 失真
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[AuthController.java](../backend/src/main/java/com/hfh/api/modules/auth/controller/AuthController.java)、[application.yaml](../backend/src/main/resources/application.yaml)
 - 现状：通过 `request.getRemoteAddr()` 获取登录 IP，但未配置 `server.forward-headers-strategy`；nginx 会设置 `X-Real-IP` / `X-Forwarded-For`。
 - 影响：Docker 部署下记录的登录 IP、在线用户 IP 均为 nginx 容器地址，审计与排障价值丧失。
+- 修复：配置 `server.forward-headers-strategy: framework`，由容器从转发头解析真实客户端 IP。
 - 建议：配置 `server.forward-headers-strategy: framework`（或 native），并确认 nginx 透传头正确；对不可信来源仍需做 IP 解析校验。
 
 ### P1-4 分页参数无上限，OSS 列表全量加载
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[OssController.java](../backend/src/main/java/com/hfh/api/modules/monitor/oss/controller/OssController.java) 及各 `page` 接口
 - 现状：`size` 未限制最大值；OSS 对象列表先 `listObjects` 拉取全部，再内存 `subList` 分页。
 - 影响：桶内文件较多时，单次请求可能拉取数十万条对象，造成内存占用过高、接口超时甚至 OOM。
+- 修复：OSS 列表单页 `size` 限制为 1~100，底层列表最多扫描 1 万个对象，避免一次性拉取全量数据；数据库分页已由 MyBatis-Plus 的 `maxLimit` 统一限制。
 - 建议：统一限制 `size <= 100`（可在 DTO 或全局参数校验中实现）；OSS 列表改用服务端分页（MinIO/S3 的 `listObjectsV2` 支持 continuation token）。
 
 ### P1-5 事务边界写在 Controller 层
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[RoleController.java](../backend/src/main/java/com/hfh/api/modules/system/controller/RoleController.java)
 - 现状：部分多表写操作在 Controller 方法上直接标注 `@Transactional`。
 - 影响：事务边界与业务逻辑分离，后续 Controller 复用或加入非事务逻辑时容易产生隐式事务问题。
+- 修复：删除角色/批量删除的事务逻辑下沉到 `RoleServiceImpl.deleteRole` / `deleteRoles`，Controller 仅做参数适配与响应包装。
 - 建议：将事务下沉到 Service 层，Controller 只负责参数适配与响应包装。
 
 ### P1-6 删除语义不统一
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[BaseEntity.java](../backend/src/main/java/com/hfh/api/base/BaseEntity.java)、`doc_*` 实体
 - 现状：只有 `doc_guides` / `doc_feedbacks` 有 `is_deleted` 字段，且未使用 `@TableLogic`；系统模块实体均为物理删除。
 - 影响：各模块删除策略不一致，后续新增表容易各自实现；误删无法恢复。
+- 修复：统一约定为物理删除，移除 `doc_guides` / `doc_feedbacks` 实体中未生效的 `isDeleted` 字段，避免出现“看似软删除、实则物理删除”的误导；新增模块统一按物理删除实现。
 - 建议：统一约定（全物理删除或全逻辑删除），若采用逻辑删除则在 `BaseEntity` 中抽象 `isDeleted` 并配置 `@TableLogic`，同时同步查询条件。
 
 ### P1-7 系统配置接口明文返回敏感项
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[ConfigController.java](../backend/src/main/java/com/hfh/api/modules/system/controller/ConfigController.java)
 - 现状：分页查询接口会返回 `oss.secretKey`、`email.sender.password` 等配置的明文值。
 - 影响：拥有 `config:query` 权限的账号可直接读取第三方存储/邮箱凭据。
+- 修复：分页与详情接口对名称含 `password` / `secret` / `accessKey` / `token` 的配置项统一脱敏为 `******`；更新时提交该占位值则保留数据库原值，避免误覆盖。
 - 建议：接口层按配置 key 脱敏（如仅返回 `******`），编辑时通过独立接口校验后更新；或对敏感项单独加密存储。
 
 ---
