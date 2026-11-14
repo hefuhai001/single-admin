@@ -39,7 +39,7 @@
         <sa-token.version>1.40.0</sa-token.version>
         <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <hutool.version>5.8.40</hutool.version>
+        <hutool.version>5.8.48</hutool.version>
 
         <!-- 工具类版本 -->
         <commons-pool2.version>2.12.0</commons-pool2.version>
