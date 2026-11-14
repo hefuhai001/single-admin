@@ -1,0 +1,91 @@
+name: Bug 报告
+description: 报告一个可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间反馈问题。提交前请先搜索现有 Issue，确认不是重复问题。
+        请勿在 Issue 中粘贴真实密码、Token、数据库连接串或对象存储密钥。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 简要说明发生了什么
+      placeholder: 例如：用户列表按角色筛选后分页总数不正确
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请按顺序列出可复现的操作步骤
+      placeholder: |
+        1. 使用管理员账号登录
+        2. 进入「系统管理 / 用户管理」
+        3. 选择角色「普通用户」
+        4. 翻到第 2 页
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 如有报错信息或截图，请一并提供
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: 请填写与问题相关的环境
+      value: |
+        - 部署方式：Docker Compose / 本地运行 / 其他
+        - 操作系统：
+        - JDK 版本：
+        - Node.js 与 pnpm 版本：
+        - MySQL / Redis / MinIO 版本：
+        - 浏览器（前端问题）：
+        - 项目版本或 commit：
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: 是否可稳定复现
+      options:
+        - 每次都能复现
+        - 偶现
+        - 仅出现过一次
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 后端日志、浏览器控制台输出等，注意脱敏
+      render: shell
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: 确认事项
+      options:
+        - label: 我已搜索现有 Issue，确认这不是重复问题
+          required: true
+        - label: 我已移除日志与截图中的敏感信息
+          required: true

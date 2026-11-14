@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全漏洞上报
+    url: https://github.com/hefuhai001/single-admin/security/advisories/new
+    about: 请勿通过公开 Issue 报告安全漏洞，使用私密漏洞报告功能。
+  - name: 阅读项目文档
+    url: https://github.com/hefuhai001/single-admin/tree/master/docs
+    about: 提交问题前，建议先查看文档索引与常见说明。
