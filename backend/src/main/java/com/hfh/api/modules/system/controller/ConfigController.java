@@ -38,7 +38,33 @@ public class ConfigController extends BaseController {
             "register.verify_code.enable"
     );
 
+    /**
+     * 敏感配置的脱敏值。查询接口不返回明文，更新时若提交该值表示保持原值不变。
+     */
+    private static final String MASKED_VALUE = "******";
+
     private final ConfigService configService;
+
+    /**
+     * 判断配置键是否为敏感项（密钥、密码、令牌等）
+     */
+    private static boolean isSensitiveKey(String configKey) {
+        if (configKey == null) {
+            return false;
+        }
+        String key = configKey.toLowerCase();
+        return key.contains("password") || key.contains("secret") || key.contains("accesskey")
+                || key.contains("access_key") || key.contains("token");
+    }
+
+    /**
+     * 敏感配置项返回脱敏值
+     */
+    private static void maskIfSensitive(ConfigEntity entity) {
+        if (entity != null && isSensitiveKey(entity.getConfigKey())) {
+            entity.setConfigValue(MASKED_VALUE);
+        }
+    }
 
     /**
      * 根据ID查询系统配置表
@@ -51,6 +77,7 @@ public class ConfigController extends BaseController {
         if (entity == null) {
             return SaResult.error("系统配置表不存在");
         }
+        maskIfSensitive(entity);
         return SaResult.data(entity);
     }
 
@@ -94,7 +121,9 @@ public class ConfigController extends BaseController {
         wrapper.like(configType != null && !configType.isEmpty(), "config_type", configType);
         wrapper.like(remark != null && !remark.isEmpty(), "remark", remark);
         wrapper.orderByAsc("id");
-        return SaResult.data(configService.page(page, wrapper));
+        Page<ConfigEntity> result = configService.page(page, wrapper);
+        result.getRecords().forEach(ConfigController::maskIfSensitive);
+        return SaResult.data(result);
     }
 
     /**
@@ -119,6 +148,10 @@ public class ConfigController extends BaseController {
     public SaResult updateConfig(@Valid @RequestBody ConfigUpdateDTO dto) {
         ConfigEntity entity = new ConfigEntity();
         BeanUtils.copyProperties(dto, entity);
+        // 敏感项回传脱敏占位值时保持数据库中的原值不变
+        if (isSensitiveKey(dto.getConfigKey()) && MASKED_VALUE.equals(dto.getConfigValue())) {
+            entity.setConfigValue(null);
+        }
         boolean success = configService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }
