@@ -1,9 +1,12 @@
 package com.hfh.api.modules.system.service.impl;
 
+import com.hfh.api.config.PermissionCache;
 import com.hfh.api.modules.system.entity.PermissionEntity;
 import com.hfh.api.modules.system.entity.RoleEntity;
 import com.hfh.api.modules.system.mapper.RoleMapper;
 import com.hfh.api.modules.system.service.PermissionService;
+import com.hfh.api.modules.system.service.RolePermissionService;
+import com.hfh.api.modules.system.service.UserRoleService;
 import com.hfh.api.modules.system.vo.RoleVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +34,20 @@ class RoleServiceImplTest {
     @Mock
     private PermissionService permissionService;
 
+    @Mock
+    private RolePermissionService rolePermissionService;
+
+    @Mock
+    private UserRoleService userRoleService;
+
+    @Mock
+    private PermissionCache permissionCache;
+
     private RoleServiceImpl roleService;
 
     @BeforeEach
     void setUp() {
-        roleService = new RoleServiceImpl(permissionService);
+        roleService = new RoleServiceImpl(permissionService, rolePermissionService, userRoleService, permissionCache);
         ReflectionTestUtils.setField(roleService, "baseMapper", roleMapper);
     }
 

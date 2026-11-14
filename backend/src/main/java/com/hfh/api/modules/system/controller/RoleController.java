@@ -5,15 +5,11 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hfh.api.base.BaseController;
-import com.hfh.api.config.PermissionCache;
 import com.hfh.api.modules.system.dto.RoleSaveDTO;
 import com.hfh.api.modules.system.dto.RoleUpdateDTO;
 import com.hfh.api.modules.system.entity.RoleEntity;
-import com.hfh.api.modules.system.entity.RolePermissionEntity;
-import com.hfh.api.modules.system.entity.UserRoleEntity;
 import com.hfh.api.modules.system.service.RolePermissionService;
 import com.hfh.api.modules.system.service.RoleService;
-import com.hfh.api.modules.system.service.UserRoleService;
 import com.hfh.api.modules.system.vo.RoleVO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +17,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "roleEntityController")
@@ -32,8 +27,6 @@ public class RoleController extends BaseController {
 
     private final RoleService roleService;
     private final RolePermissionService rolePermissionService;
-    private final UserRoleService userRoleService;
-    private final PermissionCache permissionCache;
     /**
      * 查询所有角色表接口
      * 
@@ -121,52 +114,19 @@ public class RoleController extends BaseController {
     @SaCheckPermission("role:delete")
     @DeleteMapping("/{id}")
     @Operation(summary = "删除角色表")
-    @Transactional(rollbackFor = Exception.class)
     public SaResult deleteRole(@PathVariable("id") Long id) {
-        // 先删除角色权限关联数据
-        QueryWrapper<RolePermissionEntity> rolePermissionWrapper = new QueryWrapper<>();
-        rolePermissionWrapper.eq("role_id", id);
-        rolePermissionService.remove(rolePermissionWrapper);
-        
-        // 再删除用户角色关联数据
-        QueryWrapper<UserRoleEntity> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper.eq("role_id", id);
-        userRoleService.remove(userRoleWrapper);
-        
-        // 最后删除角色数据
-        boolean success = roleService.removeById(id);
-        if (!success) {
-            return SaResult.error("删除失败");
-        }
-        permissionCache.evictAll();
-        return SaResult.ok("删除成功");
+        boolean success = roleService.deleteRole(id);
+        return success ? SaResult.ok("删除成功") : SaResult.error("删除失败");
     }
 
     @SaCheckPermission("role:delete")
     @DeleteMapping("/batch")
     @Operation(summary = "批量删除角色表")
-    @Transactional(rollbackFor = Exception.class)
     public SaResult deleteRoleBatch(@RequestBody java.util.List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return SaResult.error("请选择要删除的数据");
         }
-        
-        // 先批量删除角色权限关联数据
-        QueryWrapper<RolePermissionEntity> rolePermissionWrapper = new QueryWrapper<>();
-        rolePermissionWrapper.in("role_id", ids);
-        rolePermissionService.remove(rolePermissionWrapper);
-        
-        // 再批量删除用户角色关联数据
-        QueryWrapper<UserRoleEntity> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper.in("role_id", ids);
-        userRoleService.remove(userRoleWrapper);
-        
-        // 最后批量删除角色数据
-        boolean success = roleService.removeByIds(ids);
-        if (!success) {
-            return SaResult.error("批量删除失败");
-        }
-        permissionCache.evictAll();
-        return SaResult.ok("批量删除成功");
+        boolean success = roleService.deleteRoles(ids);
+        return success ? SaResult.ok("批量删除成功") : SaResult.error("批量删除失败");
     }
 }

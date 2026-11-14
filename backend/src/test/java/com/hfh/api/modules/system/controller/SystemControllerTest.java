@@ -220,8 +220,7 @@ class SystemControllerTest {
 
     @Test
     void roleControllerShouldHandleCrudAndRelations() {
-        RoleController controller = new RoleController(roleService, rolePermissionService,
-                userRoleService, permissionCache);
+        RoleController controller = new RoleController(roleService, rolePermissionService);
         when(roleService.list(any(com.baomidou.mybatisplus.core.conditions.Wrapper.class))).thenReturn(List.of(new RoleEntity()));
         when(roleService.page(any(), any())).thenReturn(new Page<>());
         when(roleService.getRoleWithPermissions(1L)).thenReturn(null);
@@ -231,10 +230,9 @@ class SystemControllerTest {
             return true;
         });
         when(roleService.updateById(any())).thenReturn(true);
-        when(roleService.removeById(1L)).thenReturn(true);
-        when(roleService.removeByIds(anyList())).thenReturn(false);
+        when(roleService.deleteRole(1L)).thenReturn(true);
+        when(roleService.deleteRoles(anyList())).thenReturn(false);
         when(rolePermissionService.remove(any())).thenReturn(true);
-        when(userRoleService.remove(any())).thenReturn(true);
 
         RoleSaveDTO saveDto = new RoleSaveDTO();
         saveDto.setRoleName("r");
@@ -254,15 +252,14 @@ class SystemControllerTest {
         assertThat(controller.updateRole(updateDto).getMsg()).isEqualTo("更新成功");
         verify(rolePermissionService).saveRolePermissions(5L, List.of(3L));
         assertThat(controller.deleteRole(1L).getMsg()).isEqualTo("删除成功");
-        verify(permissionCache).evictAll();
+        verify(roleService).deleteRole(1L);
         assertThat(controller.deleteRoleBatch(List.of()).getMsg()).isEqualTo("请选择要删除的数据");
         assertThat(controller.deleteRoleBatch(List.of(1L)).getMsg()).isEqualTo("批量删除失败");
     }
 
     @Test
     void roleControllerShouldSkipRelationsWhenSaveFails() {
-        RoleController controller = new RoleController(roleService, rolePermissionService,
-                userRoleService, permissionCache);
+        RoleController controller = new RoleController(roleService, rolePermissionService);
         when(roleService.save(any())).thenReturn(false);
         when(roleService.updateById(any())).thenReturn(false);
         RoleSaveDTO saveDto = new RoleSaveDTO();
@@ -277,12 +274,10 @@ class SystemControllerTest {
 
     @Test
     void roleControllerShouldFailDeleteWhenServiceReturnsFalse() {
-        RoleController controller = new RoleController(roleService, rolePermissionService,
-                userRoleService, permissionCache);
-        when(roleService.removeById(1L)).thenReturn(false);
+        RoleController controller = new RoleController(roleService, rolePermissionService);
+        when(roleService.deleteRole(1L)).thenReturn(false);
 
         assertThat(controller.deleteRole(1L).getMsg()).isEqualTo("删除失败");
-        verify(permissionCache, never()).evictAll();
     }
 
     @Test
