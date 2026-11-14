@@ -52,6 +52,9 @@ public class CaptchaService {
     private static final int DEFAULT_EMAIL_CODE_EXPIRE_SECONDS = 300;
     private static final int DEFAULT_EMAIL_LIMIT_SECONDS = 60;
 
+    /** 邮箱验证码最大校验失败次数，超过后验证码作废 */
+    private static final int MAX_EMAIL_CODE_FAIL_COUNT = 5;
+
     private final Random random = new Random();
 
     /**
@@ -172,12 +175,13 @@ public class CaptchaService {
 
     /**
      * 校验邮箱验证码（注册时调用）
+     * 校验失败会累计次数，超过 5 次后验证码作废，防止 6 位数字被暴力枚举
      */
     public boolean verifyEmailCode(String email, String code) {
         if (email == null || code == null) {
             return false;
         }
-        String redisKey = "captcha:email:" + email;
+        String redisKey = SysConfigKeys.REDIS_CAPTCHA_EMAIL_PREFIX + email;
         String storedCode = redisTemplate.opsForValue().get(redisKey);
         if (storedCode == null) {
             return false;
@@ -185,8 +189,21 @@ public class CaptchaService {
         if (storedCode.equals(code)) {
             // 验证成功后删除，防止重复使用
             redisTemplate.delete(redisKey);
+            redisTemplate.delete(SysConfigKeys.REDIS_CAPTCHA_EMAIL_FAIL_PREFIX + email);
             return true;
         }
+
+        // 校验失败计数，超过阈值后直接作废验证码
+        String failKey = SysConfigKeys.REDIS_CAPTCHA_EMAIL_FAIL_PREFIX + email;
+        Long failCount = redisTemplate.opsForValue().increment(failKey);
+        int attempts = failCount == null ? 1 : failCount.intValue();
+        if (attempts >= MAX_EMAIL_CODE_FAIL_COUNT) {
+            redisTemplate.delete(redisKey);
+            redisTemplate.delete(failKey);
+            return false;
+        }
+        Duration failTtl = getSecondsDuration(SysConfigKeys.EMAIL_VERIFY_EXPIRE, DEFAULT_EMAIL_CODE_EXPIRE_SECONDS);
+        redisTemplate.expire(failKey, failTtl);
         return false;
     }
 

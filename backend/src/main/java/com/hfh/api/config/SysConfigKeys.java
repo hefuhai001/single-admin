@@ -79,6 +79,9 @@ public final class SysConfigKeys {
     /** 邮箱验证码发送频率限制 Redis key 前缀 */
     public static final String REDIS_CAPTCHA_EMAIL_LIMIT_PREFIX = "captcha:email:limit:";
 
+    /** 邮箱验证码校验失败次数 Redis key 前缀 */
+    public static final String REDIS_CAPTCHA_EMAIL_FAIL_PREFIX = "captcha:email:fail:";
+
     /** 登录失败次数 Redis key 前缀 */
     public static final String REDIS_LOGIN_FAIL_PREFIX = "login:fail:";
 
