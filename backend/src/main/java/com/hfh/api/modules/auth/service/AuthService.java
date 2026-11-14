@@ -61,6 +61,12 @@ public class AuthService {
     /** 登录失败次数锁定时间（秒） */
     private static final int LOGIN_FAIL_LOCK_TIMEOUT = 1800;
 
+    /** 同一 IP 跨账号登录失败次数最大值 */
+    private static final int MAX_IP_LOGIN_FAIL_COUNT = 20;
+
+    /** 指数退避后单次锁定的最长时长（秒） */
+    private static final int LOGIN_LOCK_MAX_TIMEOUT = 24 * 60 * 60;
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
@@ -84,11 +90,22 @@ public class AuthService {
             throw new BusinessException("用户名或密码错误");
         }
 
-        // 检查账号是否因失败次数过多被锁定
-        String lockKey = LOGIN_LOCK_KEY + account;
+        // 失败计数按「账号 + IP」维度隔离，避免攻击者从其他 IP 锁死任意已知账号
+        String clientIp = (loginIp == null || loginIp.isEmpty()) ? "unknown" : loginIp;
+        String accountPair = account + ":" + clientIp;
+
+        // 检查账号+IP 是否因失败次数过多被锁定
+        String lockKey = LOGIN_LOCK_KEY + accountPair;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(lockKey))) {
             long remainSeconds = redisTemplate.getExpire(lockKey);
             throw new BusinessException("登录失败次数过多，账号已锁定，请 " + remainSeconds + " 秒后重试");
+        }
+
+        // 检查来源 IP 是否因跨账号撞库被限流
+        String ipLockKey = SysConfigKeys.REDIS_LOGIN_IP_LOCK_PREFIX + clientIp;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(ipLockKey))) {
+            long remainSeconds = redisTemplate.getExpire(ipLockKey);
+            throw new BusinessException("登录失败次数过多，请 " + remainSeconds + " 秒后重试");
         }
 
         UserEntity user;
@@ -102,7 +119,10 @@ public class AuthService {
             );
         }
         if (user == null || !PASSWORD_ENCODER.matches(password, user.getPassword())) {
-            int remainingAttempts = handleLoginFail(account);
+            int remainingAttempts = handleLoginFail(account, clientIp);
+            if (remainingAttempts < 0) {
+                throw new BusinessException("登录失败次数过多，请稍后再试");
+            }
             if (remainingAttempts > 0) {
                 throw new BusinessException("用户名或密码错误，还可重试 " + remainingAttempts + " 次");
             }
@@ -110,7 +130,7 @@ public class AuthService {
         }
 
         // 登录成功，清除失败次数
-        clearLoginFail(account);
+        clearLoginFail(account, clientIp);
 
         // 校验同一账号同时在线设备数量是否超出限制
         checkMaxOnlineDevices(user.getId(), deviceId);
@@ -213,35 +233,90 @@ public class AuthService {
     }
 
     /**
-     * 处理登录失败：增加失败次数，达到阈值后锁定账号
+     * 处理登录失败：按「账号 + IP」累计失败次数，同时按 IP 维度限流
      *
-     * @return 剩余可尝试次数；返回 0 表示账号已被锁定
+     * @param account  账号
+     * @param clientIp 来源 IP
+     * @return 剩余可尝试次数；0 表示账号+IP 已被锁定，-1 表示 IP 已被限流
      */
-    private int handleLoginFail(String account) {
-        int maxAttempts = configService.getIntConfigValue(SysConfigKeys.LOGIN_MAX_ATTEMPTS, MAX_LOGIN_FAIL_COUNT);
-        int lockDuration = configService.getIntConfigValue(SysConfigKeys.LOGIN_LOCK_DURATION, LOGIN_FAIL_LOCK_TIMEOUT);
+    private int handleLoginFail(String account, String clientIp) {
+        int maxAttempts = getConfigInt(SysConfigKeys.LOGIN_MAX_ATTEMPTS, MAX_LOGIN_FAIL_COUNT);
+        int lockDuration = getConfigInt(SysConfigKeys.LOGIN_LOCK_DURATION, LOGIN_FAIL_LOCK_TIMEOUT);
+        int ipMaxAttempts = getConfigInt(SysConfigKeys.LOGIN_IP_MAX_ATTEMPTS, MAX_IP_LOGIN_FAIL_COUNT);
+        int maxLockDuration = getConfigInt(SysConfigKeys.LOGIN_LOCK_MAX_DURATION, LOGIN_LOCK_MAX_TIMEOUT);
 
-        String failKey = LOGIN_FAIL_COUNT_KEY + account;
-        Long failCount = redisTemplate.opsForValue().increment(failKey);
-        if (failCount != null && failCount == 1L) {
-            // 第一次失败时设置过期时间，避免 key 永久存在
-            redisTemplate.expire(failKey, Duration.ofSeconds(lockDuration));
+        String accountPair = account + ":" + clientIp;
+        String failKey = LOGIN_FAIL_COUNT_KEY + accountPair;
+        long failCount = incrementWithExpire(failKey, lockDuration);
+
+        // IP 维度跨账号累计，防止同一来源撞库
+        String ipFailKey = SysConfigKeys.REDIS_LOGIN_IP_FAIL_PREFIX + clientIp;
+        long ipFailCount = incrementWithExpire(ipFailKey, lockDuration);
+        if (ipFailCount >= ipMaxAttempts) {
+            redisTemplate.opsForValue().set(SysConfigKeys.REDIS_LOGIN_IP_LOCK_PREFIX + clientIp, "1",
+                    Duration.ofSeconds(lockDuration));
+            redisTemplate.delete(ipFailKey);
+            return -1;
         }
 
-        if (failCount != null && failCount >= maxAttempts) {
-            redisTemplate.opsForValue().set(LOGIN_LOCK_KEY + account, "1", Duration.ofSeconds(lockDuration));
+        if (failCount >= maxAttempts) {
+            long duration = nextLockDuration(accountPair, lockDuration, maxLockDuration);
+            redisTemplate.opsForValue().set(LOGIN_LOCK_KEY + accountPair, "1", Duration.ofSeconds(duration));
             redisTemplate.delete(failKey);
             return 0;
         }
 
-        return maxAttempts - failCount.intValue();
+        return maxAttempts - (int) failCount;
     }
 
     /**
-     * 登录成功后清除失败次数
+     * 登录成功后清除失败次数，并重置指数退避计数
      */
-    private void clearLoginFail(String account) {
-        redisTemplate.delete(LOGIN_FAIL_COUNT_KEY + account);
+    private void clearLoginFail(String account, String clientIp) {
+        String accountPair = account + ":" + clientIp;
+        redisTemplate.delete(LOGIN_FAIL_COUNT_KEY + accountPair);
+        redisTemplate.delete(SysConfigKeys.REDIS_LOGIN_LOCK_COUNT_PREFIX + accountPair);
+    }
+
+    /**
+     * 读取整型配置，配置缺失或非法时回退默认值
+     */
+    private int getConfigInt(String configKey, int defaultValue) {
+        int value = configService.getIntConfigValue(configKey, defaultValue);
+        return value > 0 ? value : defaultValue;
+    }
+
+    /**
+     * 递增计数并设置过期时间（仅首次设置）
+     */
+    private long incrementWithExpire(String key, int expireSeconds) {
+        Long count = redisTemplate.opsForValue().increment(key);
+        if (count == null) {
+            return 1L;
+        }
+        if (count == 1L) {
+            redisTemplate.expire(key, Duration.ofSeconds(expireSeconds));
+        }
+        return count;
+    }
+
+    /**
+     * 计算下一次锁定时长：基础时长按连续锁定次数指数退避，并限制上限
+     */
+    private long nextLockDuration(String accountPair, int baseSeconds, int maxSeconds) {
+        String countKey = SysConfigKeys.REDIS_LOGIN_LOCK_COUNT_PREFIX + accountPair;
+        Long lockTimes = redisTemplate.opsForValue().increment(countKey);
+        if (lockTimes == null) {
+            lockTimes = 1L;
+        }
+        if (lockTimes == 1L) {
+            redisTemplate.expire(countKey, Duration.ofSeconds(maxSeconds));
+        }
+        long duration = baseSeconds;
+        for (long i = 1; i < lockTimes && duration < maxSeconds; i++) {
+            duration *= 2;
+        }
+        return Math.min(duration, maxSeconds);
     }
 
     /**

@@ -122,8 +122,8 @@ class AuthServiceTest {
 
     @Test
     void loginShouldRejectLockedAccount() {
-        when(redisTemplate.hasKey("login:lock:alice")).thenReturn(true);
-        when(redisTemplate.getExpire("login:lock:alice")).thenReturn(120L);
+        when(redisTemplate.hasKey("login:lock:alice:127.0.0.1")).thenReturn(true);
+        when(redisTemplate.getExpire("login:lock:alice:127.0.0.1")).thenReturn(120L);
 
         assertThatThrownBy(() -> authService.login("alice", "pwd", "dev", "127.0.0.1"))
                 .isInstanceOf(BusinessException.class)
@@ -135,12 +135,12 @@ class AuthServiceTest {
         when(userMapper.selectOne(any(Wrapper.class))).thenReturn(null);
         when(configService.getIntConfigValue(SysConfigKeys.LOGIN_MAX_ATTEMPTS, 5)).thenReturn(5);
         when(configService.getIntConfigValue(SysConfigKeys.LOGIN_LOCK_DURATION, 1800)).thenReturn(1800);
-        when(valueOperations.increment("login:fail:alice")).thenReturn(1L);
+        when(valueOperations.increment("login:fail:alice:127.0.0.1")).thenReturn(1L);
 
         assertThatThrownBy(() -> authService.login("alice", "pwd", "dev", "127.0.0.1"))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("用户名或密码错误，还可重试 4 次");
-        verify(redisTemplate).expire("login:fail:alice", Duration.ofSeconds(1800));
+        verify(redisTemplate).expire("login:fail:alice:127.0.0.1", Duration.ofSeconds(1800));
     }
 
     @Test
@@ -148,13 +148,13 @@ class AuthServiceTest {
         when(userMapper.selectOne(any(Wrapper.class))).thenReturn(user("right"));
         when(configService.getIntConfigValue(SysConfigKeys.LOGIN_MAX_ATTEMPTS, 5)).thenReturn(5);
         when(configService.getIntConfigValue(SysConfigKeys.LOGIN_LOCK_DURATION, 1800)).thenReturn(1800);
-        when(valueOperations.increment("login:fail:alice")).thenReturn(5L);
+        when(valueOperations.increment("login:fail:alice:127.0.0.1")).thenReturn(5L);
 
         assertThatThrownBy(() -> authService.login("alice", "wrong", "dev", "127.0.0.1"))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("登录失败次数过多，账号已锁定，请稍后再试");
-        verify(valueOperations).set("login:lock:alice", "1", Duration.ofSeconds(1800));
-        verify(redisTemplate).delete("login:fail:alice");
+        verify(valueOperations).set("login:lock:alice:127.0.0.1", "1", Duration.ofSeconds(1800));
+        verify(redisTemplate).delete("login:fail:alice:127.0.0.1");
     }
 
     @Test
@@ -170,7 +170,7 @@ class AuthServiceTest {
 
         assertThat(result).containsEntry("accessToken", "access-token")
                 .containsEntry("refreshToken", "refresh-token");
-        verify(redisTemplate).delete("login:fail:alice");
+        verify(redisTemplate).delete("login:fail:alice:10.0.0.1");
         verify(accessSession).set("loginIp", "10.0.0.1");
         stp.verify(() -> StpUtil.login(eq(1L), any(cn.dev33.satoken.stp.SaLoginModel.class)),
                 org.mockito.Mockito.times(2));

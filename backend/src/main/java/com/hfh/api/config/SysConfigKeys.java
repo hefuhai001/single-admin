@@ -65,6 +65,12 @@ public final class SysConfigKeys {
     /** 同一账号最多同时在线设备数，默认 3 */
     public static final String LOGIN_MAX_ONLINE_DEVICES = "login.max_online_devices";
 
+    /** 同一 IP 跨账号登录失败最大次数，默认 20 */
+    public static final String LOGIN_IP_MAX_ATTEMPTS = "login.ip.max_attempts";
+
+    /** 指数退避后单次锁定的最长时长（秒），默认 24 小时 */
+    public static final String LOGIN_LOCK_MAX_DURATION = "login.lock.max_duration";
+
     // ================== Redis key 前缀 ==================
 
     /** 滑块验证码坐标 Redis key 前缀 */
@@ -87,4 +93,13 @@ public final class SysConfigKeys {
 
     /** 账号锁定 Redis key 前缀 */
     public static final String REDIS_LOGIN_LOCK_PREFIX = "login:lock:";
+
+    /** IP 维度登录失败次数 Redis key 前缀 */
+    public static final String REDIS_LOGIN_IP_FAIL_PREFIX = "login:fail:ip:";
+
+    /** IP 维度锁定 Redis key 前缀 */
+    public static final String REDIS_LOGIN_IP_LOCK_PREFIX = "login:lock:ip:";
+
+    /** 账号+IP 连续锁定次数 Redis key 前缀（用于指数退避） */
+    public static final String REDIS_LOGIN_LOCK_COUNT_PREFIX = "login:lock:count:";
 }
