@@ -92,7 +92,8 @@ mybatis-plus:
       update-strategy: not_null
 
 knife4j:
-  enable: true
+  # 默认关闭接口文档，仅在 application-dev.yaml 中开启，避免非开发环境暴露接口清单
+  enable: false
   setting:
     language: zh_cn
     enable-footer-custom: true
@@ -103,12 +104,14 @@ knife4j:
     password: 1
 
 springdoc:
+  api-docs:
+    enabled: false
+    path: /v3/api-docs
   swagger-ui:
+    enabled: false
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: order
-  api-docs:
-    path: /v3/api-docs
 
 management:
   endpoints:
