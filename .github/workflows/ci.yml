@@ -109,6 +109,40 @@ jobs:
           path: frontend/playwright-report
           retention-days: 7
 
+  image-scan:
+    name: Container images (Trivy image scan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t single-admin-backend:ci ./backend
+
+      - name: Build frontend image
+        run: docker build -t single-admin-frontend:ci ./frontend
+
+      - name: Scan backend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: image
+          image-ref: single-admin-backend:ci
+          scanners: vuln,secret
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
+      - name: Scan frontend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: image
+          image-ref: single-admin-frontend:ci
+          scanners: vuln,secret
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
   security-scan:
     name: Security scan (Trivy)
     runs-on: ubuntu-latest

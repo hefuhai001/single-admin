@@ -212,10 +212,11 @@
 
 ### P2-4 依赖与镜像安全扫描不完整
 
-- [ ] 已修复
-- 位置：[ci.yml](../.github/workflows/ci.yml)
+- [x] 已修复
+- 位置：[ci.yml](../.github/workflows/ci.yml)、[dependabot.yml](../.github/dependabot.yml)
 - 现状：Trivy 仅扫描文件系统（`scan-type: fs`），未扫描构建产物镜像；无依赖自动升级。
 - 影响：基础镜像与运行时依赖的漏洞不会被发现。
+- 修复：CI 新增 `image-scan` job，构建前后端镜像后以 `scan-type: image` 扫描 CRITICAL/HIGH 漏洞与密钥，发现即失败；新增 Dependabot 配置，每周检查 Maven、pnpm、GitHub Actions 及两个 Dockerfile 基础镜像。
 - 建议：增加镜像扫描（`scan-type: image`）；接入 Dependabot 或 Renovate 定期升级依赖。
 
 ---
