@@ -119,7 +119,7 @@ class AuthPermissionIntegrationTest {
     @Test
     void unauthenticatedRequestIsRejected() throws Exception {
         mockMvc.perform(get("/admin/user/page"))
-                .andExpect(status().isOk())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value(401));
     }
 
@@ -139,7 +139,7 @@ class AuthPermissionIntegrationTest {
 
         mockMvc.perform(get("/admin/user/page")
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.code").value(403))
                 .andExpect(jsonPath("$.msg").value(containsString("user:query")));
     }
@@ -150,7 +150,7 @@ class AuthPermissionIntegrationTest {
                         .param("username", LIMITED_USER)
                         .param("password", "wrong-password")
                         .param("deviceId", "e2e-device"))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400));
     }
 }

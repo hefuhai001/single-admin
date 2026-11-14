@@ -141,6 +141,22 @@ describe('requestUtil', () => {
         )
     })
 
+    it('HTTP 403 时展示响应体中的权限提示', async () => {
+        const { responseError } = await loadModule()
+        const error = { response: { status: 403, data: { code: 403, msg: '缺少权限：user:add' } } }
+
+        await expect(responseError(error)).rejects.toBe(error)
+        expect(ElMessage.error).toHaveBeenCalledWith('缺少权限：user:add')
+    })
+
+    it('HTTP 500 且无响应体时使用默认提示', async () => {
+        const { responseError } = await loadModule()
+        const error = { response: { status: 500 } }
+
+        await expect(responseError(error)).rejects.toBe(error)
+        expect(ElMessage.error).toHaveBeenCalledWith(expect.any(String))
+    })
+
     it('其他异常直接 reject', async () => {
         const { responseError } = await loadModule()
         const error = new Error('network')

@@ -278,10 +278,11 @@
 
 ### P4-3 响应统一为 HTTP 200 + 业务 code
 
-- [ ] 已修复
-- 位置：[ExceptionHandle.java](../backend/src/main/java/com/hfh/api/exception/ExceptionHandle.java)
+- [x] 已修复
+- 位置：[ExceptionHandle.java](../backend/src/main/java/com/hfh/api/exception/ExceptionHandle.java)、[requestUtil.js](../frontend/src/utils/requestUtil.js)
 - 现状：所有异常均返回 HTTP 200，401/403/500 只体现在响应体 code。
 - 影响：网关、APM、负载均衡无法按状态码做告警、熔断与重试。
+- 修复：异常处理器通过 `@ResponseStatus` 返回真实 HTTP 状态码（401 未登录、403 无权限、400 参数/业务错误、500 系统异常），响应体仍保留 `SaResult` 的 code/msg；前端拦截器同时兼容 HTTP 状态码与响应体 code，401 仍走静默刷新，403/500 展示业务消息；集成测试与拦截器单测同步覆盖。
 - 建议：至少 401/403/500 返回真实 HTTP 状态码，前端拦截器同时兼容。
 
 ### P4-4 前端未使用 TypeScript

@@ -48,13 +48,25 @@ request.interceptors.response.use(
     (error) => {
         const { response } = error
 
-        if (response && response.status === 401) {
+        // 网络异常等没有响应时直接抛出，不重复提示
+        if (!response) {
+            return Promise.reject(error)
+        }
+
+        const resData = response.data
+        // 未登录 / token 过期：HTTP 401 或响应体 code 401 都走静默刷新
+        if (response.status === 401 || (resData && resData.code === 401)) {
             return handleTokenExpired(response.config).then((config) => request(config))
         }
 
-        if (response && response.status === 404) {
+        if (response.status === 404) {
             ElMessage.error({ message: '404 not found', duration: 1000, showClose: true })
+            return Promise.reject(error)
         }
+
+        // 异常响应体仍是 SaResult，优先展示业务消息
+        const message = (resData && resData.msg) || error.message || '请求失败'
+        ElMessage.error(message)
         return Promise.reject(error)
     },
 )
