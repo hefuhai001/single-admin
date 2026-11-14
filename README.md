@@ -205,12 +205,16 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_single_admin CHARACTER SET
 # 3. 启动后端服务（基础配置不默认激活 profile，需显式指定 dev）
 $env:JAVA_HOME = 'C:\Program Files\BellSoft\LibericaJDK-25'
 $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
+$env:SPRING_PROFILES_ACTIVE = 'dev'
 java --version
 javac --version
 
 cd backend
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+./mvnw spring-boot:run
 ```
+
+> PowerShell 5.1 会把 `-Dspring-boot.run.profiles=dev` 拆成两段，导致 `Unknown lifecycle phase ".run.profiles=dev"`；请改用上面的环境变量，或把参数整体加引号：`mvn spring-boot:run "-Dspring-boot.run.profiles=dev"`。bash 下可用 `SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run`。
+> 后端基于 Java 25 编译，启动前请确认 `java -version` 与 `mvn -version` 的 `Java version` 均为 25，否则会报「不支持发行版本 25」。
 
 后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档（仅 dev profile 开启）：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`，Prometheus 指标：`http://localhost:9999/actuator/prometheus`
 
@@ -270,7 +274,9 @@ Docker Compose 将自动启动以下服务：
 
 | 命令 | 说明 |
 |------|------|
-| `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` | 启动应用（显式指定 dev profile） |
+| `$env:SPRING_PROFILES_ACTIVE='dev'; ./mvnw spring-boot:run` | 启动应用（PowerShell，显式指定 dev profile） |
+| `SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run` | 启动应用（bash） |
+| `./mvnw spring-boot:run "-Dspring-boot.run.profiles=dev"` | 启动应用（-D 参数必须加引号） |
 | `./mvnw package -DskipTests` | 打包 JAR |
 | `./mvnw verify` | 全量测试 + JaCoCo 覆盖率门槛校验 |
 | `java -jar backend.jar --spring.profiles.active=prod` | 生产环境运行 |
