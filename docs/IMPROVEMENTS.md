@@ -262,10 +262,11 @@
 
 ### P4-1 默认激活 dev profile
 
-- [ ] 已修复
-- 位置：[application.yaml](../backend/src/main/resources/application.yaml)
+- [x] 已修复
+- 位置：[application.yaml](../backend/src/main/resources/application.yaml)、[ci.yml](../.github/workflows/ci.yml)、[README.md](../README.md)
 - 现状：`spring.profiles.active: dev` 写在基础配置中。
 - 影响：直接 `java -jar` 且未指定 profile 时，会以开发配置启动（包含 SQL stdout 日志）。
+- 修复：移除基础配置中的默认值；CI 后端 job 显式设置 `SPRING_PROFILES_ACTIVE=dev`，compose 仍注入 prod，本地启动改用 `-Dspring-boot.run.profiles=dev`，并在 README 与 `.env.example` 中同步说明。
 - 建议：移除默认值，由启动参数或环境变量显式指定；Docker 已在 compose 中注入，不受影响。
 
 ### P4-2 缺少统一 DTO/VO 转换策略

@@ -202,14 +202,14 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS db_single_admin CHARACTER SET
 
 [Environment]::SetEnvironmentVariable('JAVA_HOME','C:\Program Files\BellSoft\LibericaJDK-25','User')
 
-# 3. 启动后端服务
+# 3. 启动后端服务（基础配置不默认激活 profile，需显式指定 dev）
 $env:JAVA_HOME = 'C:\Program Files\BellSoft\LibericaJDK-25'
 $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
 java --version
 javac --version
 
 cd backend
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档（仅 dev profile 开启）：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`，Prometheus 指标：`http://localhost:9999/actuator/prometheus`
@@ -265,7 +265,7 @@ Docker Compose 将自动启动以下服务：
 
 | 命令 | 说明 |
 |------|------|
-| `./mvnw spring-boot:run` | 启动应用（dev 环境） |
+| `./mvnw spring-boot:run -Dspring-boot.run.profiles=dev` | 启动应用（显式指定 dev profile） |
 | `./mvnw package -DskipTests` | 打包 JAR |
 | `./mvnw verify` | 全量测试 + JaCoCo 覆盖率门槛校验 |
 | `java -jar backend.jar --spring.profiles.active=prod` | 生产环境运行 |

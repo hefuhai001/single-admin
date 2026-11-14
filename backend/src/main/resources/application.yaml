@@ -12,8 +12,6 @@ server:
     direct-buffers: true  # 是否分配直接内存（NIO 使用）
     max-http-post-size: 10MB  # 最大 HTTP POST 大小
 spring:
-  profiles:
-    active: dev
   application:
     name: backend
   # 优雅停机等待时间

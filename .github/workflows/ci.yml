@@ -14,6 +14,9 @@ jobs:
   backend:
     name: Backend (verify)
     runs-on: ubuntu-latest
+    env:
+      # 基础配置不再默认激活 dev，集成测试显式指定 profile 以保持上下文配置一致
+      SPRING_PROFILES_ACTIVE: dev
     defaults:
       run:
         working-directory: backend
