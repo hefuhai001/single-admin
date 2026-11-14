@@ -28,10 +28,11 @@
 
 ### P0-1 定时任务可反射调用任意类（等效内置 RCE）
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[JobTaskExecutor.java](../backend/src/main/java/com/hfh/api/modules/monitor/task/task/JobTaskExecutor.java)
 - 现状：`Class.forName(className)` + `applicationContext.getBean(clazz)` + `Method.invoke` 执行前端填写的 `invokeTarget`，仅靠 `job:add` / `job:update` 权限保护。
 - 影响：任何拥有定时任务管理权限的账号（或该账号被盗）都能调用容器内任意 Bean 的公开方法，等同于应用内任意代码执行。
+- 修复：新增包白名单校验（`job.invoke.allowed-packages`，默认仅 `com.hfh.api.modules.monitor.task.task`），白名单外的类直接拒绝。
 - 建议：
   - 维护允许调用的包名前缀或 Bean 白名单，不在白名单内直接拒绝；
   - 或改为只允许提交实现了统一任务接口（如 `JobTask`）的 Bean，禁止自由填写类名；
@@ -39,10 +40,11 @@
 
 ### P0-2 中间件端口直接发布到宿主机
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[docker-compose.yml](../docker-compose.yml)
 - 现状：MySQL `3306`、Redis `6379`、MinIO `9000/9001` 均以 `${PORT}:PORT` 形式发布到宿主机。
 - 影响：生产环境若宿主机有公网 IP 或防火墙配置不严，数据库、缓存、对象存储控制台可直接被访问。
+- 修复：MySQL / Redis / MinIO 端口统一绑定 `127.0.0.1`，仅允许宿主机本地访问，容器间仍通过 `webnet` 通信。
 - 建议：
   - 生产环境只绑 `127.0.0.1`（如 `127.0.0.1:${MYSQL_PORT}:3306`）或完全移除 `ports`，仅通过 `webnet` 内网访问；
   - MinIO 控制台端口尤其不应对外；
@@ -50,18 +52,20 @@
 
 ### P0-3 Redis 密码以命令行参数传入
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[docker-compose.yml](../docker-compose.yml)
 - 现状：`redis-server --requirepass ${REDIS_PASSWORD}`，healthcheck 也把密码写在命令行。
 - 影响：`docker inspect`、`ps -ef`、容器日志中可能看到明文密码。
+- 修复：新增 [redis-entrypoint.sh](../docker/redis/redis-entrypoint.sh)，从环境变量生成配置文件后启动；healthcheck 改用 `REDISCLI_AUTH` 环境变量认证。
 - 建议：改用配置文件挂载（`redis.conf`）或 Docker secret；healthcheck 改用 `redis-cli -a` 从环境变量读取，或使用 `REDISCLI_AUTH` 环境变量。
 
 ### P0-4 登录锁定可被用于锁死任意账号
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[AuthService.java](../backend/src/main/java/com/hfh/api/modules/auth/service/AuthService.java)
 - 现状：登录失败计数与锁定 key 只按账号维度（`login:fail:{account}` / `login:lock:{account}`），未叠加 IP。
 - 影响：攻击者对任意已知用户名连续输错 5 次，即可让该账号锁定 30 分钟，形成定向拒绝服务。
+- 修复：失败计数与锁定改为按「账号 + IP」维度（`login:fail:{account}:{ip}` / `login:lock:{account}:{ip}`）；新增 IP 跨账号限流（`login:fail:ip:{ip}`）与指数退避（连续锁定 30m → 1h → …，上限 24h）。登录验证码作为可选的后续增强，未在本次实现。
 - 建议：
   - 失败计数同时按 IP 维度累计，IP 维度超限直接拒绝；
   - 登录入口增加滑块/图形验证码（现有滑块能力可复用）；
@@ -69,18 +73,20 @@
 
 ### P0-5 邮箱验证码可被暴力枚举
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[CaptchaService.java](../backend/src/main/java/com/hfh/api/modules/auth/service/CaptchaService.java)
 - 现状：`verifyEmailCode` 校验失败不计数，验证码 5 分钟有效；`sendEmailCode` 只有发送频率限制。
 - 影响：6 位数字验证码在有效期内可被脚本穷举，进而完成注册或邮箱验证。
+- 修复：`verifyEmailCode` 增加失败计数（`captcha:email:fail:{email}`），连续失败 5 次后直接作废验证码；调用方保持统一错误提示。
 - 建议：增加失败次数计数（如 5 次失败即删除验证码），并在响应中保持统一错误提示。
 
 ### P0-6 nginx 无安全响应头、无 HTTPS 配置
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[default.conf](../frontend/default.conf)
 - 现状：仅配置 gzip、缓存与反向代理，未设置任何安全响应头，也没有 HTTPS/TLS 配置。
 - 影响：前端 token 存放于 localStorage，一旦出现 XSS，双 token 可被直接读取；缺少 `X-Frame-Options` 还存在点击劫持风险。
+- 修复：已补充 `Content-Security-Policy`、`X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy`、`Permissions-Policy`、`Strict-Transport-Security` 与 `server_tokens off`；TLS 仍需由外层负载均衡或挂载证书终结。
 - 建议：
   - 增加 `Content-Security-Policy`（至少限制 `script-src 'self'`）、`X-Content-Type-Options: nosniff`、`X-Frame-Options: DENY`、`Referrer-Policy: strict-origin-when-cross-origin`；
   - 生产环境补充 HTTPS 与 HSTS（可在外层负载均衡终结 TLS，但需同步配置）；
@@ -88,18 +94,20 @@
 
 ### P0-7 早期的接口文档暴露面
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[application.yaml](../backend/src/main/resources/application.yaml)
 - 现状：Knife4j 在默认配置中 `enable: true` 且 `knife4j.basic.enable: false`。
 - 影响：测试环境若可被外网访问，等于公开全部接口清单与参数结构；生产环境已在 `application-prod.yaml` 关闭。
+- 修复：基础配置默认关闭 Knife4j 与 springdoc，仅在 `application-dev.yaml` 中开启；test/prod 环境不再暴露接口文档。
 - 建议：按 profile 关闭文档或开启 basic 鉴权；确认测试环境是否允许匿名访问 `/doc.html`。
 
 ### P0-8 生产数据库使用 root 账号
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[application-prod.yaml](../backend/src/main/resources/application-prod.yaml)、[docker-compose.yml](../docker-compose.yml)
 - 现状：应用连接与 compose 初始化均使用 `root`。
 - 影响：一旦应用被注入或凭据泄露，攻击者拥有数据库全部权限（含建库、删库）。
+- 修复：compose 通过 `MYSQL_USER` / `MYSQL_PASSWORD` 创建专用账号（默认 `single_admin`，仅拥有业务库权限），后端改用该账号连接，生产配置不再回退 root。
 - 建议：创建专用账号，仅授予业务库的 `SELECT/INSERT/UPDATE/DELETE` 权限；Flyway 迁移可单独使用高权限账号。
 
 ---
