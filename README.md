@@ -1,6 +1,6 @@
 # 单体通用开发基座 (Single Admin Base)
 
-基于 Spring Boot 3 + Vue 3 的基础单体通用开发基座，采用前后端分离架构，内置 RBAC 权限控制、动态菜单路由、部门岗位、字典参数、操作日志、代码生成、文件管理等通用系统能力，可作为各类业务系统的起始模板。
+基于 Spring Boot 3 + Vue 3 的基础单体通用开发基座，采用前后端分离架构，内置 RBAC 权限控制、动态菜单路由、机构管理、字典参数、文件管理等通用系统能力，并附带命令行代码生成工具，可作为各类业务系统的起始模板。
 
 ---
 
@@ -9,13 +9,12 @@
 - **RBAC 权限系统**：基于“用户-角色-权限”多对多模型的细粒度权限控制，支持接口权限与菜单/按钮权限
 - **动态菜单与路由**：根据用户权限自动生成前端菜单与路由，实现页面级权限控制
 - **用户与角色管理**：用户增删改查、状态启用/禁用、角色分配、多角色支持
-- **部门与岗位管理**：树形部门结构、岗位配置、用户关联
+- **机构管理**：树形机构结构、用户关联
 - **字典与参数管理**：系统字典、业务参数、运行配置维护
 - **系统配置管理**：站点标题、主题色、备案号、对象存储等配置集中维护，前后端实时生效
-- **操作日志**：登录日志与操作日志记录，支持审计与查询
 - **在线用户管理**：实时监控在线用户，支持会话查看与强制下线
 - **文件管理**：集成 MinIO / 阿里云 OSS / 七牛云对象存储，支持存储服务商配置切换、文件上传与统一管理
-- **代码生成器**：根据数据库表快速生成前后端基础代码
+- **代码生成器（命令行工具）**：通过命令行手动执行，根据数据库表生成前后端基础代码；无 Web 入口与权限控制
 - **动态主题**：支持自定义主题色、字体大小、深色模式，可切换后端统一下发或前端自主配置
 - **多环境配置**：支持 dev / test / prod 等多环境配置切换
 - **Docker 部署**：提供完整的 Docker Compose 编排方案，一键部署全部服务
@@ -123,11 +122,11 @@ single-admin/
 │   ├── src/main/java/com/hfh/api/
 │   │   ├── config/                   # 配置类（Sa-Token、Redis、MyBatis-Plus）
 │   │   ├── modules/
-│   │   │   └── system/               # system 模块（用户、角色、权限、部门、岗位、字典、参数、日志）
+│   │   │   └── system/               # system 模块（用户、角色、权限、机构、字典、配置）
 │   │   ├── base/                     # 基础类（Controller、Entity）
 │   │   ├── utils/                    # 工具类
 │   │   ├── exception/                # 异常处理
-│   │   └── generator/                # 代码生成器
+│   │   └── generator/                # 命令行代码生成工具（无 Web 入口）
 │   └── src/main/resources/
 │       ├── mapper/                   # MyBatis XML 映射
 │       │   └── system/               # system 模块 Mapper XML
@@ -140,7 +139,7 @@ single-admin/
 │   │   ├── views/                    # 页面视图
 │   │   │   ├── admin/
 │   │   │   │   ├── dashboard/        # 数据看板
-│   │   │   │   ├── system/           # 系统管理（用户/角色/权限/部门/岗位/字典/参数/日志）
+│   │   │   │   ├── system/           # 系统管理（用户/角色/权限/机构/字典/配置）
 │   │   │   │   └── layout/           # 布局组件
 │   │   │   └── login/                # 登录页
 │   │   ├── router/                   # 路由配置（静态 + 动态）
@@ -149,11 +148,8 @@ single-admin/
 │   │   └── utils/                    # 工具函数
 │   └── package.json
 │
-├── mysql/                            # MySQL 配置与初始化脚本
-│   ├── .env
-│   └── db_single_admin.sql           # 历史 SQL dump（已废弃，仅作参考）
-├── redis/                            # Redis 配置
-├── minio/                            # MinIO 配置
+├── docker/                           # 容器辅助脚本
+│   └── redis/redis-entrypoint.sh     # Redis 启动脚本（从环境变量生成配置）
 ├── docker-compose.yml                # Docker 编排配置
 ├── .env / .env.example               # 部署环境变量
 └── docs/                             # 项目文档
@@ -169,7 +165,7 @@ single-admin/
 
 | 表名前缀 | 模块 | 说明 |
 |----------|------|------|
-| `sys_` | 系统模块 | 用户、角色、权限、部门、岗位、字典、参数、日志等 |
+| `sys_` | 系统模块 | 用户、角色、权限、机构、字典、配置等 |
 
 ### 核心权限表
 
@@ -216,7 +212,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档地址：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`，Prometheus 指标：`http://localhost:9999/actuator/prometheus`
+后端服务默认运行在 `http://localhost:9999`（端口可通过 `SERVER_PORT` 环境变量覆盖），API 文档（仅 dev profile 开启）：`http://localhost:9999/doc.html`，健康检查：`http://localhost:9999/actuator/health`，Prometheus 指标：`http://localhost:9999/actuator/prometheus`
 
 ### 前端启动
 
@@ -259,6 +255,10 @@ Docker Compose 将自动启动以下服务：
 | `pnpm build` | 生产环境构建 |
 | `pnpm build:test` | 测试环境构建 |
 | `pnpm lint` | 代码检查 |
+| `pnpm lint:ci` | 代码检查（CI 模式，不自动修复） |
+| `pnpm test` | 单元测试 |
+| `pnpm test:coverage` | 单元测试 + 覆盖率门槛校验 |
+| `pnpm test:e2e` | Playwright 端到端测试（登录、菜单、按钮级权限） |
 | `pnpm format` | 代码格式化 |
 
 ### 后端
@@ -267,6 +267,7 @@ Docker Compose 将自动启动以下服务：
 |------|------|
 | `./mvnw spring-boot:run` | 启动应用（dev 环境） |
 | `./mvnw package -DskipTests` | 打包 JAR |
+| `./mvnw verify` | 全量测试 + JaCoCo 覆盖率门槛校验 |
 | `java -jar backend.jar --spring.profiles.active=prod` | 生产环境运行 |
 
 ---

@@ -225,31 +225,35 @@
 
 ### P3-1 README 声称具备操作日志能力，实际不存在
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[README.md](../README.md)
 - 现状：README 写明"操作日志：登录日志与操作日志记录，支持审计与查询"，但代码与建表 SQL 中没有 `sys_log` / `login_log` 表，也没有日志切面。
 - 影响：使用者按文档评估能力时会产生误判。
+- 修复：删除"操作日志"能力描述，并清理功能特性、项目结构与表结构概览中的日志相关措辞。
 - 建议：二选一——删除该能力描述，或补齐登录日志/操作日志模块（表、切面、查询接口、前端页面）。
 
 ### P3-2 README 声称具备部门与岗位管理
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[README.md](../README.md)
 - 现状：实际只有 `sys_institutions`（机构），没有岗位表与接口。
+- 修复：将"部门与岗位管理"及结构图、表结构概览中的相关措辞统一改为"机构管理"。
 - 建议：修正为"机构管理"，或补齐岗位模块。
 
 ### P3-3 README 项目结构包含不存在的目录
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[README.md](../README.md)
 - 现状：结构图中列出 `mysql/`、`redis/`、`minio/`，但这些目录并不存在（`docs/` 已作为项目文档目录落地，问题已关闭）。
+- 修复：删除三个不存在的目录，改为按实际存在的 `docker/redis/redis-entrypoint.sh` 说明容器辅助脚本；同时标注接口文档仅 dev profile 开启、补齐测试与覆盖率命令。
 - 建议：删除结构图中的 `mysql/`、`redis/`、`minio/`，或按实际部署方式补充说明。
 
 ### P3-4 代码生成器能力与文档描述不符
 
-- [ ] 已修复
-- 位置：[GenCustomTemplate.java](../backend/src/main/java/com/hfh/api/generator/GenCustomTemplate.java)
+- [x] 已修复
+- 位置：[README.md](../README.md)、[GenCustomTemplate.java](../backend/src/main/java/com/hfh/api/generator/GenCustomTemplate.java)
 - 现状：README 将其列为平台能力，但只能通过命令行手动执行，无 Web 入口、无权限控制，且无测试覆盖。
+- 修复：功能特性与项目结构中明确标注为"命令行工具（无 Web 入口）"，不再表述为平台内置能力。
 - 建议：明确文档说明为"命令行工具"；如需平台化，再补充接口与页面。
 
 ---
