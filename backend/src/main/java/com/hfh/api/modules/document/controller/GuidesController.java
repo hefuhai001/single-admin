@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
@@ -92,8 +92,7 @@ public class GuidesController extends BaseController {
     @PostMapping
     @Operation(summary = "新增机构指南表")
     public SaResult saveGuides(@Valid @RequestBody GuidesSaveDTO dto) {
-        GuidesEntity entity = new GuidesEntity();
-        BeanUtils.copyProperties(dto, entity);
+        GuidesEntity entity = BeanMapper.map(dto, GuidesEntity.class);
         if (entity.getCreatedBy() == null) {
             entity.setCreatedBy(getCurrentUserId());
         }
@@ -111,8 +110,7 @@ public class GuidesController extends BaseController {
     @PutMapping
     @Operation(summary = "更新机构指南表")
     public SaResult updateGuides(@Valid @RequestBody GuidesUpdateDTO dto) {
-        GuidesEntity entity = new GuidesEntity();
-        BeanUtils.copyProperties(dto, entity);
+        GuidesEntity entity = BeanMapper.map(dto, GuidesEntity.class);
         boolean success = guidesService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

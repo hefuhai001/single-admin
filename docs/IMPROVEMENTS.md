@@ -271,9 +271,10 @@
 
 ### P4-2 缺少统一 DTO/VO 转换策略
 
-- [ ] 已修复
-- 位置：各 `modules/**/controller`
+- [x] 已修复
+- 位置：[BeanMapper.java](../backend/src/main/java/com/hfh/api/utils/BeanMapper.java)、各 `modules/**/controller`
 - 现状：大量使用 `BeanUtils.copyProperties` 手工映射，且存在字段漏拷风险。
+- 修复：新增 `BeanMapper` 作为 DTO/VO/Entity 映射的唯一入口，把 8 个 Controller 中共 16 处「new 实体 + 手工拷贝」收敛为一步 `map`，并补充单元测试；后续可在此入口统一切换 MapStruct 或加入字段映射校验。敏感字段仍由 `UserEntity.password` 的 `@JsonIgnore` 保证不返回。
 - 建议：引入 MapStruct 或统一转换器；或让实体直接作为查询结果时明确 `@JsonIgnore` 敏感字段（当前 `UserEntity.password` 已处理）。
 
 ### P4-3 响应统一为 HTTP 200 + 业务 code

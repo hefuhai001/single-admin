@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "permissionEntityController")
@@ -84,8 +84,7 @@ public class PermissionController extends BaseController {
     @PostMapping
     @Operation(summary = "新增权限表（1:接口权限 2:路由权限）")
     public SaResult savePermission(@Valid @RequestBody PermissionSaveDTO dto) {
-        PermissionEntity entity = new PermissionEntity();
-        BeanUtils.copyProperties(dto, entity);
+        PermissionEntity entity = BeanMapper.map(dto, PermissionEntity.class);
         boolean success = permissionService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -94,8 +93,7 @@ public class PermissionController extends BaseController {
     @PutMapping
     @Operation(summary = "更新权限表（1:接口权限 2:路由权限）")
     public SaResult updatePermission(@Valid @RequestBody PermissionUpdateDTO dto) {
-        PermissionEntity entity = new PermissionEntity();
-        BeanUtils.copyProperties(dto, entity);
+        PermissionEntity entity = BeanMapper.map(dto, PermissionEntity.class);
         boolean success = permissionService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

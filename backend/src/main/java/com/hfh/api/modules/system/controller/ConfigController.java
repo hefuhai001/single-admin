@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -133,8 +133,7 @@ public class ConfigController extends BaseController {
     @PostMapping
     @Operation(summary = "新增系统配置表")
     public SaResult saveConfig(@Valid @RequestBody ConfigSaveDTO dto) {
-        ConfigEntity entity = new ConfigEntity();
-        BeanUtils.copyProperties(dto, entity);
+        ConfigEntity entity = BeanMapper.map(dto, ConfigEntity.class);
         boolean success = configService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -146,8 +145,7 @@ public class ConfigController extends BaseController {
     @PutMapping
     @Operation(summary = "更新系统配置表")
     public SaResult updateConfig(@Valid @RequestBody ConfigUpdateDTO dto) {
-        ConfigEntity entity = new ConfigEntity();
-        BeanUtils.copyProperties(dto, entity);
+        ConfigEntity entity = BeanMapper.map(dto, ConfigEntity.class);
         // 敏感项回传脱敏占位值时保持数据库中的原值不变
         if (isSensitiveKey(dto.getConfigKey()) && MASKED_VALUE.equals(dto.getConfigValue())) {
             entity.setConfigValue(null);

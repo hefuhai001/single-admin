@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -111,8 +111,7 @@ public class DictDataController extends BaseController {
     @Operation(summary = "新增")
     @RefreshDictCache
     public SaResult saveDictData(@Valid @RequestBody DictDataSaveDTO dto) {
-        DictDataEntity entity = new DictDataEntity();
-        BeanUtils.copyProperties(dto, entity);
+        DictDataEntity entity = BeanMapper.map(dto, DictDataEntity.class);
         boolean success = dictDataService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -125,8 +124,7 @@ public class DictDataController extends BaseController {
     @Operation(summary = "更新")
     @RefreshDictCache
     public SaResult updateDictData(@Valid @RequestBody DictDataUpdateDTO dto) {
-        DictDataEntity entity = new DictDataEntity();
-        BeanUtils.copyProperties(dto, entity);
+        DictDataEntity entity = BeanMapper.map(dto, DictDataEntity.class);
         boolean success = dictDataService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

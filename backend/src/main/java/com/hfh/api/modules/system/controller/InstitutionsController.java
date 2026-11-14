@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "institutionsEntityController")
@@ -89,8 +89,7 @@ public class InstitutionsController extends BaseController {
     @PostMapping
     @Operation(summary = "新增机构")
     public SaResult saveInstitutions(@Valid @RequestBody InstitutionsSaveDTO dto) {
-        InstitutionsEntity entity = new InstitutionsEntity();
-        BeanUtils.copyProperties(dto, entity);
+        InstitutionsEntity entity = BeanMapper.map(dto, InstitutionsEntity.class);
         boolean success = institutionsService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -102,8 +101,7 @@ public class InstitutionsController extends BaseController {
     @PutMapping
     @Operation(summary = "更新机构")
     public SaResult updateInstitutions(@Valid @RequestBody InstitutionsUpdateDTO dto) {
-        InstitutionsEntity entity = new InstitutionsEntity();
-        BeanUtils.copyProperties(dto, entity);
+        InstitutionsEntity entity = BeanMapper.map(dto, InstitutionsEntity.class);
         boolean success = institutionsService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "dictTypeEntityController")
@@ -82,8 +82,7 @@ public class DictTypeController extends BaseController {
     @Operation(summary = "新增")
     @RefreshDictCache
     public SaResult saveDictType(@Valid @RequestBody DictTypeSaveDTO dto) {
-        DictTypeEntity entity = new DictTypeEntity();
-        BeanUtils.copyProperties(dto, entity);
+        DictTypeEntity entity = BeanMapper.map(dto, DictTypeEntity.class);
         boolean success = dictTypeService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -96,8 +95,7 @@ public class DictTypeController extends BaseController {
     @Operation(summary = "更新")
     @RefreshDictCache
     public SaResult updateDictType(@Valid @RequestBody DictTypeUpdateDTO dto) {
-        DictTypeEntity entity = new DictTypeEntity();
-        BeanUtils.copyProperties(dto, entity);
+        DictTypeEntity entity = BeanMapper.map(dto, DictTypeEntity.class);
         boolean success = dictTypeService.updateById(entity);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }

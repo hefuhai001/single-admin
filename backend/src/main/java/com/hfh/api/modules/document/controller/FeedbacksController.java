@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
@@ -99,8 +99,7 @@ public class FeedbacksController extends BaseController {
     @PostMapping
     @Operation(summary = "新增机构反馈表")
     public SaResult saveFeedbacks(@Valid @RequestBody FeedbacksSaveDTO dto) {
-        FeedbacksEntity entity = new FeedbacksEntity();
-        BeanUtils.copyProperties(dto, entity);
+        FeedbacksEntity entity = BeanMapper.map(dto, FeedbacksEntity.class);
         boolean success = feedbacksService.save(entity);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -112,8 +111,7 @@ public class FeedbacksController extends BaseController {
     @PutMapping
     @Operation(summary = "更新机构反馈表")
     public SaResult updateFeedbacks(@Valid @RequestBody FeedbacksUpdateDTO dto) {
-        FeedbacksEntity entity = new FeedbacksEntity();
-        BeanUtils.copyProperties(dto, entity);
+        FeedbacksEntity entity = BeanMapper.map(dto, FeedbacksEntity.class);
         if (entity.getRepliedBy() != null && entity.getRepliedAt() == null) {
             entity.setRepliedAt(new Date());
         }

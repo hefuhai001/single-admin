@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.hfh.api.utils.BeanMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,8 +67,7 @@ public class JobController extends BaseController {
     @PostMapping
     @Operation(summary = "新增定时任务")
     public SaResult saveJob(@Valid @RequestBody JobSaveDTO dto) {
-        JobEntity job = new JobEntity();
-        BeanUtils.copyProperties(dto, job);
+        JobEntity job = BeanMapper.map(dto, JobEntity.class);
         boolean success = jobService.addJob(job);
         return success ? SaResult.ok("新增成功") : SaResult.error("新增失败");
     }
@@ -77,8 +76,7 @@ public class JobController extends BaseController {
     @PutMapping
     @Operation(summary = "更新定时任务")
     public SaResult updateJob(@Valid @RequestBody JobUpdateDTO dto) {
-        JobEntity job = new JobEntity();
-        BeanUtils.copyProperties(dto, job);
+        JobEntity job = BeanMapper.map(dto, JobEntity.class);
         boolean success = jobService.updateJob(job);
         return success ? SaResult.ok("更新成功") : SaResult.error("更新失败");
     }
