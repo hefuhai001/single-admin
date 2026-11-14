@@ -1,5 +1,5 @@
 # ==================== 构建阶段 ====================
-FROM node:22 AS builder
+FROM node:25 AS builder
 
 # 设置工作目录
 WORKDIR /app
