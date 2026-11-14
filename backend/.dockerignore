@@ -15,4 +15,5 @@
 *.md
 *.log
 logs
+.env*
 .DS_Store

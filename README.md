@@ -253,6 +253,8 @@ Docker Compose 将自动启动以下服务：
 
 compose 从根目录 `.env` 读取端口与凭据并注入后端容器；前端构建通过 `build args` 注入 `VITE_API_URL`，`.env` 本身不会进入镜像。
 
+compose 项目名显式声明为 `single-admin`，五个容器统一命名为 `single-admin-<服务名>`；nginx 通过服务名 `backend` 代理 `/api`，不依赖容器名。
+
 发布与回滚：
 - 推送 `v*` tag 会触发发布流水线，构建前后端镜像并推送到 GHCR，同时生成 GitHub Release 变更记录。
 - 回滚镜像：在 `.env` 中把 `VERSION` 改为上一个版本 tag（镜像保留历史 tag），执行 `docker compose up -d`。
