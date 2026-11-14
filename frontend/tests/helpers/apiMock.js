@@ -89,7 +89,6 @@ export const apiMock = {
         sendBatchEmails: vi.fn(actionResult),
     },
     feedbacks: {
-        getFeedbacksById: vi.fn(detailResult),
         ...crud(
             'pageFeedbacks',
             'listFeedbacks',

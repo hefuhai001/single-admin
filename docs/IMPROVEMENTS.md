@@ -201,10 +201,11 @@
 
 ### P2-3 缺少端到端与权限链路集成测试
 
-- [ ] 已修复
-- 位置：[BackendApplicationTests](../backend/src/test/java)、前端 `tests/`
+- [x] 已修复
+- 位置：[AuthPermissionIntegrationTest.java](../backend/src/test/java/com/hfh/api/AuthPermissionIntegrationTest.java)、[playwright.config.js](../frontend/playwright.config.js)、[ci.yml](../.github/workflows/ci.yml)
 - 现状：Testcontainers 仅覆盖一个应用启动用例；登录 → 鉴权 → 无权限拒绝这条核心链路没有集成或 E2E 测试。
 - 影响：权限注解漏加、路由与权限不一致等问题只能靠人工发现。
+- 修复：后端新增 Testcontainers 集成测试，覆盖未登录 401、管理员放行、无权限 403、密码错误 400；前端引入 Playwright，覆盖登录、菜单渲染、按钮级权限三条主流程（接口用路由桩 mock，不依赖真实后端），CI 新增独立 e2e job 并归档报告。同时修复两处既存 lint 错误，保证门禁可用。
 - 建议：
   - 后端补充基于 Testcontainers 的登录与接口鉴权集成测试；
   - 前端引入 Playwright，覆盖登录、菜单渲染、按钮级权限三条主流程。
