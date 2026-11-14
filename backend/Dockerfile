@@ -1,5 +1,5 @@
 # ==================== 构建阶段 ====================
-FROM maven:3.9-eclipse-temurin-25-alpine AS builder
+FROM maven:3.9-eclipse-temurin-26-alpine AS builder
 
 # 设置工作目录
 WORKDIR /build
