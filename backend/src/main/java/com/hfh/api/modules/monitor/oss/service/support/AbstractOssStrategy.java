@@ -14,6 +14,11 @@ public abstract class AbstractOssStrategy {
     protected final OssProperties ossProperties;
 
     /**
+     * 单次列表查询最多扫描的对象数，避免桶内对象过多时拉取全量数据导致内存溢出
+     */
+    protected static final int MAX_LIST_OBJECTS = 10000;
+
+    /**
      * 存储桶名称规则：小写字母、数字、中划线，3-63 字符，不能以中划线开头或结尾
      */
     private static final Pattern BUCKET_NAME_PATTERN = Pattern.compile("^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$");

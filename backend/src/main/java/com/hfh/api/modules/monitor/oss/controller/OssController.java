@@ -80,18 +80,23 @@ public class OssController extends BaseController {
             @Parameter(description = "是否递归查询") @RequestParam(defaultValue = "true") Boolean recursive) {
 
         String bucketName = StringUtils.hasText(bucket) ? bucket : ossProperties.getBucketName();
+        int pageNum = current == null || current < 1 ? 1 : current;
+        // 限制单页最大条数，避免一次返回过多对象
+        int pageSize = size == null || size < 1 ? 10 : Math.min(size, 100);
+
         List<ObjectVO> all = ossService.listObjects(bucketName, prefix, Boolean.TRUE.equals(recursive));
 
         int total = all.size();
-        int from = (current - 1) * size;
-        int to = Math.min(from + size, total);
-        List<ObjectVO> records = from < total ? all.subList(from, to) : List.of();
+        long from = (long) (pageNum - 1) * pageSize;
+        List<ObjectVO> records = from < total
+                ? all.subList((int) from, (int) Math.min(from + pageSize, total))
+                : List.of();
 
         Map<String, Object> page = new HashMap<>();
         page.put("records", records);
         page.put("total", total);
-        page.put("current", current);
-        page.put("size", size);
+        page.put("current", pageNum);
+        page.put("size", pageSize);
         return SaResult.data(page);
     }
 

@@ -146,6 +146,9 @@ public class QiniuOssStrategyImpl extends AbstractOssStrategy implements OssStra
             while (iterator.hasNext()) {
                 FileInfo[] items = iterator.next();
                 for (FileInfo item : items) {
+                    if (list.size() >= MAX_LIST_OBJECTS) {
+                        return list;
+                    }
                     ObjectVO vo = new ObjectVO();
                     vo.setObjectName(item.key);
                     vo.setSize(item.fsize);

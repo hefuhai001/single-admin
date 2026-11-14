@@ -99,6 +99,9 @@ public class MinioOssStrategyImpl extends AbstractOssStrategy implements OssStra
             }
             List<ObjectVO> list = new ArrayList<>();
             for (io.minio.Result<Item> result : getClient().listObjects(builder.build())) {
+                if (list.size() >= MAX_LIST_OBJECTS) {
+                    break;
+                }
                 Item item = result.get();
                 ObjectVO vo = new ObjectVO();
                 vo.setObjectName(item.objectName());
