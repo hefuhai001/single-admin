@@ -77,6 +77,11 @@ sa-token:
   is-concurrent: true  # 允许多 token 共存（双 token 模式需要），SSO 由登录逻辑手动踢旧会话实现
   token-prefix: Bearer     # 前端提交 token 时的前缀
 
+job:
+  invoke:
+    # 定时任务允许反射调用的包白名单（逗号分隔），白名单外的类一律拒绝
+    allowed-packages: com.hfh.api.modules.monitor.task.task
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*/*.xml
   global-config:
