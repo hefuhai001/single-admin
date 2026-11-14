@@ -183,10 +183,11 @@
 
 ### P2-1 CI 未执行前端测试
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[ci.yml](../.github/workflows/ci.yml)
 - 现状：前端 job 只执行 `lint:ci` 与 `build`，未执行 `pnpm test`。
 - 影响：本次新增的 294 个前端用例没有流水线保障，回归不会被发现。
+- 修复：前端 job 在 build 前执行 `pnpm test:coverage`，并通过 `actions/upload-artifact` 归档 `frontend/coverage`，测试失败即中断流水线。
 - 建议：在 build 前增加 `pnpm test:coverage`，并将覆盖率产物归档。
 
 ### P2-2 覆盖率只生成不校验
