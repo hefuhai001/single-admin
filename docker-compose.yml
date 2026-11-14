@@ -49,25 +49,20 @@ services:
       - "127.0.0.1:${REDIS_PORT}:6379"
     environment:
       TZ: ${TZ}
+      # 启动脚本读取并写入配置文件，不通过命令行参数传递密码
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}
+      # 供 healthcheck 的 redis-cli 读取，避免密码出现在命令行
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}
     volumes:
       - redis_data:/data
-    command: >
-      redis-server
-      --requirepass ${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}
-      --save ${REDIS_SAVE_900:-900} ${REDIS_SAVE_900_VALUE:-1}
-      --save ${REDIS_SAVE_300:-300} ${REDIS_SAVE_300_VALUE:-10}
-      --save ${REDIS_SAVE_60:-60} ${REDIS_SAVE_60_VALUE:-10000}
-      --dbfilename ${REDIS_DBFILENAME:-dump.rdb}
-      --appendonly ${REDIS_APPENDONLY:-yes}
-      --appendfilename ${REDIS_APPENDFILENAME:-appendonly.aof}
-      --appendfsync ${REDIS_APPENDFSYNC:-everysec}
-      --maxmemory ${REDIS_MAXMEMORY:-256mb}
-      --maxmemory-policy ${REDIS_MAXMEMORY_POLICY:-allkeys-lru}
+      - ./docker/redis/redis-entrypoint.sh:/usr/local/bin/redis-entrypoint.sh:ro
+    # 密码通过启动脚本写入配置文件，避免出现在 docker inspect / ps 的命令行中
+    command: [ "sh", "/usr/local/bin/redis-entrypoint.sh" ]
     restart: unless-stopped
     networks:
       - webnet
     healthcheck:
-      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}", "ping" ]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
