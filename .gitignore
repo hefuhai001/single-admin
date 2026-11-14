@@ -78,7 +78,6 @@ __screenshots__/
 *.timestamp-*-*.mjs
 .trae/
 .agents/
-docs/
 *.jar
 frontend/dist.zip
 .zcode/

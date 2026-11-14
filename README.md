@@ -156,7 +156,9 @@ single-admin/
 ├── minio/                            # MinIO 配置
 ├── docker-compose.yml                # Docker 编排配置
 ├── .env / .env.example               # 部署环境变量
-└── docs/                             # 设计与方案文档
+└── docs/                             # 项目文档
+    ├── IMPROVEMENTS.md               # 改进评估清单与推进计划
+    └── test-report.md                # 单元测试与覆盖率报告
 ```
 
 ---
