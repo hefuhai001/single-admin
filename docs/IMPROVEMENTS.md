@@ -192,10 +192,11 @@
 
 ### P2-2 覆盖率只生成不校验
 
-- [ ] 已修复
+- [x] 已修复
 - 位置：[pom.xml](../backend/pom.xml)、[vitest.config.js](../frontend/vitest.config.js)
 - 现状：后端 JaCoCo 仅 `report`，未配置 `check`；前端未配置 `coverage.thresholds`。
 - 影响：覆盖率会随时间回退且无人察觉。
+- 修复：JaCoCo 在 `verify` 阶段增加 BUNDLE 行覆盖率校验（不低于 70%）；前端 `coverage.thresholds` 设置行/语句/分支均不低于 75%，低于门槛时测试失败。
 - 建议：基于当前水平设置门槛（后端行覆盖 70%、前端行覆盖 75%），后续逐步提高。
 
 ### P2-3 缺少端到端与权限链路集成测试

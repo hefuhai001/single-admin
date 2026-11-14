@@ -23,6 +23,11 @@ export default defineConfig({
             reportsDirectory: './coverage',
             include: ['src/**/*.{js,vue}'],
             exclude: ['src/main.js', 'src/router/modules/viewRegistry.generated.js'],
+            thresholds: {
+                lines: 75,
+                statements: 75,
+                branches: 75,
+            },
         },
     },
 })
