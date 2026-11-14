@@ -9,6 +9,9 @@ services:
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请在 .env 中配置 MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-db_single_admin}
+      # 应用使用专用账号，仅对业务库拥有权限，避免直接使用 root
+      MYSQL_USER: ${MYSQL_USER:-single_admin}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请在 .env 中配置 MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       # 表结构与初始化数据由后端启动时的 Flyway（backend/src/main/resources/db/migration）创建
@@ -129,8 +132,8 @@ services:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
       MYSQL_DATABASE: ${MYSQL_DATABASE:-db_single_admin}
-      MYSQL_USER: root
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请在 .env 中配置 MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER:-single_admin}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请在 .env 中配置 MYSQL_PASSWORD}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:?请在 .env 中配置 REDIS_PASSWORD}
