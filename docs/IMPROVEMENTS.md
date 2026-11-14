@@ -294,9 +294,10 @@
 
 ### P4-5 缺少发布与变更管理流程
 
-- [ ] 已修复
-- 位置：`.github/workflows/`
+- [x] 已修复
+- 位置：[release.yml](../.github/workflows/release.yml)、[README.md](../README.md)
 - 现状：只有 CI，没有镜像构建推送、版本 Tag、CHANGELOG 或回滚流程。
+- 修复：新增 `v*` tag（或手动输入版本号）触发的 release workflow，构建前后端镜像并推送 GHCR（同时打版本 tag 与 latest），基于 git log 生成变更记录并创建 GitHub Release；在 workflow 注释与 README 中明确镜像按 `VERSION` 回滚、数据库需备份 + 人工逆向脚本的回滚策略。
 - 建议：增加 release workflow（构建并推送镜像、生成变更记录）；明确数据库迁移的回滚策略（Flyway 社区版不支持自动回滚，需提供逆向脚本）。
 
 ---

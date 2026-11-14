@@ -242,6 +242,11 @@ Docker Compose 将自动启动以下服务：
 - 后端 API 服务
 - 前端 Nginx 服务
 
+发布与回滚：
+- 推送 `v*` tag 会触发发布流水线，构建前后端镜像并推送到 GHCR，同时生成 GitHub Release 变更记录。
+- 回滚镜像：在 `.env` 中把 `VERSION` 改为上一个版本 tag（镜像保留历史 tag），执行 `docker compose up -d`。
+- 回滚数据库：Flyway 社区版不支持自动回滚；含迁移脚本的发布需提前备份 MySQL 并准备逆向脚本，回滚时先在备份上验证再人工执行。
+
 ---
 
 ## 可用命令
