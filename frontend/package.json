@@ -59,7 +59,7 @@
     "fast-glob": "^3.3.3",
     "globals": "^17.3.0",
     "jsdom": "^26.1.0",
-    "npm-run-all2": "^8.0.4",
+    "npm-run-all2": "^9.0.4",
     "oxlint": "~1.50.0",
     "postcss": "^8.4.41",
     "prettier": "3.8.1",
