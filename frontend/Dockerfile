@@ -27,7 +27,7 @@ COPY . .
 RUN pnpm run build:prod
 
 # ==================== 运行阶段 ====================
-FROM nginx:1.30-alpine
+FROM nginx:1.31-alpine
 
 # 安装必要工具和创建非 root 用户
 RUN apk add --no-cache curl tzdata && \
